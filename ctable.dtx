@@ -95,14 +95,17 @@
 %    Options are given as key=value pairs, separated by comma's.
 %    Extra comma's, including one behind the last pair, don't hurt.
 %    Arguments to option should be put between braces if they contain
-%    comma's.
+%    comma's or equals signs.
 %    Currently the following option keys have been defined:
 %    \\[2ex]
 %    \begin{tabularx}{\hsize}{@{}lX@{}}
 %    |caption={...}|& table caption; the braces are needed only if your
-%                      caption contains a comma.\NN
+%                      caption contains a comma or an equals sign.\NN
 %
 %    |cap={...}|    & for a short caption to go to the |\tableofcontents|.\NN
+%
+%    |captionskip=...| & set the whitespace between the caption and the table; 
+%                     default is |2ex|.\NN
 %
 %    |pos=...|      & float position, default: |tbp|.\NN
 %
@@ -374,6 +377,7 @@
 \newdimen\@ctblframesep
 \newdimen\@ctblframerule
 \newdimen\@ctblwidth
+\newdimen\@ctblcaptionskip
 \newdimen\@ctblmaxwidth
 \newdimen\@ctblw % the final width
 %    \end{macrocode}
@@ -408,6 +412,7 @@
 \define@key{ctbl}{framesep}{\@ctblframesep    =#1}
 \define@key{ctbl}{framefg}{\@ctblfgcolor#1=}
 \define@key{ctbl}{framebg}{\@ctblbgcolor#1=}
+\define@key{ctbl}{captionskip}{\@ctblcaptionskip  =#1}
 %    \end{macrocode}
 % a caption will only be generated if the \textsl{caption} option was used:
 %    \begin{macrocode}
@@ -444,6 +449,7 @@
    \definecolor{@ctblframefg}{rgb}{0,0,0}
    \definecolor{@ctblframebg}{rgb}{1,1,1}
    \@ctblframerule0pt
+   \@ctblcaptionskip2ex
    \@ctblframesep0pt
    \@ctblwidth=0pt
    \@ctblmaxwidth=0pt
@@ -537,7 +543,7 @@
    \@ctblbegin
       \begin{\@ctblalign}
          \begin{minipage}{\@ctblw}
-            \ifx\@ctblbotcap\empty\@ctblCaption\vspace{2ex}\fi
+            \ifx\@ctblbotcap\empty\@ctblCaption\vspace{\@ctblcaptionskip}\fi
             \usebox\ctbl@t % insert the tabular
             \def\@ctblfootnotes{#3}
             \ifx#3\empty\else % append footnotes, if any
