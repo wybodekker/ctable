@@ -1,0 +1,247 @@
+\def\filename{ctable.dtx}
+\def\fileversion{1.1}
+\def\filedate{2000/06/01}
+\let\docversion=\fileversion
+\let\docdate=\filedate
+% \iffalse
+%%% File: ctable.dtx
+%% Copyright (C) 2000 Wybo Dekker
+%% all rights reserved.
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{ctable}[2001/02/02 v1.0 LaTeX package ctable]
+%<*driver>
+\documentclass[draft]{ltxdoc}
+\usepackage{a4,ctable}
+\GetFileInfo{ctable.sty}
+\parindent0pt
+\parskip2ex
+\begin{document}
+\title{The \texttt{ctable} package\thanks
+       {This file has version number \fileversion, dated \filedate.}\\
+      for use with \LaTeX2e}
+\author{Wybo Dekker\\
+  \texttt{wybo@dekkerdocumenten.nl}}
+\date{\docdate}
+\maketitle
+\DocInput{ctable.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+%    \changes{v1.0}{2000/06/01}{First release.}
+%
+%    \section{Introduction}
+%    The ctable package lets you easily typeset centered, captioned table floats with
+%    optional footnotes. Both caption and footnotes will be forced within the width
+%    of the table.
+%
+%    If the width of the table is specified, then tabularx will be used to typeset it, 
+%    and the X column specifier can be used. Otherwise tabular will be used.
+%
+%    \section{Usage}
+%
+%    This file can be used as a package by placing its name
+%    in the argument of |\usepackage|. Afterwards the commands |\ctable|, |\tnote| and
+%    |\tmark| will be defined, as well as 4 |\tabularnewline| generating commands.
+%
+%    \DescribeMacro{\ctable}
+%    |\ctable| is called with 8 parameters, of which the first is optional: \\
+%
+%    |\ctable[short caption] % for \caption; default: same as caption.|\\
+%    |       {caption}       % for \caption|\\
+%    |       {where}         % htbp|\\
+%    |       {label}         % for \label|\\
+%    |       {width}         % for tabularx; if empty: use tabular|\\
+%    |       {coldefs}       % for \begin{tabular}|\\
+%    |       {foottable}     % zero or more \tnote commands (see below)|\\
+%    |       {table lines}   % lines for the table|\\
+%
+%    The footnotes are placed under the table, without a rule. You therefore probably 
+%    will want to use the |\LL| (last line) command if you use footnotes.
+%    \par
+%    \DescribeMacro{\tnote}
+%    |\tnote[label]{footnote text}|
+%    places {\footnotesize $^{label}$\,footnote text} under the table.
+%    Can only be used in the foottable parameter described above.
+%    The label is optional, the default label is a single $a$.
+%    For more detailed control, you can also replace this command with something like
+%      |labeltext&footnotetext\NN|.
+%    \par
+%    \DescribeMacro{\tmark}
+%    |\tmark[label]|
+%    this command places the superscripted label in the table. It is equivalent with
+%    |$^{label}$|.
+%    The label is optional, the default label is a single $a$.
+%    \par
+%    \DescribeMacro{\NN} is |\tabularnewline|\\
+%    \DescribeMacro{\ML} middle line: |\NN\hline| with extra space both over and
+%                        under the |\hline|\\
+%    \DescribeMacro{\FL} first line: |\NN\hline| with extra space under the |\hline|\\
+%    \DescribeMacro{\LL} last line: |\NN\hline| with extra space over the |\hline|\\
+%    These macros can be used outside |\ctable| constructs. 
+%
+%    \section{Bugs}
+%    The |\FL, \ML| and |\LL| macros cannot successfully be used in longtables' 
+%    |\endhead| lines, because |\endhead| generates a piece of \TeX{} code for later
+%    insertion, without executing |\gdef| commands contained in these macros.
+%
+%    There is yet no redefinition for |\cline|; one can use the |\OV, \UN| and |\OU| macros
+%    to overcome this for now.
+%
+%    \section{Example}
+%    Table~\ref{tab:nowidth} is an example taken from the related package
+%    threeparttable.sty by Donald Arseneau, with an extra footnote.
+%    It was typeset with:
+% \ctable[The Skewing Angles]
+%        {The Skewing Angles ($\beta$) for
+%         $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark
+%        }
+%        {t}
+%        {tab:nowidth}
+%        {}
+%        {rlcc}
+%        {\tnote{for the abstraction reaction,
+%                $\fam0 Mu+HX \rightarrow MuH+X$.}
+%         \tnote[b]{1 degree${} = \pi/180$ radians.}
+%         \tnote[c]{this is a particularly long note, showing that
+%                   footnotes are set in raggedright mode as we don't like
+%                   hyphenation in table footnotes.}
+%        }{\FL
+%            &            & $\fam0 H(Mu)+F_2$     & $\fam0 H(Mu)+Cl_2$
+%          \ML
+%            &$\beta$(H)  & $80.9^\circ$\tmark[b] & $83.2^\circ$ 
+%          \NN
+%            &$\beta$(Mu) & $86.7^\circ$          & $87.7^\circ$   
+%          \LL
+%        }
+% \begin{verbatim}
+% \ctable[The Skewing Angles]
+%        {The Skewing Angles ($\beta$) for
+%         $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark
+%        }
+%        {t}
+%        {tab:nowidth}
+%        {}
+%        {rlcc}
+%        {\tnote{for the abstraction reaction,
+%                $\fam0 Mu+HX \rightarrow MuH+X$.}
+%         \tnote[b]{1 degree${} = \pi/180$ radians.}
+%         \tnote[c]{this is a particularly long note, showing that
+%                   footnotes are set in raggedright mode as we don't like
+%                   hyphenation in table footnotes.}
+%        }{\FL
+%            &            & $\fam0 H(Mu)+F_2$     & $\fam0 H(Mu)+Cl_2$
+%          \ML
+%            &$\beta$(H)  & $80.9^\circ$\tmark[b] & $83.2^\circ$ 
+%          \NN
+%            &$\beta$(Mu) & $86.7^\circ$          & $87.7^\circ$   
+%          \LL
+%        }
+% \end{verbatim}
+%    Table~\ref{tab:width} is an example with a width specification, taken 
+%    from the |tabularx| documentation and typeset with:
+% \ctable{Example with a specified width of 100mm}
+%        {h}
+%        {tab:width}
+%        {100mm}
+%        {|c|>{\raggedright}X|c|>{\raggedright}X|}
+%        {\tnote{footnotes are placed under the table}} 
+%        {\FL
+%           \multicolumn{4}{|c|}{Example using tabularx}
+%         \ML
+%           \multicolumn{2}{|c|}{Multicolumn entry!} & THREE & FOUR
+%         \ML
+%           one&
+%           The width of this column depends on the
+%           width of the table.\tmark &
+%           three&
+%           Column four will act in the same way as
+%           column two, with the same width.
+%         \LL
+%        }
+% \begin{verbatim}
+%    Table~\ref{tab:width} is an example with a width specification, taken 
+%    from the |tabularx| documentation and typeset with:
+% \ctable{Example with a specified width of 100mm}
+%        {h}
+%        {tab:width}
+%        {100mm}
+%        {|c|>{\raggedright}X|c|>{\raggedright}X|}
+%        {\tnote{footnotes are placed under the table}} 
+%        {\FL
+%           \multicolumn{4}{|c|}{Example using tabularx}
+%         \ML
+%           \multicolumn{2}{|c|}{Multicolumn entry!} & THREE & FOUR
+%         \ML
+%           one&
+%           The width of this column depends on the
+%           width of the table.\tmark &
+%           three&
+%           Column four will act in the same way as
+%           column two, with the same width.
+%         \LL
+%        }
+% \end{verbatim}
+% \section{Implementation}
+%    \begin{macrocode}
+\RequirePackage{array}
+\RequirePackage{ifthen}
+\RequirePackage{tabularx}
+
+\gdef\XX{}
+\gdef\UN{\lower1.5ex\vbox{}}
+\gdef\OV{\raise3ex\vbox{}}
+\gdef\OU{\OV\UN}
+
+\gdef\FL{\hline\noalign{\gdef\XX{\OV}}}
+\gdef\ML{\unskip\XX\UN\tabularnewline\hline\noalign{\gdef\XX{\OV}}}
+\gdef\LL{\unskip\XX\UN\tabularnewline\hline}
+\gdef\NN{\XX\tabularnewline\noalign{\gdef\XX{}}}
+
+\newcommand{\tnote}[2][a]{$^{#1}$&#2\NN}
+
+\newcommand{\tmark}[1][a]{$^{#1}$}
+
+\def\hline{%
+  \noalign{\ifnum0=`}\fi\hrule \@height \arrayrulewidth \futurelet
+   \reserved@a\@xhline}
+\long\def\multicolumn#1#2#3{\multispan{#1}\begingroup
+  \@mkpream{#2}%
+  \def\@sharp{#3}\set@typeset@protect
+  \let\@startpbox\@@startpbox\let\@endpbox\@@endpbox
+  \@arstrut \@preamble\hbox{}\endgroup\ignorespaces}
+
+\newcommand{\ctable}[8][]{
+  % save the table contents in a box, so we can determine its width:
+  \newbox\tabel
+  \sbox\tabel{
+    \ifthenelse{\equal{#5}{\empty}}{
+      \begin{tabular}{#6}
+        #8%
+      \end{tabular}
+     }{
+      \begin{tabularx}{#5}{#6}
+        #8%
+      \end{tabularx}
+     }
+  }
+  \begin{table}[#3]
+    \begin{center}
+      \begin{minipage}{\wd\tabel}
+        \ifthenelse{\equal{#1}{\empty}}
+                   {\caption{\label{#4}#2}}
+                   {\caption[#1]{\label{#4}#2}}
+        \vspace{2ex}
+        \usebox\tabel % insert the tabular
+        \ifthenelse{\equal{#7}{\empty}} % append footnotes, if any
+        {}
+        {\\[.5ex]
+         \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}
+         #7
+         \end{tabularx}
+        }
+      \end{minipage}
+    \end{center}
+  \end{table}
+}
+%    \end{macrocode}

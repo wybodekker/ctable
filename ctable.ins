@@ -1,0 +1,23 @@
+\def\batchfile{ctable.ins}
+\input docstrip.tex
+
+\keepsilent
+
+\Msg{*** Generating .sty file ***}
+
+\generateFile{ctable.sty}{f}{\from{ctable.dtx}{package}}
+\generateFile{ctable.tex}{f}{\from{ctable.dtx}{driver}}
+
+\Msg{***********************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* files into a directory searched by TeX:}
+\Msg{*}
+\Msg{* \space\space ctable.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the files ending with}
+\Msg{* `.dtx' through LaTeX2e.}
+\Msg{*}
+\Msg{***********************************************************}
+
+\endinput
