@@ -27,6 +27,7 @@
 %    \changes{v1.2}{2002/06/24}{Using keyval to reduce args to 4}
 %    \changes{v1.3}{2002/07/16}{Many syntactic correction,
 %                               thanks to Johannes Braams}
+%    \changes{v1.0}{2002/11/03}{Caption, if empty, will not be typeset}
 %    \GetFileInfo{ctable}
 %    \title{The \texttt{ctable} package\thanks
 %           {This file has version number \fileversion, dated \filedate.}\\
@@ -34,6 +35,8 @@
 %    \author{Wybo Dekker\\ \texttt{wybo@dekkerdocumenten.nl}}
 %    \date{\filedate}
 %    \maketitle
+%    \listoftables
+%    \listoffigures
 %    \MakeShortVerb{\|}
 %
 %    \section{Purpose} The |ctable| package lets you easily typeset
@@ -298,9 +301,8 @@
                             \def\ctblend{\end{figure}}}
 
 \def\ctblCaption{
-  \ifx\ctblcap\empty%
-    \caption{\label{\ctbllabel}\ctblcaption}%
-  \else
+  \ifx\ctblcap\empty\let\ctblcap\ctblcaption\fi%
+  \ifx\ctblcaption\empty\else
     \caption[\ctblcap]{\label{\ctbllabel}\ctblcaption}
   \fi
 }
