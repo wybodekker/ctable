@@ -33,7 +33,7 @@ open("|cvs -Q status").each do |line|
    if line =~ /File:\s+([.\w]+)\s+Status:\s+([\w-]+)/
       f,s = $1,$2
       f or next
-      die "cvs status of file #{f} not up-to-date" unless s == "Up-to-date"
+      warn "cvs status of file #{f} not up-to-date" unless s == "Up-to-date"
    end
 end
 
@@ -44,7 +44,7 @@ end
 @cvsdate = @packdate = @version = 'empty'
 open(name+'.dtx').each do |line|
    line =~ /Id: .*(\d\d\d\d\/\d\d\/\d\d)/ and @cvsdate = $1
-   if line =~ /(\d\d\d\d\/\d\d\/\d\d) v(\d+\.\d+)/
+   if line =~ /(\d\d\d\d\/\d\d\/\d\d) v(\d+\.\d+[a-z]*) /
       @packdate,@version = $1,$2
       break
    end
