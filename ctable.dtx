@@ -9,8 +9,9 @@
 %<driver>\ProvidesFile{ctable.drv}
 %<+abstract> easy centered table and figure floats with footnotes for LaTeX
 % \fi
+% \CheckSum{149}
 %\ProvidesFile{ctable}
-        [2002/06/24 v1.2 LaTeX package ctable]
+        [2002/07/16 v1.3 LaTeX package ctable]
 %\iffalse
 %<*driver>
 \documentclass[a4paper]{ltxdoc}
@@ -25,6 +26,8 @@
 %    \changes{v1.0}{2000/06/01}{First release.}
 %    \changes{v1.1}{2001/03/17}{Making use of booktabs package}
 %    \changes{v1.2}{2002/06/24}{Using keyval to reduce args to 4}
+%    \changes{v1.3}{2002/07/16}{Many syntactic correction,
+%                               thanks to Johannes Braams}
 %    \GetFileInfo{ctable}
 %    \title{The \texttt{ctable} package\thanks
 %           {This file has version number \fileversion, dated \filedate.}\\
@@ -34,10 +37,10 @@
 %    \maketitle
 %    \MakeShortVerb{\|}
 %
-%    \section{Purpose}
-%    The |ctable| package lets you easily typeset centered, captioned
-%    table and figure floats with optional footnotes. Both caption and
-%    footnotes will be forced within the width of the table.
+%    \section{Purpose} The |ctable| package lets you easily typeset
+%    centered, captioned table and figure floats with optional
+%    footnotes. Both caption and footnotes will be forced within the
+%    width of the table.
 %
 %    If the width of the table is specified, then tabularx will be used
 %    to typeset it, and the X column specifier can be used. Otherwise
@@ -49,8 +52,8 @@
 %    around horizontal rules and are also useful for tabulars outside
 %    this package.
 %
-%    Since the |ctable| package imports the |array| and  |booktabs| packages, all
-%    commands from those packages are available as well.
+%    Since the |ctable| package imports the |array| and |booktabs|
+%    packages, all commands from those packages are available as well.
 %
 %    Note that, in line with the comments that Simon Fear made
 %    describing his |booktabs| package, vertical rules for column
@@ -66,58 +69,69 @@
 %    |       {foottable}     % zero or more \tnote commands (see below)|\\
 %    |       {table lines}   % lines for the table|\\
 %
-%    Options are given as key=value pairs, separated by comma's. Extra comma's,
-%    including one behind the last pair, don't hurt.
+%    Options are given as key=value pairs, separated by comma's.
+%    Extra comma's, including one behind the last pair, don't hurt.
 %    Currently the following option keys have been defined:
 %    \\[2ex]
 %    \begin{tabular}{@{}>{\bf}ll}
-%    caption&       table caption \NN
-%    cap&           for a short caption to go to the |\tableofcontents|\NN
-%    pos&           float position, default: tbp\NN
-%    label&         for |\label|\NN
-%    width&         for tabularx; if absent, tabular will be used\NN
-%    figure&        produce a figure float instead of a table float\NN
-%    botcap&       put the caption at the bottom of the float instead of on top of it\NN
+%    caption& table caption \NN
+%    cap&     for a short caption to go to the |\tableofcontents|\NN
+%    pos&     float position, default: tbp\NN
+%    label&   for |\label|\NN
+%    width&   for tabularx; if absent, tabular will be used\NN
+%    figure&  produce a figure float instead of a table float\NN
+%    botcap&  put the caption at the bottom of the float instead
+%             of on top of it\NN
 %    \end{tabular}
 %    \\[2ex]
-%    The footnotes are placed under the table, without a rule. You therefore probably 
-%    will want to use the |\LL| (last line) command if you use footnotes.
+%    The footnotes are placed under the table, without a rule.
+%    You therefore probably will want to use the |\LL| (last line)
+%    command if you use footnotes.
 %    \par
 %    \DescribeMacro{\tnote}
-%    |\tnote[label]{footnote text}|
-%    places {\footnotesize $^{label}$\,footnote text} under the table.
-%    Can only be used in the foottable parameter described above.
-%    The label is optional, the default label is a single $a$.
-%    For more detailed control, you can also replace this command with something like
-%      |labeltext&footnotetext\NN|.
+%    |\tnote[label]{footnote text}| places {\footnotesize
+%    \textsuperscript{\normalfont\textit{label}}\,footnote text}
+%    under the table.
+%    Can only be used in the foottable parameter described above. The
+%    label is optional, the default label is a single $a$. For more
+%    detailed control, you can also replace this command with something
+%    like |labeltext&footnotetext\NN|.
 %    \par
 %    \DescribeMacro{\tmark}
-%    |\tmark[label]|
-%    this command places the superscripted label in the table. It is equivalent with
-%    |$^{label}$|.
+%    |\tmark[label]| this command places the superscripted label in the
+%    table. It is equivalent with |$^{label}$|.
 %    The label is optional, the default label is a single $a$.
 %    \par
-%    The newline generating commands are a combination of |\tabularnewline| and zero or one of 
-%    |booktabs|' |\toprule|, |\midrule| or |\bottomrule|. These combinations have been made, 
-%    and short names have been defined, because source texts for complex tables often become
-%    very crowded:
+%    The newline generating commands are a combination of
+%    |\tabularnewline| and zero or one of |booktabs|' |\toprule|,
+%    |\midrule| or |\bottomrule|. These combinations have been made, and
+%    short names have been defined, because source texts for complex
+%    tables often become very crowded:
 %    \par
 %    \DescribeMacro{\NN} Normal Newline, generates just a normal new line\\
-%    \DescribeMacro{\FL} First Line, generates a thick line with some extra space under it\\
-%    \DescribeMacro{\ML} Middle Line: generates a new and a thin rule with some extra
-%    space over and under it\\
-%    \DescribeMacro{\LL} Last Line:  generates a thick line with some extra space over it\\
+%    \DescribeMacro{\FL} First Line, generates a new line and a thick
+%                        rule with some extra space under it\\
+%    \DescribeMacro{\ML} Middle Line: generates a new line and a thin
+%                        rule with some extra space over and under it\\
+%    \DescribeMacro{\LL} Last Line:  generates a new line and a thick
+%                        rule with some extra space over it\\
 %    These macros can be used outside |\ctable| constructs. 
 %    \par
-%    Finally, for completeness, here are some of |booktabs|' commands that may be useful:\\
-%    \DescribeMacro{\toprule} |\toprule[<wd>]| where |<wd>| is the optional thinkness of the rule\\
+%    Finally, for completeness, here are some of |booktabs|' commands
+%    that may be useful:\\
+%    \DescribeMacro{\toprule} |\toprule[<wd>]|
+%     where |<wd>| is the optional thinkness of the rule\\
 %    \DescribeMacro{\midrule} |\midrule[<wd>]|\\
 %    \DescribeMacro{\bottomrule} |\bottomrule[<wd>]|\\
-%    \DescribeMacro{\cmidrule} |\cmidrule[<wd>](<trim>){a-b}| where |<trim>| can be |r|, |l|, or |rl|
-%                   and the rule is drawn over columns |a| through |b|\\
-%    \DescribeMacro{\morecmidrules} |\morecmidrules| must be used to separate two successive cmidrules\\
-%    \DescribeMacro{\addlinespace} |\addlinespace[<wd>]| inserts extra space between rows\\
-%    \DescribeMacro{\specialrule} |\specialrule{<wd>}{<abovespace>}{<belowspace>}|\\
+%    \DescribeMacro{\cmidrule} |\cmidrule[<wd>](<trim>){a-b}|
+%    where |<trim>| can be |r|, |l|, or |rl|
+%    and the rule is drawn over columns |a| through |b|\\
+%    \DescribeMacro{\morecmidrules} |\morecmidrules|
+%    must be used to separate two successive cmidrules\\
+%    \DescribeMacro{\addlinespace} |\addlinespace[<wd>]|
+%    inserts extra space between rows\\
+%    \DescribeMacro{\specialrule}
+%    |\specialrule{<wd>}{<abovespace>}{<belowspace>}|\\
 %    See the |booktabs| documentation for details.
 % \ctable[cap     = The Skewing Angles,
 %         caption = The Skewing Angles ($\beta$) for
@@ -190,7 +204,8 @@
 %        }
 %
 %    Table~\ref{tab:width} is an example with a width specification, taken 
-%    from the |tabularx| documentation, with the vertical rules removed, and typeset with:
+%    from the |tabularx| documentation, with the vertical rules removed,
+%    and typeset with:
 % \begin{verbatim}
 % \ctable[caption = Example with a specified width of 100mm,
 %         width   = 100mm,
@@ -215,10 +230,11 @@
 % \end{verbatim}
 %    \subsection{Figures}
 %    Figures, even single ones, are always put in tabular cells. This is not
-%    particularly handy for single pictures, but it eases the construction of arrays
-%    of pictures, including sub-captions, delineation, and spacing.
+%    particularly handy for single pictures, but it eases the construction 
+%    of arrays of pictures, including sub-captions, delineation, and spacing.
 %    Figure~\ref{fig} shows a figure that has been produced with the |\ctable|
-%    command, in combination with |\usepackage{carom}|; it has been typeset with:
+%    command, in combination with |\usepackage{carom}|;
+%    it has been typeset with:
 % \begin{verbatim}
 %    \ctable[caption=The di- and tri-bromobenzenes,
 %            botcap,
@@ -248,12 +264,12 @@
 %     \bzdrv{1==Br;3==Br;5==Br}  \NN
 %     1,2,3 & 1,2,4 & 1,3,5      \LL
 %    }
-%    (The excessive whitespace at the left of the figure is caused by the bounding
-%    boxes generated by the \textsl{carom} package.) 
+%    (The excessive whitespace at the left of the figure is caused by
+%    the bounding boxes generated by the \textsl{carom} package.)
 % \StopEventually{}
 % \section{Implementation}
-%<*package>
 %    \begin{macrocode}
+%<*package>
 \RequirePackage{keyval,array,tabularx,booktabs}
 
 \def\NN{\tabularnewline}
@@ -261,40 +277,38 @@
 \def\ML{\NN\midrule}
 \def\LL{\NN\bottomrule}
 
-\newcommand{\tnote}[2][a]{$^{#1}$&#2\NN}
-\newcommand{\tmark}[1][a]{$^{#1}$}
+\newcommand{\tnote}[2][a]{%
+  \hbox{\@textsuperscript{\normalfont\textit{#1}}}&#2\NN}
+\newcommand{\tmark}[1][a]{%
+  \hbox{\@textsuperscript{\normalfont\textit{#1}}}}
 
-\makeatletter
-\def\hline{%
-  \noalign{\ifnum0=`}\fi\hrule \@height \arrayrulewidth \futurelet%
-   \reserved@a\@xhline}
-\long\def\multicolumn#1#2#3{\multispan{#1}\begingroup%
-  \@mkpream{#2}%%
-  \def\@sharp{#3}\set@typeset@protect%
-  \let\@startpbox\@@startpbox\let\@endpbox\@@endpbox%
-  \@arstrut \@preamble\hbox{}\endgroup\ignorespaces}
-% \end{macrocode}
-% Option setting commands from keyval. The table position (here, top, bottom, page)
-% gets a special treatment, since \LaTeX\ does not expand commands there. So instead
-% of putting things like \texttt{tbp} in a command like |\ctblbegin| we put
+%    \end{macrocode}
+% Option setting commands from keyval. The table position (here, top,
+% bottom, page) gets a special treatment, since \LaTeX\ does not expand
+% commands there. So instead of putting things like \texttt{tbp} in a
+% command like |\ctblbegin| we put
 % |\begin{table}[tbp]| in it. 
-% \begin{macrocode}
+%    \begin{macrocode}
 \define@key{ctbl}{caption} {\def\ctblcaption{#1}}
 \define@key{ctbl}{cap}     {\def\ctblcap    {#1}}
 \define@key{ctbl}{label}   {\def\ctbllabel  {#1}}
 \define@key{ctbl}{pos}     {\def\ctblbegin  {\ctblbeg[#1]}}
 \define@key{ctbl}{width}   {\def\ctblwidth  {#1}}
 \define@key{ctbl}{botcap}[]{\def\ctblbotcap {1}}
-\define@key{ctbl}{figure}[]{\def\ctblbeg{\begin{figure}}\def\ctblend{\end{figure}}}
-\makeatother
+\define@key{ctbl}{figure}[]{\def\ctblbeg{\begin{figure}}%
+                            \def\ctblend{\end{figure}}}
 
-\def\ctblCaption{%
+\def\ctblCaption{
   \ifx\ctblcap\empty%
     \caption{\label{\ctbllabel}\ctblcaption}%
-  \else%
-    \caption[\ctblcap]{\label{\ctbllabel}\ctblcaption}%
-  \fi%
+  \else
+    \caption[\ctblcap]{\label{\ctbllabel}\ctblcaption}
+  \fi
 }
+%    \end{macrocode}
+%    Allocate a box register for use by the |\ctable| command.
+%    \begin{macrocode}
+\newbox\ctbl@tabel
 
 \newcommand{\ctable}[4][]{%
   \def\ctblcaption {}%
@@ -307,38 +321,37 @@
   \def\ctblbotcap  {}%
   \setkeys{ctbl}{#1}%
   % save the table contents in a box, so we can determine its width:
-  \newbox\tabel%
-  \sbox\tabel{%
-    \ifx\ctblwidth\empty%
+  \sbox\ctbl@tabel{%
+    \ifx\ctblwidth\empty
       \begin{tabular}{#2}%
         #4%
       \end{tabular}%
-    \else%
+    \else
       \begin{tabularx}{\ctblwidth}{#2}%
         #4%
       \end{tabularx}%
-    \fi%
+    \fi
   }%
-% \end{macrocode}
-% |\ctblbegin| in now defined as something like |\begin{table}[tbp]|. 
-%\begin{macrocode}
-  \ctblbegin%
+%    \end{macrocode}
+% |\ctblbegin| is now defined as something like |\begin{table}[tbp]|. 
+%    \begin{macrocode}
+  \ctblbegin
     \begin{center}%
-      \begin{minipage}{\wd\tabel}%
-        \ifx\ctblbotcap\empty\ctblCaption\vskip2ex\fi%
-        \usebox\tabel % insert the tabular
+      \begin{minipage}{\wd\ctbl@tabel}%
+        \ifx\ctblbotcap\empty\ctblCaption\vspace{2ex}\fi
+        \usebox\ctbl@tabel % insert the tabular
         \def\ctblfootnotes{#3}%
         \ifx#3\empty\else % append footnotes, if any
            \\%
            \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}%
            #3%
            \end{tabularx}%
-        \fi%
-        \ifx\ctblbotcap\empty\else\ctblCaption\fi%
+        \fi
+        \ifx\ctblbotcap\empty\else\ctblCaption\fi
       \end{minipage}%
     \end{center}%
   \ctblend%
 }
-% \end{macrocode}
 %</package>
+%    \end{macrocode}
 % \Finale
