@@ -42,8 +42,10 @@
 %    \changes{v1.5}{2003/10/03}{maxwidth option added}
 %    \changes{v1.6}{2004/03/20}{left, right and center options added
 %                               frame{sep,rule,fg,bg} options added
-%                               error in width-setting corrected
-%                              }
+%                               error in width-setting corrected}
+%    \changes{v1.7}{2004/04/01}{two errors corrected: 
+%                               made setting fboxsep and fboxrule only temporary
+%                               removed superfluous space after tabulars} 
 %    \GetFileInfo{ctable}
 %    \MakeShortVerb{\|}
 %    \title{The |ctable| package\thanks
@@ -413,6 +415,13 @@
       \caption[\@ctblcap]{\label{\@ctbllabel}\@ctblcaption}
    \fi
 }
+\newdimen\@ctbloldsep
+\newdimen\@ctbloldrule
+\def\@ctblframe#1#2#3{%
+   \@ctbloldsep\fboxsep\fboxsep\@ctblframesep
+   \@ctbloldrule\fboxrule\fboxrule\@ctblframerule
+   \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule #3}
+}
 \newcommand{\tnote}[2][a]{%
    \hbox{\@textsuperscript{\normalfont\textit{#1}}}&#2\NN}
 \newcommand{\tmark}[1][a]{%
@@ -437,8 +446,6 @@
    \@ctblwidth=0pt
    \@ctblmaxwidth=0pt
    \setkeys{ctbl}{#1}
-   \fboxsep\@ctblframesep
-   \fboxrule\@ctblframerule
 %    \end{macrocode}
 % It makes no sense to use \textsl{width} together with \textsl{maxwidth} or
 % \textsl{pos} together with \textsl{rotate}
@@ -464,10 +471,10 @@
 %    \begin{macrocode}
    \sbox\ctbl@tabel{%
       \newcolumntype{X}{l} % temporarily make  type X = l
-      \fcolorbox{@ctblframefg}{@ctblframebg}{%
+      \@ctblframe{@ctblframefg}{@ctblframebg}{%
          \begin{tabular}{#2}
             #4
-         \end{tabular}
+         \end{tabular}%
       }
    }
 %    \end{macrocode}
@@ -476,10 +483,10 @@
 
    \sbox\ctbl@tabelx{%
       \newcolumntype{X}{Y} % restore X
-      \fcolorbox{@ctblframefg}{@ctblframebg}{%
+      \@ctblframe{@ctblframefg}{@ctblframebg}{%
          \begin{tabularx}{\ifdim\@ctblwidth>0pt\@ctblwidth\else\@ctblmaxwidth\fi}{#2}
             #4
-         \end{tabularx}
+         \end{tabularx}%
       }
    }
 %    \end{macrocode}
