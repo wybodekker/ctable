@@ -27,7 +27,9 @@
 %    \changes{v1.2}{2002/06/24}{Using keyval to reduce args to 4}
 %    \changes{v1.3}{2002/07/16}{Many syntactic correction,
 %                               thanks to Johannes Braams}
-%    \changes{v1.0}{2002/11/03}{Caption, if empty, will not be typeset}
+%    \changes{v1.4}{2003/04/06}{Caption, if empty, will not be typeset
+%                               rotate option added
+%                              }
 %    \GetFileInfo{ctable}
 %    \title{The \texttt{ctable} package\thanks
 %           {This file has version number \fileversion, dated \filedate.}\\
@@ -84,6 +86,8 @@
 %    figure&  produce a figure float instead of a table float\NN
 %    botcap&  put the caption at the bottom of the float instead
 %             of on top of it\NN
+%    rotate&  rotate table or figure by 90 degrees and put it on a separate page.\NN
+%          &  If you use this option, the \verb!pos! option is not allowed\NN
 %    \end{tabular}
 %    \\[2ex]
 %    The footnotes are placed under the table, without a rule.
@@ -272,7 +276,7 @@
 % \section{Implementation}
 %    \begin{macrocode}
 %<*package>
-\RequirePackage{keyval,array,tabularx,booktabs}
+\RequirePackage{keyval,array,tabularx,booktabs,rotating}
 
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
@@ -291,14 +295,14 @@
 % command like |\ctblbegin| we put
 % |\begin{table}[tbp]| in it. 
 %    \begin{macrocode}
-\define@key{ctbl}{caption} {\def\ctblcaption{#1}}
-\define@key{ctbl}{cap}     {\def\ctblcap    {#1}}
-\define@key{ctbl}{label}   {\def\ctbllabel  {#1}}
-\define@key{ctbl}{pos}     {\def\ctblbegin  {\ctblbeg[#1]}}
-\define@key{ctbl}{width}   {\def\ctblwidth  {#1}}
-\define@key{ctbl}{botcap}[]{\def\ctblbotcap {1}}
-\define@key{ctbl}{figure}[]{\def\ctblbeg{\begin{figure}}%
-                            \def\ctblend{\end{figure}}}
+\define@key{ctbl}{caption} {\def\ctblcaption {#1}}
+\define@key{ctbl}{cap}     {\def\ctblcap     {#1}}
+\define@key{ctbl}{label}   {\def\ctbllabel   {#1}}
+\define@key{ctbl}{pos}     {\def\ctblpos{#1}\def\ctblbegin   {\ctblbeg[#1]}}
+\define@key{ctbl}{width}   {\def\ctblwidth   {#1}}
+\define@key{ctbl}{botcap}[]{\def\ctblbotcap  {1}}
+\define@key{ctbl}{rotate}[]{\def\ctblrotate  {sideways}}
+\define@key{ctbl}{figure}[]{\def\ctbltaborfig{figure}}
 
 \def\ctblCaption{
   \ifx\ctblcap\empty\let\ctblcap\ctblcaption\fi%
@@ -312,15 +316,25 @@
 \newbox\ctbl@tabel
 
 \newcommand{\ctable}[4][]{%
+  \def\ctbltaborfig{table}%
+  \def\ctblrotate  {}%
+  \def\ctblpos     {}%
   \def\ctblcaption {}%
   \def\ctblcap     {}%
   \def\ctbllabel   {}%
-  \def\ctblbeg     {\begin{table}}%
+  \def\ctblbeg     {\begin{\ctblrotate\ctbltaborfig}}%
   \def\ctblbegin   {\ctblbeg}%
-  \def\ctblend     {\end{table}}%
+  \def\ctblend     {\end{\ctblrotate\ctbltaborfig}}%
   \def\ctblwidth   {}%
   \def\ctblbotcap  {}%
   \setkeys{ctbl}{#1}%
+  \ifx\ctblpos\empty\else%
+    \ifx\ctblrotate\empty\else%
+      \PackageError{ctable}{%
+        You may not use pos and rotate options together}{%
+        Rotated tables and figures are always typeset on a separate page} 
+    \fi
+  \fi
   % save the table contents in a box, so we can determine its width:
   \sbox\ctbl@tabel{%
     \ifx\ctblwidth\empty
