@@ -418,9 +418,9 @@
 \newdimen\@ctbloldsep
 \newdimen\@ctbloldrule
 \def\@ctblframe#1#2#3{%
-   \@ctbloldsep\fboxsep\fboxsep\@ctblframesep
-   \@ctbloldrule\fboxrule\fboxrule\@ctblframerule
-   \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule #3}
+   \@ctbloldsep\fboxsep\fboxsep\@ctblframesep%
+   \@ctbloldrule\fboxrule\fboxrule\@ctblframerule%
+   \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule #3}%
 }
 \newcommand{\tnote}[2][a]{%
    \hbox{\@textsuperscript{\normalfont\textit{#1}}}&#2\NN}
@@ -464,30 +464,30 @@
          Rotated tables and figures are always typeset on a separate page} 
       \fi
    \fi
-   \newcolumntype{Y}{X} % save the X type 
+   \newcolumntype{Y}{X}% save the X type 
 %    \end{macrocode}
 % save the table contents in a box, so we can determine its width, one box
 % will contain the table typeset with the tabular environment:
 %    \begin{macrocode}
    \sbox\ctbl@tabel{%
-      \newcolumntype{X}{l} % temporarily make  type X = l
+      \newcolumntype{X}{l}% temporarily make  type X = l
       \@ctblframe{@ctblframefg}{@ctblframebg}{%
          \begin{tabular}{#2}
             #4
          \end{tabular}%
-      }
+      }%
    }
 %    \end{macrocode}
 % the other will get the table typeset with the tabularx environment:
 %    \begin{macrocode}
 
    \sbox\ctbl@tabelx{%
-      \newcolumntype{X}{Y} % restore X
+      \newcolumntype{X}{Y}% restore X
       \@ctblframe{@ctblframefg}{@ctblframebg}{%
          \begin{tabularx}{\ifdim\@ctblwidth>0pt\@ctblwidth\else\@ctblmaxwidth\fi}{#2}
             #4
          \end{tabularx}%
-      }
+      }%
    }
 %    \end{macrocode}
 % if no \textsl{maxwidth} was given:
@@ -516,8 +516,8 @@
 %    \end{macrocode}
 % if so, we use the tabularx environment:
 %    \begin{macrocode}
-            \sbox{\ctbl@t}{\usebox\ctbl@tabelx}
-         \else
+         \sbox{\ctbl@t}{\usebox\ctbl@tabelx}
+      \else
 %    \end{macrocode}
 % but if within limits, we use the tabular environment:
 %    \begin{macrocode}
