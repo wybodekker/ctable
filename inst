@@ -1,4 +1,4 @@
-LOCAL=/home/local/texmf-local/tex/latex
+LOCAL=/usr/local/texmf-local/tex/latex
 WWW=/home/wybo/www/servalys/tex
 NAME=ctable
 
@@ -9,5 +9,6 @@ mv -f $NAME.{sty,pdf} $WWW
 cp -f $NAME.dtx $WWW
 mk -c $NAME
 rm $NAME.tex
+sudo mktexlsr
 
 # $Id$
