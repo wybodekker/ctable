@@ -222,7 +222,7 @@
 % \begin{verbatim}
 %    \ctable[caption=The di- and tri-bromobenzenes,
 %            botcap,
-%            figure
+%            figure,
 %           ]{ccc}{}{            \FL
 %     \bzdrv{1==Br;2==Br}&
 %     \bzdrv{1==Br;3==Br}&
@@ -237,7 +237,7 @@
 %    \ctable[caption= The di- and tri-bromobenzenes,
 %            label  = fig,
 %            botcap,
-%            figure
+%            figure,
 %           ]{ccc}{}{            \FL
 %     \bzdrv{1==Br;2==Br}&
 %     \bzdrv{1==Br;3==Br}&
@@ -325,7 +325,7 @@
   \ctblbegin%
     \begin{center}%
       \begin{minipage}{\wd\tabel}%
-        \ifx\ctblbotcap\empty\ctblCaption\vspace{2ex}\fi%
+        \ifx\ctblbotcap\empty\ctblCaption\vskip2ex\fi%
         \usebox\tabel % insert the tabular
         \def\ctblfootnotes{#3}%
         \ifx#3\empty\else % append footnotes, if any
