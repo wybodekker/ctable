@@ -1,0 +1,59 @@
+#!/usr/bin/ruby
+require 'date'
+require 'parsedate'
+
+def say(s)
+   STDERR.puts(s)
+end
+
+def warn(s)
+   STDERR.puts "warning: #{s}"
+end
+
+def die(s)
+   STDERR.puts "fatal: #{s}"
+   exit(1)
+end
+
+name = 'ctable'
+files= Array.new # files to zip
+for i in %w{dtx ins sty pdf} do
+   f = "#{name}.#{i}"
+   FileTest.exist?(f) or raise "file #{f} does not exist"
+   files.push(f)
+end
+
+# is cvs up to date?
+open("|cvs -Q status").each do |line|
+   if line =~ /File:\s+([.\w]+)\s+Status:\s+([\w-]+)/
+      f,s = $1,$2
+      f or next
+      die "cvs status of file #{f} not up-to-date" unless s == "Up-to-date"
+   end
+end
+
+# check for equal dates and warn if date older than a day:
+# % $Id$
+#        [2003/04/06 v1.4 LaTeX package ctable]
+
+@cvsdate = @packdate = @version = 'empty'
+open(name+'.dtx').each do |line|
+   line =~ /Id: .*(\d\d\d\d\/\d\d\/\d\d)/ and @cvsdate = $1
+   if line =~ /(\d\d\d\d\/\d\d\/\d\d) v(\d+\.\d+)/
+      @packdate,@version = $1,$2
+      break
+   end
+end
+say "     version: #{@version}\npackage date: #{@packdate}\n    cvs-date: #{@cvsdate}"
+
+y,m,d = ParseDate.parsedate(@packdate)
+pd=Date.new(y,m,d)
+y,m,d = ParseDate.parsedate(@cvsdate)
+cd=Date.new(y,m,d)
+raise "package and cvs dates differ by more than 1 day; quitting..." if (cd-pd).abs > 1
+
+targz = "#{name}-#{@version}.tar.gz"
+
+system("tar czf #{name}-#{@version}.tar.gz #{files.join(' ')}")
+
+say "     created: #{targz}"
