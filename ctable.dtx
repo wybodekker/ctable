@@ -266,12 +266,12 @@
 
 \makeatletter
 \def\hline{%
-  \noalign{\ifnum0=`}\fi\hrule \@height \arrayrulewidth \futurelet
+  \noalign{\ifnum0=`}\fi\hrule \@height \arrayrulewidth \futurelet%
    \reserved@a\@xhline}
-\long\def\multicolumn#1#2#3{\multispan{#1}\begingroup
-  \@mkpream{#2}%
-  \def\@sharp{#3}\set@typeset@protect
-  \let\@startpbox\@@startpbox\let\@endpbox\@@endpbox
+\long\def\multicolumn#1#2#3{\multispan{#1}\begingroup%
+  \@mkpream{#2}%%
+  \def\@sharp{#3}\set@typeset@protect%
+  \let\@startpbox\@@startpbox\let\@endpbox\@@endpbox%
   \@arstrut \@preamble\hbox{}\endgroup\ignorespaces}
 % \end{macrocode}
 % Option setting commands from keyval. The table position (here, top, bottom, page)
@@ -288,53 +288,53 @@
 \define@key{ctbl}{figure}[]{\def\ctblbeg{\begin{figure}}\def\ctblend{\end{figure}}}
 \makeatother
 
-\def\ctblCaption{
+\def\ctblCaption{%
   \ifx\ctblcap\empty%
     \caption{\label{\ctbllabel}\ctblcaption}%
-  \else
-    \caption[\ctblcap]{\label{\ctbllabel}\ctblcaption}
-  \fi
+  \else%
+    \caption[\ctblcap]{\label{\ctbllabel}\ctblcaption}%
+  \fi%
 }
 
 \newcommand{\ctable}[4][]{%
-  \def\ctblcaption {}
-  \def\ctblcap     {}
-  \def\ctbllabel   {}
-  \def\ctblbeg     {\begin{table}}
-  \def\ctblbegin   {\ctblbeg}
-  \def\ctblend     {\end{table}}
-  \def\ctblwidth   {}
-  \def\ctblbotcap  {}
-  \setkeys{ctbl}{#1}
+  \def\ctblcaption {}%
+  \def\ctblcap     {}%
+  \def\ctbllabel   {}%
+  \def\ctblbeg     {\begin{table}}%
+  \def\ctblbegin   {\ctblbeg}%
+  \def\ctblend     {\end{table}}%
+  \def\ctblwidth   {}%
+  \def\ctblbotcap  {}%
+  \setkeys{ctbl}{#1}%
   % save the table contents in a box, so we can determine its width:
   \newbox\tabel%
   \sbox\tabel{%
-    \ifx\ctblwidth\empty
+    \ifx\ctblwidth\empty%
       \begin{tabular}{#2}%
         #4%
       \end{tabular}%
-    \else
+    \else%
       \begin{tabularx}{\ctblwidth}{#2}%
         #4%
       \end{tabularx}%
-    \fi
+    \fi%
   }%
 % \end{macrocode}
 % |\ctblbegin| in now defined as something like |\begin{table}[tbp]|. 
 %\begin{macrocode}
-  \ctblbegin
+  \ctblbegin%
     \begin{center}%
       \begin{minipage}{\wd\tabel}%
-        \ifx\ctblbotcap\empty\ctblCaption\vspace{2ex}\fi
+        \ifx\ctblbotcap\empty\ctblCaption\vspace{2ex}\fi%
         \usebox\tabel % insert the tabular
-        \def\ctblfootnotes{#3}
+        \def\ctblfootnotes{#3}%
         \ifx#3\empty\else % append footnotes, if any
            \\%
            \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}%
            #3%
            \end{tabularx}%
-        \fi
-        \ifx\ctblbotcap\empty\else\ctblCaption\fi
+        \fi%
+        \ifx\ctblbotcap\empty\else\ctblCaption\fi%
       \end{minipage}%
     \end{center}%
   \ctblend%
