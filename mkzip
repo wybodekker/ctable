@@ -16,6 +16,11 @@ def die(s)
 end
 
 name = 'ctable'
+
+# create sty and pdf if need so:
+system("tex ctable.ins && mk --noview --noprint ctable") or 
+   die "Problems creating sty and pdf files"
+
 files= Array.new # files to zip
 for i in %w{dtx ins sty pdf} do
    f = "#{name}.#{i}"
