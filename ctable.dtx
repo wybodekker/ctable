@@ -210,37 +210,37 @@
   \let\@startpbox\@@startpbox\let\@endpbox\@@endpbox
   \@arstrut \@preamble\hbox{}\endgroup\ignorespaces}
 
-\newcommand{\ctable}[8][]{
+\newcommand{\ctable}[8][]{%
   % save the table contents in a box, so we can determine its width:
-  \newbox\tabel
-  \sbox\tabel{
-    \ifthenelse{\equal{#5}{\empty}}{
-      \begin{tabular}{#6}
+  \newbox\tabel%
+  \sbox\tabel{%
+    \ifthenelse{\equal{#5}{\empty}}{%
+      \begin{tabular}{#6}%
         #8%
-      \end{tabular}
-     }{
-      \begin{tabularx}{#5}{#6}
+      \end{tabular}%
+     }{%
+      \begin{tabularx}{#5}{#6}%
         #8%
-      \end{tabularx}
-     }
-  }
-  \begin{table}[#3]
-    \begin{center}
-      \begin{minipage}{\wd\tabel}
-        \ifthenelse{\equal{#1}{\empty}}
-                   {\caption{\label{#4}#2}}
-                   {\caption[#1]{\label{#4}#2}}
-        \vspace{2ex}
+      \end{tabularx}%
+     }%
+  }%
+  \begin{table}[#3]%
+    \begin{center}%
+      \begin{minipage}{\wd\tabel}%
+        \ifthenelse{\equal{#1}{\empty}}%
+                   {\caption{\label{#4}#2}}%
+                   {\caption[#1]{\label{#4}#2}}%
+        \vspace{2ex}%
         \usebox\tabel % insert the tabular
         \ifthenelse{\equal{#7}{\empty}} % append footnotes, if any
-        {}
-        {\\[.5ex]
-         \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}
-         #7
-         \end{tabularx}
-        }
-      \end{minipage}
-    \end{center}
-  \end{table}
+        {}%
+        {\\[.5ex]%
+         \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}%
+         #7%
+         \end{tabularx}%
+        }%
+      \end{minipage}%
+    \end{center}%
+  \end{table}%
 }
 %    \end{macrocode}
