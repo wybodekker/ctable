@@ -114,13 +114,18 @@
 %    short names have been defined, because source texts for complex
 %    tables often become very crowded:
 %    \par
-%    \DescribeMacro{\NN} Normal Newline, generates just a normal new line\\
+%    \DescribeMacro{\NN} Normal Newline, generates just a normal new line.
+%    An optional dimen parameter inserts extra vertical space under the
+%    line\\
 %    \DescribeMacro{\FL} First Line, generates a new line and a thick
-%                        rule with some extra space under it\\
+%    rule with some extra space under it.
+%    An optional dimen parameter sets the line width; the default is 0.08em \\
 %    \DescribeMacro{\ML} Middle Line: generates a new line and a thin
-%                        rule with some extra space over and under it\\
+%    rule with some extra space over and under it.
+%    An optional dimen parameter sets the line width; the default is 0.05em \\
 %    \DescribeMacro{\LL} Last Line:  generates a new line and a thick
-%                        rule with some extra space over it\\
+%    rule with some extra space over it.
+%    An optional dimen parameter sets the line width; the default is 0.08em \\
 %    These macros can be used outside |\ctable| constructs. 
 %    \par
 %    Finally, for completeness, here are some of |booktabs|' commands
