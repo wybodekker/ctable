@@ -11,8 +11,7 @@
 \documentclass[draft]{ltxdoc}
 \usepackage{a4,ctable}
 \GetFileInfo{ctable.sty}
-\parindent0pt
-\parskip2ex
+\parindent0pt\parskip2ex\headheight0pt\headsep0pt\textheight240mm
 \begin{document}
 \title{The \texttt{ctable} package\thanks
        {This file has version number \fileversion, dated \filedate.}\\
@@ -27,7 +26,7 @@
 % \fi
 %
 %    \changes{v1.0}{2000/06/01}{First release.}
-%    \changes{v1.1}{2001/03/17}{Making use of booktab package}
+%    \changes{v1.1}{2001/03/17}{Making use of booktabs package}
 %
 %    \section{Introduction}
 %    The |ctable| package lets you easily typeset centered, captioned table floats with
@@ -41,14 +40,36 @@
 %    in the argument of |\usepackage|. Afterwards the commands |\ctable|, |\tnote| and
 %    |\tmark| will be defined, as well as 4 |\tabularnewline| generating commands.
 %
-%    Since the |ctable| package imports the |booktab| package, all |booktab| commands are 
+%    Since the |ctable| package imports the |booktabs| package, all |booktabs| commands are 
 %    available as well.
 %
-%    Note that, in line with the comments that Simon Fear made describing his |booktab| package,
+%    Note that, in line with the comments that Simon Fear made describing his |booktabs| package,
 %    vertical rules for column separation can be produced with |\ctable|, but no
 %    provisions are made to have them make contact with horizontal rules.
 %
 %    \section{Usage}
+% \ctable[The Skewing Angles]
+%        {The Skewing Angles ($\beta$) for
+%         $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark
+%        }
+%        {}
+%        {tab:nowidth}
+%        {}
+%        {rlcc}
+%        {\tnote{for the abstraction reaction,
+%                $\fam0 Mu+HX \rightarrow MuH+X$.}
+%         \tnote[b]{1 degree${} = \pi/180$ radians.}
+%         \tnote[c]{this is a particularly long note, showing that
+%                   footnotes are set in raggedright mode as we don't like
+%                   hyphenation in table footnotes.}
+%        }{\FL
+%            &            & $\fam0 H(Mu)+F_2$     & $\fam0 H(Mu)+Cl_2$
+%          \ML
+%            &$\beta$(H)  & $80.9^\circ$\tmark[b] & $83.2^\circ$ 
+%          \NN
+%            &$\beta$(Mu) & $86.7^\circ$          & $87.7^\circ$   
+%          \LL
+%        }
 %
 %    \DescribeMacro{\ctable}
 %    |\ctable| is called with 8 parameters, of which the first is optional: \\
@@ -80,7 +101,7 @@
 %    The label is optional, the default label is a single $a$.
 %    \par
 %    The newline generating commands are a combination of |\tabularnewline| and zero or one of 
-%    |booktab|'s |\toprule|, |\midrule| or |\bottomrule|. These combinations have been made, 
+%    |booktabs|' |\toprule|, |\midrule| or |\bottomrule|. These combinations have been made, 
 %    and short names have been defined, because source texts for complex tables often become
 %    very crowded:
 %    \par
@@ -90,39 +111,29 @@
 %    space over and under it\\
 %    \DescribeMacro{\LL} |\LL|: Last Line:  generates a thick line with some extra space over it\\
 %    These macros can be used outside |\ctable| constructs. 
+%    \par
+%    Finally, for completeness, here are some of |booktabs|' commands that may be useful:\\
+%    \DescribeMacro{\toprule} |\toprule[<wd>]| where |<wd>| is the optional thinkness of the rule\\
+%    \DescribeMacro{\midrule} |\midrule[<wd>]|\\
+%    \DescribeMacro{\bottomrule} |\bottomrule[<wd>]|\\
+%    \DescribeMacro{\cmidrule} |\cmidrule[<wd>](<trim>){a b}| where |<trim>| can be |r|, |l|, or |rl|
+%                   and the rule is drawn from column |a| to column |b|\\
+%    \DescribeMacro{\morecmidrules} |\morecmidrules| must be used to separate two successive cmidrules\\
+%    \DescribeMacro{\addlinespace} |\addlinespace[<wd>]| inserts extra space between rows\\
+%    \DescribeMacro{\specialrule} |\specialrule{<wd>}{<abovespace>}{<belowspace>}|\\
+%    See the |booktabs| documentation for details.
+%    
 %
 %    \section{Example}
 %    Table~\ref{tab:nowidth} is an example taken from the related package
 %    threeparttable.sty by Donald Arseneau, with an extra footnote.
 %    It was typeset with:
-% \ctable[The Skewing Angles]
-%        {The Skewing Angles ($\beta$) for
-%         $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark
-%        }
-%        {t}
-%        {tab:nowidth}
-%        {}
-%        {rlcc}
-%        {\tnote{for the abstraction reaction,
-%                $\fam0 Mu+HX \rightarrow MuH+X$.}
-%         \tnote[b]{1 degree${} = \pi/180$ radians.}
-%         \tnote[c]{this is a particularly long note, showing that
-%                   footnotes are set in raggedright mode as we don't like
-%                   hyphenation in table footnotes.}
-%        }{\FL
-%            &            & $\fam0 H(Mu)+F_2$     & $\fam0 H(Mu)+Cl_2$
-%          \ML
-%            &$\beta$(H)  & $80.9^\circ$\tmark[b] & $83.2^\circ$ 
-%          \NN
-%            &$\beta$(Mu) & $86.7^\circ$          & $87.7^\circ$   
-%          \LL
-%        }
 % \begin{verbatim}
 % \ctable[The Skewing Angles]
 %        {The Skewing Angles ($\beta$) for
 %         $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark
 %        }
-%        {t}
+%        {}
 %        {tab:nowidth}
 %        {}
 %        {rlcc}
@@ -142,9 +153,9 @@
 %        }
 % \end{verbatim}
 %    Table~\ref{tab:width} is an example with a width specification, taken 
-%    from the |tabularx| documentation and typeset with:
+%    from the |tabularx| documentation, with the vertical rules removed, and typeset with:
 % \ctable{Example with a specified width of 100mm}
-%        {h}
+%        {}
 %        {tab:width}
 %        {100mm}
 %        {c>{\raggedright}Xc>{\raggedright}X}
@@ -166,7 +177,7 @@
 %    Table~\ref{tab:width} is an example with a width specification, taken 
 %    from the |tabularx| documentation and typeset with:
 % \ctable{Example with a specified width of 100mm}
-%        {h}
+%        {}
 %        {tab:width}
 %        {100mm}
 %        {c>{\raggedright}Xc>{\raggedright}X}
@@ -187,10 +198,7 @@
 % \end{verbatim}
 % \section{Implementation}
 %    \begin{macrocode}
-\RequirePackage{array}
-\RequirePackage{ifthen}
-\RequirePackage{tabularx}
-\RequirePackage{booktabs}
+\RequirePackage{array,ifthen,tabularx,booktabs}
 
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
@@ -198,7 +206,6 @@
 \def\LL{\NN\bottomrule}
 
 \newcommand{\tnote}[2][a]{$^{#1}$&#2\NN}
-
 \newcommand{\tmark}[1][a]{$^{#1}$}
 
 \def\hline{%
@@ -224,7 +231,7 @@
       \end{tabularx}%
      }%
   }%
-  \begin{table}[#3]%
+  \begin{table}[\ifthenelse{\equal{#3}{\empty}}{tbp}{#3}]%
     \begin{center}%
       \begin{minipage}{\wd\tabel}%
         \ifthenelse{\equal{#1}{\empty}}%
@@ -234,7 +241,7 @@
         \usebox\tabel % insert the tabular
         \ifthenelse{\equal{#7}{\empty}} % append footnotes, if any
         {}%
-        {\\[.5ex]%
+        {\\%
          \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}%
          #7%
          \end{tabularx}%
