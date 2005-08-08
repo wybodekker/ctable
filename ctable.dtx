@@ -133,9 +133,13 @@
 %    |botcap|       & put the caption at the bottom of the float instead
 %                     of on top of it.\NN
 %
-%    |rotate|       & rotate table or figure by 90 degrees anticlockwise
-%                     and put it on a separate page.  If you use this option,
+%    |sideways|     & rotate table or figure by 90 degrees anticlockwise
+%                     and put it on a separate page. With the twoside option
+%                     for the standard \LaTeX\ document classes, rotation
+%                     will be -90 on even pages. If you use this option,
 %                     the |pos| option is not allowed.\NN
+%
+%    |rotate|       & an obsolete alias for sideways
 %
 %    |star|         & use the starred versions of the |table| and |figure|
 %                     environments, which place the float over two columns
@@ -394,24 +398,25 @@
 % command like |\@ctblbegin| we put
 % |\begin{table}[tbp]| in it.
 %    \begin{macrocode}
-\define@key{ctbl}{caption} {\def\@ctblcaption {#1}}%
-\define@key{ctbl}{cap}     {\def\@ctblcap     {#1}}%
-\define@key{ctbl}{label}   {\def\@ctbllabel   {#1}}%
-\define@key{ctbl}{pos}     {\def\@ctblpos     {#1}%
-                            \def\@ctblbegin{\@ctblbeg[#1]}}%
-\define@key{ctbl}{width}   {\@ctblwidth       =#1}%
-\define@key{ctbl}{maxwidth}{\@ctblmaxwidth    =#1}%
-\define@key{ctbl}{botcap}[]{\def\@ctblbotcap  {1}}%
-\define@key{ctbl}{rotate}[]{\def\@ctblrotate  {sideways}}%
-\define@key{ctbl}{figure}[]{\def\@ctbltaborfig{figure}}%
-\define@key{ctbl}{center}[]{\def\@ctblalign   {center}}%
-\define@key{ctbl}{right} []{\def\@ctblalign   {flushright}}%
-\define@key{ctbl}{left}  []{\def\@ctblalign   {flushleft}}%
-\define@key{ctbl}{star}  []{\def\@ctblstarred {*}}%
-\define@key{ctbl}{framerule}{\@ctblframerule  =#1}%
-\define@key{ctbl}{framesep}{\@ctblframesep    =#1}%
-\define@key{ctbl}{framefg}{\@ctblfgcolor#1=}%
-\define@key{ctbl}{framebg}{\@ctblbgcolor#1=}%
+\define@key{ctbl}{caption}    {\def\@ctblcaption {#1}}%
+\define@key{ctbl}{cap}        {\def\@ctblcap     {#1}}%
+\define@key{ctbl}{label}      {\def\@ctbllabel   {#1}}%
+\define@key{ctbl}{pos}        {\def\@ctblpos     {#1}%
+                               \def\@ctblbegin{\@ctblbeg[#1]}}%
+\define@key{ctbl}{width}      {\@ctblwidth       =#1}%
+\define@key{ctbl}{maxwidth}   {\@ctblmaxwidth    =#1}%
+\define@key{ctbl}{botcap}[]   {\def\@ctblbotcap  {1}}%
+\define@key{ctbl}{sideways}[] {\def\@ctblrotate  {sideways}}%
+\define@key{ctbl}{rotate}[]   {\def\@ctblrotate  {sideways}}% obsolete
+\define@key{ctbl}{figure}[]   {\def\@ctbltaborfig{figure}}%
+\define@key{ctbl}{center}[]   {\def\@ctblalign   {center}}%
+\define@key{ctbl}{right} []   {\def\@ctblalign   {flushright}}%
+\define@key{ctbl}{left}  []   {\def\@ctblalign   {flushleft}}%
+\define@key{ctbl}{star}  []   {\def\@ctblstarred {*}}%
+\define@key{ctbl}{framerule}  {\@ctblframerule  =#1}%
+\define@key{ctbl}{framesep}   {\@ctblframesep    =#1}%
+\define@key{ctbl}{framefg}    {\@ctblfgcolor#1=}%
+\define@key{ctbl}{framebg}    {\@ctblbgcolor#1=}%
 \define@key{ctbl}{captionskip}{\@ctblcaptionskip  =#1}%
 %    \end{macrocode}
 % a caption will only be generated if the \textsl{caption} option was used:
