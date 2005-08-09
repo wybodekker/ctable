@@ -1,14 +1,15 @@
-LOCAL=/usr/local/texmf-local/tex/latex
-WWW=/home/wybo/www/servalys/tex
 NAME=ctable
+WWW=/srv/www/htdocs/servalys/tex
+LOCAL=/home/local/texmf-local/tex/latex
 
 tex -interaction=batchmode $NAME.ins >/dev/null
 mk --noprint --noview $NAME
-cp $NAME.sty $LOCAL
-mv -f $NAME.{sty,pdf} $WWW
+sudo cp $NAME.sty $LOCAL
 cp -f $NAME.dtx $WWW
+mv -f $NAME.{sty,pdf} $WWW
 mk -c $NAME
 rm $NAME.tex
 sudo mktexlsr
 
 # $Id$
+
