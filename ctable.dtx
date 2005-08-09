@@ -139,8 +139,6 @@
 %                     will be -90 on even pages. If you use this option,
 %                     the |pos| option is not allowed.\NN
 %
-%    |rotate|       & an obsolete alias for sideways\NN
-%
 %    |star|         & use the starred versions of the |table| and |figure|
 %                     environments, which place the float over two columns
 %                     when the |twocolumn| option or the |\twocolumn|
@@ -371,7 +369,7 @@
 %    \parskip2ex
 %    \begin{macrocode}
 %<*package>
-\RequirePackage{color,keyval,array,tabularx,booktabs,rotating}
+\RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating}
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
@@ -398,26 +396,25 @@
 % command like |\@ctblbegin| we put
 % |\begin{table}[tbp]| in it.
 %    \begin{macrocode}
-\define@key{ctbl}{caption}    {\def\@ctblcaption {#1}}%
-\define@key{ctbl}{cap}        {\def\@ctblcap     {#1}}%
-\define@key{ctbl}{label}      {\def\@ctbllabel   {#1}}%
-\define@key{ctbl}{pos}        {\def\@ctblpos     {#1}%
-                               \def\@ctblbegin{\@ctblbeg[#1]}}%
-\define@key{ctbl}{width}      {\@ctblwidth       =#1}%
-\define@key{ctbl}{maxwidth}   {\@ctblmaxwidth    =#1}%
-\define@key{ctbl}{botcap}[]   {\def\@ctblbotcap  {1}}%
-\define@key{ctbl}{sideways}[] {\def\@ctblrotate  {sideways}}%
-\define@key{ctbl}{rotate}[]   {\def\@ctblrotate  {sideways}}% obsolete
-\define@key{ctbl}{figure}[]   {\def\@ctbltaborfig{figure}}%
-\define@key{ctbl}{center}[]   {\def\@ctblalign   {center}}%
-\define@key{ctbl}{right} []   {\def\@ctblalign   {flushright}}%
-\define@key{ctbl}{left}  []   {\def\@ctblalign   {flushleft}}%
-\define@key{ctbl}{star}  []   {\def\@ctblstarred {*}}%
-\define@key{ctbl}{framerule}  {\@ctblframerule  =#1}%
-\define@key{ctbl}{framesep}   {\@ctblframesep    =#1}%
-\define@key{ctbl}{framefg}    {\@ctblfgcolor#1=}%
-\define@key{ctbl}{framebg}    {\@ctblbgcolor#1=}%
-\define@key{ctbl}{captionskip}{\@ctblcaptionskip  =#1}%
+\define@key{ctbl}{caption}{\def\@ctblcaption{#1}}%
+\define@key{ctbl}{cap}{\def\@ctblcap{#1}}%
+\define@key{ctbl}{label}{\def\@ctbllabel{#1}}%
+\define@key{ctbl}{pos}{\def\@ctblpos{#1}\def\@ctblbegin{\@ctblbeg[#1]}}%
+\define@key{ctbl}{width}{\@ctblwidth=#1}%
+\define@key{ctbl}{maxwidth}{\@ctblmaxwidth=#1}%
+\define@key{ctbl}{botcap}[]{\def\@ctblbotcap{1}}%
+\define@key{ctbl}{sideways}[]{\def\@ctblsideways{sideways}}%
+\define@key{ctbl}{rotate}[]{\def\@ctblsideways{sideways}\PackageWarning{ctable}{using obsolete option 'rotate', use 'sideways' instead}}% 
+\define@key{ctbl}{figure}[]{\def\@ctbltaborfig{figure}}%
+\define@key{ctbl}{center}[]{\def\@ctblalign{center}}%
+\define@key{ctbl}{right}[]{\def\@ctblalign{flushright}}%
+\define@key{ctbl}{left}[]{\def\@ctblalign{flushleft}}%
+\define@key{ctbl}{star}[]{\def\@ctblstarred {*}}%
+\define@key{ctbl}{framerule}{\@ctblframerule=#1}%
+\define@key{ctbl}{framesep}{\@ctblframesep=#1}%
+\define@key{ctbl}{framefg}{\@ctblfgcolor#1=}%
+\define@key{ctbl}{framebg}{\@ctblbgcolor#1=}%
+\define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}%
 %    \end{macrocode}
 % a caption will only be generated if the \textsl{caption} option was used:
 %    \begin{macrocode}
@@ -441,14 +438,14 @@
 \newcommand{\ctable}[4][]{%
    \def\@ctbltaborfig{table}%
    \def\@ctblalign   {center}%
-   \def\@ctblrotate  {}%
+   \def\@ctblsideways  {}%
    \def\@ctblpos     {}%
    \def\@ctblcaption {}%
    \def\@ctblcap     {}%
    \def\@ctbllabel   {}%
-   \def\@ctblbeg     {\begin{\@ctblrotate\@ctbltaborfig\@ctblstarred}}%
+   \def\@ctblbeg     {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
    \def\@ctblbegin   {\@ctblbeg}%
-   \def\@ctblend     {\end{\@ctblrotate\@ctbltaborfig\@ctblstarred}}%
+   \def\@ctblend     {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
    \def\@ctblbotcap  {}%
    \def\@ctblstarred {}%
    \definecolor{@ctblframefg}{rgb}{0,0,0}%
@@ -461,7 +458,7 @@
    \setkeys{ctbl}{#1}%
 %    \end{macrocode}
 % It makes no sense to use \textsl{width} together with \textsl{maxwidth} or
-% \textsl{pos} together with \textsl{rotate}
+% \textsl{pos} together with \textsl{sideways}
 %    \begin{macrocode}
    \ifdim\@ctblwidth=0pt\else
       \ifdim\@ctblmaxwidth=0pt\else
@@ -471,9 +468,9 @@
       \fi
    \fi
    \ifx\@ctblpos\empty\else
-      \ifx\@ctblrotate\empty\else
+      \ifx\@ctblsideways\empty\else
       \PackageError{ctable}{
-         You may not use the pos and rotate options together}{%
+         You may not use the pos and sideways options together}{%
          Rotated tables and figures are always typeset on a separate page}
       \fi
    \fi
