@@ -46,7 +46,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{297}
+% \CheckSum{321}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -86,7 +86,8 @@
 % \changes{v1.7}{2005/08/09}{Added option sideways, option rotate now obsolete;
 %                            added option captionskip}
 % \changes{v1.8}{2006/04/10}{Standardized file setup following
-%                            http://www.ctan.org/tex-archive/info/dtxtut/dtxtut.pdf}
+%                            http://www.ctan.org/tex-archive/info/dtxtut/dtxtut.pdf
+%                            mincapwidth option added}
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -156,6 +157,12 @@
 % |captionskip=...| & set the whitespace between the caption and the table;
 %                  default is |2ex|.\NN
 %
+% |mincapwidth=...| & sets the minimum width of the caption.
+%                  Useful for very narrow tables. If the given width
+%                  is larger than de caption's actual width, only that width
+%                  will be used, so that any footnotes stay within the caption's 
+%                  width.\NN
+%
 % |pos=...|      & float position, default: |tbp|.\NN
 %
 % |label=...|    & for |\label|\NN
@@ -164,6 +171,9 @@
 %                  specified width\,---\,one or more |X| column
 %                  specifiers must be provided.\NN
 %
+% \end{tabularx}
+% \\[2ex]
+% \begin{tabularx}{\hsize}{@{}lX@{}}
 % |maxwidth=...| & like the \textsl{width} option, but any |X| column
 %                  specifiers will be replaced with |l| if the resulting
 %                  table width would thus stay within the specified
@@ -175,9 +185,6 @@
 %
 % |left|         & left align the table in the available text width.\NN
 %
-% \end{tabularx}
-% \\[2ex]
-% \begin{tabularx}{\hsize}{@{}lX@{}}
 % |right|        & right align the table in the available text width.\NN
 %
 % |figure|       & produce a figure float instead of a table float.\NN
@@ -421,7 +428,7 @@
 % \section{Implementation}
 % \parskip2ex
 % \begin{macrocode}
-\RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating}
+\RequirePackage{xspace,color,xkeyval,array,tabularx,booktabs,rotating}
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
@@ -433,6 +440,7 @@
 \newdimen\@ctblwidth
 \newdimen\@ctblcaptionskip
 \newdimen\@ctblmaxwidth
+\newdimen\@ctblmincapwidth
 \newdimen\@ctblw % the final width
 %    \end{macrocode}
 %    Allocate box registers so that we can determine the widths of the
@@ -454,6 +462,7 @@
 \define@key{ctbl}{pos}{\def\@ctblpos{#1}\def\@ctblbegin{\@ctblbeg[#1]}}%
 \define@key{ctbl}{width}{\@ctblwidth=#1}%
 \define@key{ctbl}{maxwidth}{\@ctblmaxwidth=#1}%
+\define@key{ctbl}{mincapwidth}{\@ctblmincapwidth=#1}%
 \define@key{ctbl}{botcap}[]{\def\@ctblbotcap{1}}%
 \define@key{ctbl}{sideways}[]{\def\@ctblsideways{sideways}}%
 \define@key{ctbl}{rotate}[]{\def\@ctblsideways{sideways}%
@@ -489,7 +498,7 @@
 \newcommand{\tnote}[2][a]{%
    \hbox{\@textsuperscript{\normalfont\textit{#1}}}&#2\NN}
 \newcommand{\tmark}[1][a]{%
-   \hbox{\@textsuperscript{\normalfont\textit{#1}}}}
+   \hbox{\@textsuperscript{\normalfont\textit{#1\xspace}}}}
 \newcommand{\ctable}[4][]{%
    \def\@ctbltaborfig{table}%
    \def\@ctblalign   {center}%
@@ -510,6 +519,7 @@
    \@ctblframesep0pt
    \@ctblwidth=0pt
    \@ctblmaxwidth=0pt
+   \@ctblmincapwidth=0pt
    \setkeys{ctbl}{#1}%
 %    \end{macrocode}
 % It makes no sense to use \textsl{width} together with \textsl{maxwidth} or
@@ -590,21 +600,31 @@
    \fi
 %    \end{macrocode}
 % the |ctbl@t| box now contains the table as we want to typeset it;
-% deternmine its width:
+% determine its width:
 %    \begin{macrocode}
    \@ctblw=\wd\ctbl@t
+%    \end{macrocode}
+% If mincapwidth was set, 
+% make only as wide as needed for the caption so that any footnotes 
+% stay within the caption width
+%    \begin{macrocode}
+   \newdimen\@ctblww
+   \ifdim\@ctblmincapwidth=0pt\@ctblww=\@ctblw\else%
+     \settowidth{\@ctblww}{Table 1: \@ctblcaption}
+     \ifdim\@ctblww>\@ctblmincapwidth\@ctblww=\@ctblmincapwidth\fi%
+   \fi
 %    \end{macrocode}
 % |\@ctblbegin| is now defined as something like |\begin{table}[tbp]|.
 %    \begin{macrocode}
    \@ctblbegin
       \begin{\@ctblalign}
-         \begin{minipage}{\@ctblw}
+         \begin{minipage}{\@ctblww}
             \ifx\@ctblbotcap\empty\@ctblCaption\vspace{\@ctblcaptionskip}\fi
-            \usebox\ctbl@t % insert the tabular
+            \centering{\usebox\ctbl@t} % insert the tabular
             \def\@ctblfootnotes{#3}
             \ifx#3\empty\else % append footnotes, if any
                \\
-               \begin{tabularx}{\@ctblw}{r@{\,}>{\footnotesize\raggedright}X}
+               \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}
                   #3
                \end{tabularx}
             \fi
