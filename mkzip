@@ -17,8 +17,18 @@ end
 
 name = 'ctable'
 
+# is cvs up to date?
+open("|cvs -Q status").each do |line|
+   if line =~ /File:\s+([.\w]+)\s+Status:\s+([\w-]+)/
+      f,s = $1,$2
+      f or next
+      next if f == 'mktar'
+      die "cvs status of file #{f} not up-to-date" unless s == "Up-to-date"
+   end
+end
+
 # create sty and pdf if need so:
-system("tex ctable.ins && mk --noview --noprint ctable") or 
+system("echo y|tex ctable.ins >& /dev/null&& mk --noview --noprint ctable") or 
    die "Problems creating sty and pdf files"
 
 files= Array.new # files to zip
@@ -28,21 +38,14 @@ for i in %w{dtx ins sty pdf} do
    files.push(f)
 end
 
-# is cvs up to date?
-open("|cvs -Q status").each do |line|
-   if line =~ /File:\s+([.\w]+)\s+Status:\s+([\w-]+)/
-      f,s = $1,$2
-      f or next
-      warn "cvs status of file #{f} not up-to-date" unless s == "Up-to-date"
-   end
-end
-
 # check for equal dates and warn if date older than a day:
-# % $Id$
+# $Id$
 #        [2003/04/06 v1.4 LaTeX package ctable]
 
 @cvsdate = @packdate = @version = 'empty'
 open(name+'.dtx').each do |line|
+	# hier is iets mis; waarom ook niet alles ineens geisoleerd? (omdat er twee regels zijn...)
+	# pas op: de v voor de versie is weg!
    line =~ /Id: .*(\d\d\d\d\/\d\d\/\d\d)/ and @cvsdate = $1
    if line =~ /(\d\d\d\d\/\d\d\/\d\d) v(\d+\.\d+[a-z]*) /
       @packdate,@version = $1,$2
