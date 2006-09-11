@@ -23,7 +23,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2006/04/10 v1.8 ctable package]
+    [2006/09/11 v1.9 ctable package]
 %</package>
 %
 %<*driver>
@@ -88,6 +88,8 @@
 % \changes{v1.8}{2006/04/10}{Standardized file setup following
 %                            http://www.ctan.org/tex-archive/info/dtxtut/dtxtut.pdf
 %                            mincapwidth option added}
+% \changes{v1.9}{2006/04/10}{Moved newdimen definition outside ctable macro
+%                           }
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -442,6 +444,9 @@
 \newdimen\@ctblmaxwidth
 \newdimen\@ctblmincapwidth
 \newdimen\@ctblw % the final width
+\newdimen\@ctblww
+\newdimen\@ctbloldsep
+\newdimen\@ctbloldrule
 %    \end{macrocode}
 %    Allocate box registers so that we can determine the widths of the
 %    tables
@@ -488,8 +493,6 @@
       \caption[\@ctblcap]{\label{\@ctbllabel}\@ctblcaption}
    \fi
 }
-\newdimen\@ctbloldsep
-\newdimen\@ctbloldrule
 \def\@ctblframe#1#2#3{%
    \@ctbloldsep\fboxsep\fboxsep\@ctblframesep%
    \@ctbloldrule\fboxrule\fboxrule\@ctblframerule%
@@ -608,7 +611,6 @@
 % make only as wide as needed for the caption so that any footnotes 
 % stay within the caption width
 %    \begin{macrocode}
-   \newdimen\@ctblww
    \ifdim\@ctblmincapwidth=0pt\@ctblww=\@ctblw\else%
      \settowidth{\@ctblww}{Table 1: \@ctblcaption}
      \ifdim\@ctblww>\@ctblmincapwidth\@ctblww=\@ctblmincapwidth\fi%
