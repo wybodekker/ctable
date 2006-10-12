@@ -44,12 +44,11 @@ end
 
 @cvsdate = @packdate = @version = 'empty'
 open(name+'.dtx').each do |line|
-	# hier is iets mis; waarom ook niet alles ineens geisoleerd? (omdat er twee regels zijn...)
-	# pas op: de v voor de versie is weg!
-   line =~ /Id: .*(\d\d\d\d\/\d\d\/\d\d)/ and @cvsdate = $1
-   if line =~ /(\d\d\d\d\/\d\d\/\d\d) v(\d+\.\d+[a-z]*) /
+  case line
+    when /Id: .*(\d\d\d\d\/\d\d\/\d\d)/
+      @cvsdate = $1
+   when /(\d\d\d\d\/\d\d\/\d\d) v(\d+\.\d+[a-z]*) /
       @packdate,@version = $1,$2
-      break
    end
 end
 say "     version: #{@version}\npackage date: #{@packdate}\n    cvs-date: #{@cvsdate}"
@@ -61,7 +60,7 @@ cd=Date.new(y,m,d)
 if (cd-pd).abs > 1
    warn "package and cvs dates differ by more than 1 day;"
    say  "still go on (y/n)?"
-   gets =~ /^y/ or die "not installed by user request"
+   gets =~ /^y/ or die "install cancelled by user request"
 end
 
 targz = "#{name}-#{@version}.tar.gz"
