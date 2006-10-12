@@ -1,6 +1,6 @@
 NAME=ctable
 WWW=/srv/www/htdocs/servalys/tex
-LOCAL=/home/local/texmf-local/tex/latex
+LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex
 
 echo y |tex $NAME.ins >/dev/null
 pdflatex --interaction=batchmode $NAME.dtx > /dev/null
