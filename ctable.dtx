@@ -205,6 +205,9 @@
 %                  when the |twocolumn| option or the |\twocolumn|
 %                  command is active.\NN
 %
+% |nosuper|      & in the footnote table, typeset footnote markers on
+%                  the line, instead of superscripted. 
+%
 % |framerule=...|& draw a frame around the table with the given rule
 %                  thickness. The default is |0pt|, so that no frame
 %                  will be seen.\NN
@@ -437,6 +440,8 @@
 \def\LL{\NN\bottomrule}
 \def\@ctblfgcolor#1 #2 #3={\definecolor{@ctblframefg}{rgb}{#1,#2,#3}}
 \def\@ctblbgcolor#1 #2 #3={\definecolor{@ctblframebg}{rgb}{#1,#2,#3}}
+\let\@cttextsuperscript\@textsuperscript
+\def\@ctcopy#1{\footnotesize #1}
 \newdimen\@ctblframesep
 \newdimen\@ctblframerule
 \newdimen\@ctblwidth
@@ -484,6 +489,7 @@
 \define@key{ctbl}{framefg}{\@ctblfgcolor#1=}%
 \define@key{ctbl}{framebg}{\@ctblbgcolor#1=}%
 \define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}%
+\define@key{ctbl}{nosuper}[]{\let\@cttextsuperscript\@ctcopy}%
 %    \end{macrocode}
 % a caption will only be generated if the \textsl{caption} option was used:
 %    \begin{macrocode}
@@ -499,9 +505,9 @@
    \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule #3}%
 }
 \newcommand{\tnote}[2][a]{%
-   \hbox{\@textsuperscript{\normalfont\textit{#1}}}&#2\NN}
+   \hbox{\@icttextsuperscript{\normalfont\textit{#1}}}&#2\NN}
 \newcommand{\tmark}[1][a]{%
-   \hbox{\@textsuperscript{\normalfont\textit{#1\xspace}}}}
+   \hbox{\@cttextsuperscript{\normalfont\textit{#1\xspace}}}}
 \newcommand{\ctable}[4][]{%
    \def\@ctbltaborfig{table}%
    \def\@ctblalign   {center}%
