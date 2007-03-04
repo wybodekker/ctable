@@ -3,7 +3,6 @@ LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex
 
 echo y |tex $NAME.ins >/dev/null
 pdflatex --interaction=batchmode $NAME.dtx > /dev/null
-makeindex -q -s gglo.ist -o ctable.gls ctable.glo
 makeindex -q -s gind.ist -o ctable.ind ctable.idx
 pdflatex --interaction=batchmode $NAME.dtx > /dev/null
 sudo cp $NAME.{dtx,sty,pdf} $LOCAL
