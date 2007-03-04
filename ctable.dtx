@@ -28,7 +28,7 @@
 %
 %<*driver>
 \documentclass[a4paper]{ltxdoc}
-\usepackage{carom,txfonts,ctable}
+\usepackage{carom,txfonts,ctable,makeidx}
 \usepackage[
    verbose,
    pdftex,
@@ -46,7 +46,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{321}
+% \CheckSum{335}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -206,7 +206,7 @@
 %                  command is active.\NN
 %
 % |nosuper|      & in the footnote table, typeset footnote markers on
-%                  the line, instead of superscripted. 
+%                  the line, instead of superscripted.\NN
 %
 % |framerule=...|& draw a frame around the table with the given rule
 %                  thickness. The default is |0pt|, so that no frame
@@ -613,12 +613,12 @@
 %    \begin{macrocode}
    \@ctblw=\wd\ctbl@t
 %    \end{macrocode}
-% If mincapwidth was set, 
+% If mincapwidth was set wider than the table, 
 % make only as wide as needed for the caption so that any footnotes 
 % stay within the caption width
 %    \begin{macrocode}
-   \ifdim\@ctblmincapwidth=0pt\@ctblww=\@ctblw\else%
-     \settowidth{\@ctblww}{Table 1: \@ctblcaption}
+   \ifdim\@ctblmincapwidth<\@ctblw\@ctblww=\@ctblw\else%
+     \settowidth{\@ctblww}{\tablename\ \thetable: \@ctblcaption}
      \ifdim\@ctblww>\@ctblmincapwidth\@ctblww=\@ctblmincapwidth\fi%
    \fi
 %    \end{macrocode}
