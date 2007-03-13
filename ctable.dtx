@@ -452,7 +452,7 @@
 \newdimen\@ctblmaxwidth
 \newdimen\@ctblmincapwidth
 \newdimen\@ctblw % the final width
-\newdimen\@ctblww
+\newdimen\@ctblfloatwidth
 \newdimen\@ctbloldsep
 \newdimen\@ctbloldrule
 %    \end{macrocode}
@@ -616,20 +616,22 @@
 %    \begin{macrocode}
    \@ctblw=\wd\ctbl@t
 %    \end{macrocode}
-% If mincapwidth was set wider than the table, 
-% make only as wide as needed for the caption so that any footnotes 
-% stay within the caption width
+% Now find the width of the float, |\@ctblfloatwidth|; everything in it will
+% be centered within that width. 
+% Normally we'll use the width of the table, |\@ctblw|, but if the 
+% mincapwidth, |\@ctblmincapwidth| was set wider than the table, that will be used: 
 %    \begin{macrocode}
-   \ifdim\@ctblmincapwidth<\@ctblw\@ctblww=\@ctblw\else%
-     \settowidth{\@ctblww}{\tablename\ \thetable: \@ctblcaption}
-     \ifdim\@ctblww>\@ctblmincapwidth\@ctblww=\@ctblmincapwidth\fi%
+   \@ctblfloatwidth=\ifdim\@ctblmincapwidth>\@ctblw
+      \@ctblmincapwidth
+   \else
+      \@ctblw
    \fi
 %    \end{macrocode}
 % |\@ctblbegin| is now defined as something like |\begin{table}[tbp]|.
 %    \begin{macrocode}
    \@ctblbegin
       \begin{\@ctblalign}
-         \begin{minipage}{\@ctblww}
+         \begin{minipage}{\@ctblfloatwidth}
             \ifx\@ctblbotcap\empty\@ctblCaption\vspace{\@ctblcaptionskip}\fi
             \centering{\usebox\ctbl@t} % insert the tabular
             \def\@ctblfootnotes{#3}
