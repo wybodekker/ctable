@@ -46,7 +46,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{335}
+% \CheckSum{324}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -162,11 +162,12 @@
 % |captionskip=...| & set the whitespace between the caption and the table;
 %                  default is |2ex|.\NN
 %
-% |mincapwidth=...| & sets the minimum width of the caption.
-%                  Useful for very narrow tables. If the given width
-%                  is larger than de caption's actual width, only that width
-%                  will be used, so that any footnotes stay within the caption's 
-%                  width.\NN
+% |mincapwidth=...| & sets the minimum width of the float. Without this option,
+%                  the width is set to that of the tabular, and the caption and
+%                  footnotes are typeset within that width. This may be a problem
+%                  with very narrow tables; |mincapwidth| can then be used to 
+%                  give the float a minimum width. The tabular will be centered
+%                  in it.\NN
 %
 % |pos=...|      & float position, default: |tbp|.\NN
 %
