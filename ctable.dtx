@@ -460,9 +460,7 @@
 %    Allocate box registers so that we can determine the widths of the
 %    tables
 %    \begin{macrocode}
-\newbox\ctbl@tabelx     % the width with X columns
-\newbox\ctbl@tabel      % the width where X is replaced with l
-\newbox\ctbl@t          % the final box will become one of the two above
+\newbox\ctbl@t          % tabular saved and measured here
 %    \end{macrocode}
 % Option setting commands from keyval. The table position (here, top,
 % bottom, page) gets a special treatment, since \LaTeX\ does not expand
@@ -552,12 +550,23 @@
          Rotated tables and figures are always typeset on a separate page}
       \fi
    \fi
+%    \end{macrocode}
+% It makes no sense to label a captionless table, because the label can't
+% be placed, leaving the user wondering why references to the table get a ??
+%    \begin{macrocode}
+   \ifx\@ctblcaption\empty
+      \ifx\@ctbllabel\empty\else
+         \PackageError{ctable}{
+            You may not label a captionless table}{%
+            Such a label can't be referenced}
+      \fi
+   \fi
    \newcolumntype{Y}{X}% save the X type
 %    \end{macrocode}
-% save the table contents in a box, so we can determine its width, one box
-% will contain the table typeset with the tabular environment:
+% save the table contents in a box, so we can determine its width,
+% initially, save the table typeset with the tabular environment:
 %    \begin{macrocode}
-   \sbox\ctbl@tabel{%
+   \sbox\ctbl@t{%
       \newcolumntype{X}{l}% temporarily make  type X = l
       \@ctblframe{@ctblframefg}{@ctblframebg}{%
          \begin{tabular}{#2}
@@ -566,50 +575,32 @@
       }%
    }%
 %    \end{macrocode}
-% the other will get the table typeset with the tabularx environment:
+% then look if we'll need the tabularx environment:
 %    \begin{macrocode}
-   \sbox\ctbl@tabelx{%
-      \newcolumntype{X}{Y}% restore X
-      \@ctblframe{@ctblframefg}{@ctblframebg}{%
-         \begin{tabularx}{\ifdim\@ctblwidth>0pt\@ctblwidth\else\@ctblmaxwidth\fi}{#2}
-            #4
-         \end{tabularx}%
-      }%
-   }%
-%    \end{macrocode}
-% if no \textsl{maxwidth} was given:
-%    \begin{macrocode}
+   \newif\if@ctblusex\@ctblusexfalse
    \ifdim\@ctblmaxwidth=0pt
-%    \end{macrocode}
-% and also no \textsl{width}:
-%    \begin{macrocode}
       \ifdim\@ctblwidth=0pt
-%    \end{macrocode}
-% then use the tabular environment:
-%    \begin{macrocode}
-         \sbox{\ctbl@t}{\usebox\ctbl@tabel}%
       \else
-%    \end{macrocode}
-% if width was given: use the tabularx environment
-%    \begin{macrocode}
-         \sbox{\ctbl@t}{\usebox\ctbl@tabelx}%
+         \@ctblusextrue
       \fi
+
    \else
-%    \end{macrocode}
-% with the \textsl{maxwidth} option, we check if the table, typeset with
-% the tabular environment would get too wide:
-%    \begin{macrocode}
-      \ifdim\wd\ctbl@tabel>\@ctblmaxwidth
-%    \end{macrocode}
-% if so, we use the tabularx environment:
-%    \begin{macrocode}
-         \sbox{\ctbl@t}{\usebox\ctbl@tabelx}%
-      \else
-%    \end{macrocode}
-% but if within limits, we use the tabular environment:
-%    \begin{macrocode}
-         \sbox{\ctbl@t}{\usebox\ctbl@tabel}%
+      \ifdim\wd\ctbl@t>\@ctblmaxwidth
+         \@ctblusextrue
       \fi
+   \fi
+%
+% if so, replace tabular with tabularx:
+%
+   \if@ctblusex
+      \sbox\ctbl@t{%
+         \newcolumntype{X}{Y}% restore X
+         \@ctblframe{@ctblframefg}{@ctblframebg}{%
+            \begin{tabularx}{\ifdim\@ctblwidth>0pt\@ctblwidth\else\@ctblmaxwidth\fi}{#2}
+               #4
+            \end{tabularx}%
+         }%
+      }%
    \fi
 %    \end{macrocode}
 % the |ctbl@t| box now contains the table as we want to typeset it;
@@ -632,7 +623,7 @@
 %    \begin{macrocode}
    \@ctblbegin
       \begin{\@ctblalign}
-         \begin{minipage}{\@ctblfloatwidth}
+         \begin{minipage}{\@ctblfloatwidth}\parindent0pt
             \ifx\@ctblbotcap\empty\@ctblCaption\vspace{\@ctblcaptionskip}\fi
             \centering{\usebox\ctbl@t} % insert the tabular
             \def\@ctblfootnotes{#3}
