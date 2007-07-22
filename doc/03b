@@ -1,0 +1,5 @@
+\ctable[
+    caption =  Caption,
+captionskip = 4ex,
+]{c}{}{\FL Table's first row\LL}
+$Id$

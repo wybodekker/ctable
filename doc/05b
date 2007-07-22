@@ -1,0 +1,5 @@
+\ctable[
+mincapwidth = 55mm,
+    caption = a lengthy caption
+]{c}{}{\FL test\LL}
+$Id$

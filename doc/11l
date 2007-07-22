@@ -1,0 +1,4 @@
+\ctable[
+  sideways
+]{c}{}{\FL first row\LL}
+$Id$

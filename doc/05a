@@ -1,0 +1,4 @@
+\ctable[
+  caption = a lengthy caption
+]{c}{}{\FL test\LL}
+$Id$

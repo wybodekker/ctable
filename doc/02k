@@ -1,0 +1,4 @@
+\ctable[
+  caption = Centered,
+]{c}{}{\FL Table's first row\LL}
+$Id$

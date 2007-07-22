@@ -1,0 +1,10 @@
+\let\H\hsize   
+\ctable[
+  caption = a figure,
+  figure, botcap,
+  width=.4\H,
+]{@{}>{\H=.4\H}X>{\H=.6\H}X@{}}{}{\FL
+  \includegraphics[width=\H]{penguin}&
+  \includegraphics[width=\H]{lion}\LL
+}
+$Id$
