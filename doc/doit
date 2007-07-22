@@ -47,11 +47,11 @@ for i in $new; do
       \parindent0pt
       \begin{document}
     ' >>$j.tex
-    cat $j |grep -v "^\$Id" >> $j.tex
+    cat $j |grep -v ^\$Id >> $j.tex
     echo '\end{document}' >> $j.tex
     mk --noview --noprint $j.tex || exit 1 # mk: CTAN see catalogue
     pdfcrop $j.pdf $j.pdf
-    asc2pdf $j --batch=o$temp
+    cat $j |grep -v ^\$Id |asc2pdf --batch=o$temp
     if ! pdfcrop --margins 2 $temp.pdf s$j.pdf 2>/dev/null; then
        echo error running "pdfcrop --margins 2 $temp.pdf s$j.pdf"
        exit 1
