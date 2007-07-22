@@ -1,13 +1,39 @@
+#!/bin/sh
 NAME=ctable
 LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex
-
 echo y |tex $NAME.ins >/dev/null
-pdflatex --interaction=batchmode $NAME.dtx > /dev/null
-makeindex -q -s gind.ist -o $NAME.ind $NAME.idx
-pdflatex --interaction=batchmode $NAME.dtx > /dev/null
-sudo cp $NAME.{dtx,sty,pdf} $LOCAL
-mk -c $NAME
-sudo mktexlsr
+(
+# recompile example graphics if any is missing:
+cd doc
+ln -sf ../ctable.sty || exit 1 # use the ctable.sty version to be installed
+for i in [0-9][0-9]?; do 
+  if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then
+    echo Creating example graphics
+    ./doit || exit 1
+    ./clean
+    break
+  fi
+done
+rm ctable.sty
+cd ..
+
+echo Creating documentation
+pdflatex --interaction=batchmode $NAME.dtx  || exit 1
+makeindex -q -s gind.ist -o $NAME.ind $NAME.idx || exit 1
+pdflatex --interaction=batchmode $NAME.dtx > /dev/null || exit 1
+
+echo Installing $NAME.{dtx,sty,pdf}
+sudo cp $NAME.dtx $LOCAL || exit 1
+sudo mv -f $NAME.sty $NAME.pdf $LOCAL || exit 1
+echo cleanup
+rm -f $NAME.{aux,idx,ilg,ind,log}
+sudo mktexlsr || exit 1
+)
+if [ $? != 0 ]; then 
+  echo errors detected
+else
+  echo ctable successfully installed
+fi
 
 # $Id$
 
