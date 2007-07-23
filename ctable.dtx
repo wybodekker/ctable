@@ -43,11 +43,10 @@
    nohead
 ]{geometry}
 \parindent0pt\parskip1ex
-\EnableCrossrefs
-\CodelineIndex
+\EnableCrossrefs %\CodelineIndex
+\OnlyDescription
 \begin{document}
-\DocInput{ctable.dtx}
-\PrintIndex
+\DocInput{ctable.dtx} %\PrintIndex
 \end{document}
 %</driver>
 % \fi
@@ -785,7 +784,7 @@
             \ifx#3\empty\else % append footnotes, if any
                \\
                \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}
-                  #3
+                  #3%
                \end{tabularx}
             \fi
             \ifx\@ctblbotcap\empty\else\vskip-2ex\vskip-1pt\vskip\@ctblcaptionskip\@ctblCaption\fi
