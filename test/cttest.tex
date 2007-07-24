@@ -1,0 +1,230 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=25mm]{geometry}
+\usepackage{ctable,fancyhdr,osf-txfonts}
+\parindent0pt
+\pagestyle{fancy}
+\fancyhead{}\fancyfoot{}
+\bibliographystyle{plain}
+\begin{document}
+This text shows some tests. The heading is used to tell what is being tested, so
+use one page per test and use fancyhead to set the heading. 
+
+\ctable[figure,botcap,caption=Terminology]{c}{}{\includegraphics{metrics}}
+
+\def\CAP{Zetmeel (enzymatisch), gebruikte enzymen}
+\newlength{\capwidth}\settowidth{\capwidth}{Table 3: \CAP}
+\newpage
+
+\fancyhead[C]{captionskip; first: without ctable}
+\begin{table}[h]\begin{center}
+  \caption{x top caption}
+  \begin{tabular}{c}\hline a single line tabular\tabularnewline\hline\end{tabular}
+  \setcounter{table}{0}
+  \caption{x bottom caption}
+\end{center}\end{table}
+
+Without ascenders and descenders:
+\def\tablename{xxx}
+\begin{table}[h]\begin{center}
+  \setcounter{table}{0}
+  \caption{xxx}
+  \begin{tabular}{c}\hline a single line tabular\tabularnewline\hline\end{tabular}
+  \setcounter{table}{0}
+  \caption{xxx}
+\end{center}\end{table}
+
+\begin{table}[h]\begin{center}
+  \setcounter{table}{0}
+  \caption{xpx}
+  \begin{tabular}{c}\hline a single line tabular\tabularnewline\hline\end{tabular}
+  \setcounter{table}{0}
+  \caption{xTx}
+\end{center}\end{table}
+
+\newpage
+\fancyhead[C]{captionskip; now ctable: default 2ex, test 4ex}
+\setcounter{table}{0}
+\ctable[pos=h!,caption=xxx]{c}{}{\FL a single line ctable\LL}
+\setcounter{table}{0}
+\ctable[pos=h!,botcap,caption=xxx]{c}{}{\FL a single line ctable\LL}
+\setcounter{table}{0}
+\ctable[pos=h!,captionskip=4ex,caption=xxx]{c}{}{\FL a single line ctable\LL}
+\setcounter{table}{0}
+\ctable[pos=h!,botcap,captionskip=4ex,caption=xxx]{c}{}{\FL a single line ctable\LL}
+
+\newpage
+\fancyhead[C]{captionskip; now ctable: default 2ex, test 4ex}
+\setcounter{table}{0}
+\ctable[pos=h!,caption=xpx]{c}{}{\FL a single line ctable\LL}
+\setcounter{table}{0}
+\ctable[pos=h!,botcap,caption=xTx]{c}{}{\FL a single line ctable\LL}
+\setcounter{table}{0}
+\ctable[pos=h!,captionskip=4ex,caption=xpx]{c}{}{\FL a single line ctable\LL}
+\setcounter{table}{0}
+\ctable[pos=h!,botcap,captionskip=4ex,caption=xTx]{c}{}{\FL a single line ctable\LL}
+
+\newpage
+\fancyhead[C]{CENTERED}
+
+\ctable[
+  pos=h,
+  framerule=1pt,
+  framebg=1 .9 .9,
+  caption={\CAP}
+]{llc}{}{\FL
+lab& tijd & temperatuur \NN
+   & & (C) \ML
+02 & 1 & 60 \NN
+10 & 4 & 60 \NN
+23 & 16 & 60 \NN
+26 & 12 & 60 \LL
+}
+
+\ctable[
+  pos=h,
+  framerule=1pt,
+  framebg=.9 1 .9,
+  mincapwidth=\capwidth,
+  caption={\CAP}
+]{llc}{}{\FL
+lab& tijd & temperatuur \NN
+   & & (C) \ML
+02 & 1 & 60 \NN
+10 & 4 & 60 \NN
+23 & 16 & 60 \NN
+26 & 12 & 60 \LL
+}
+\newpage
+
+\fancyhead[C]{RIGHT ALIGNED}
+
+
+\ctable[
+  pos=h,
+  right,
+  framerule=1pt,
+  framebg=.9 .9 1,
+  width=\capwidth,
+  caption={\CAP}
+]{llX}{}{\FL
+lab& tijd & temperatuur \NN
+   & & (C) \ML
+02 & 1 & 60 \NN
+10 & 4 & 60 \NN
+23 & 16 & 60 \NN
+26 & 12 & 60 \LL
+}
+
+\ctable[
+  pos=h,
+  right,
+  framerule=1pt,
+  framebg=1 .9 .9,
+  caption={\CAP}
+]{llc}{}{\FL
+lab& tijd & temperatuur \NN
+   & & (C) \ML
+02 & 1 & 60 \NN
+10 & 4 & 60 \NN
+23 & 16 & 60 \NN
+26 & 12 & 60 \LL
+}
+
+\ctable[
+  pos=h,
+  right,
+  framerule=1pt,
+  framebg=.9 1 .9,
+  mincapwidth=\capwidth,
+  caption={\CAP}
+]{llc}{}{\FL
+lab& tijd & temperatuur \NN
+   & & (C) \ML
+02 & 1 & 60 \NN
+10 & 4 & 60 \NN
+23 & 16 & 60 \NN
+26 & 12 & 60 \LL
+}
+
+\newpage
+\fancyhead[C]{LEFT ALIGNED}
+
+
+\ctable[
+  pos=h,
+  left,
+  framerule=1pt,
+  framebg=.9 .9 1,
+  width=\capwidth,
+  caption={\CAP}
+]{llX}{}{\FL
+lab& tijd & temperatuur \NN
+   & & (C) \ML
+02 & 1 & 60 \NN
+10 & 4 & 60 \NN
+23 & 16 & 60 \NN
+26 & 12 & 60 \LL
+}
+
+\ctable[
+  pos=h,
+  left,
+  framerule=1pt,
+  framebg=1 .9 .9,
+  caption={\CAP}
+]{llc}{}{\FL
+lab& tijd & temperatuur \NN
+   & & (C) \ML
+02 & 1 & 60 \NN
+10 & 4 & 60 \NN
+23 & 16 & 60 \NN
+26 & 12 & 60 \LL
+}
+
+\ctable[
+  pos=h,
+  left,
+  framerule=1pt,
+  framebg=.9 1 .9,
+  mincapwidth=\capwidth,
+  caption={\CAP}
+]{llc}{}{\FL
+lab& tijd & temperatuur \NN
+   & & (C) \ML
+02 & 1 & 60 \NN
+10 & 4 & 60 \NN
+23 & 16 & 60 \NN
+26 & 12 & 60 \LL
+}
+
+\newpage
+
+\fancyhead[C]{BIG CAPTION AND FOOTNOTE, SMALL TABLE, MINCAPWIDTH=111mm}
+
+
+ 
+\def\CAP{%
+We thrive in information||thick worlds because of our
+marvelous and everyday capacity to select, edit,
+single out, structure, highlight, group, pair, merge,
+harmonize, synthesize, focus, organize, condense,
+reduce, boil down, choose, categorize, catalog, classify,
+list, abstract, scan, look into, idealize, isolate,
+discriminate, distinguish, screen, pigeonhole, pick over,
+sort, integrate, blend, inspect, filter, lump, skip,
+smooth, chunk, average, approximate, cluster, aggregate,
+outline, summarize, itemize, review, dip into,
+flip through, browse, glance into, leaf through, skim,
+refine, enumerate, glean, synopsize, winnow the wheat
+from the chaff and separate the sheep from the goats.}
+\ctable[
+  caption={\CAP},
+  mincapwidth=111mm
+]{l} {\tnote{\input{tufte}}}
+{\FL
+Anzahl\NN
+\%\LL
+}
+\newpage
+\end{document}
+$Id$
