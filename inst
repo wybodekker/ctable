@@ -28,7 +28,7 @@ echo Installing $NAME.{dtx,sty,pdf}
 sudo cp $NAME.dtx $LOCAL || exit 1
 sudo mv -f $NAME.sty $NAME.pdf $LOCAL || exit 1
 echo cleanup
-rm -f $NAME.{aux,idx,ilg,ind,log} doc/*.pdf 
+rm -f $NAME.{aux,idx,ilg,ind,log} #doc/*.pdf 
 sudo mktexlsr || exit 1
 )
 if [ $? != 0 ]; then 
