@@ -10,9 +10,6 @@
 %
 %    http://www.latex-project.org/lppl.txt
 %
-% and version 1.2 or later is part of all distributions of LaTeX
-% version 1999/12/01 or later.
-%
 % \fi
 %
 % \iffalse
@@ -22,36 +19,64 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2007/07/17 v1.10 ctable package]
+    [2007/08/17 v1.10 ctable package]
 %</package>
 %
 %<*driver>
 \documentclass[a4paper]{ltxdoc}
-\usepackage{carom,txfonts,ctable,makeidx,colortbl}
-\graphicspath{{./doc/}}
-\definecolor{vbgreen}{rgb}{0,.6,0}
-\definecolor{vbred}{rgb}{.6,0,0}
-\definecolor{lightblue}{rgb}{0.77, 0.90, 0.96}
-\definecolor{lightyellow}{rgb}{1,1,.878}
-\def\YEL{\rowcolor{lightyellow}\color{vbgreen}}
-\def\BLU{\rowcolor{lightblue}\color{vbred}}
+\usepackage{carom,ctable,txfonts}
+\usepackage[colorlinks=false]{hyperref}
 \usepackage[
    verbose,
    pdftex,
    paper=a4paper,
-   bottom=35mm,
+   bottom=30mm,
    nohead
 ]{geometry}
+\long\def\ROW#1#2#3{\noindent\parskip0pt%
+  %\fboxsep0pt
+  \colorbox{#1}{%
+    \parbox{.98\hsize}{%
+      \rule{0pt}{1.5ex}\\
+      \parbox{.5\hsize}{\includegraphics{#2}}
+      \parbox{.5\hsize}{\centering{\includegraphics{#3}}}
+      \\\rule{0pt}{1.5ex}
+    }
+  }\par
+}
+\hypersetup{
+     pdftitle = The ctable package,
+    pdfauthor = Wybo Dekker,
+   pdfsubject = {Typesetting centered, right, and left aligned table and figure
+                 floats, with many configuration options},
+  pdfkeywords = {
+                 table floats,
+                 figure floats,
+                 key=value options,
+                 footnotes,
+                 booktabs,
+                 tabularx,
+                 threeparttable
+                },
+  bookmarksopen
+}
+\graphicspath{{./doc/}}
+\definecolor{vbgreen}{rgb}{0,.6,0}
+\definecolor{B}{rgb}{0.77, 0.90, 0.96}
+\definecolor{Y}{rgb}{1,1,.878}
+\def\URL#1{http://www.ctan.org/tex-archive/help/Catalogue/entries/#1.html}
+\def\REF#1{\href{\URL{#1}}{\texttt{#1}}}
 \parindent0pt\parskip1ex
-\EnableCrossrefs %\CodelineIndex
-\OnlyDescription
+\RecordChanges
+\EnableCrossrefs
+\OnlyDescription%\PageIndex\CodelineIndex
 \begin{document}
-\DocInput{ctable.dtx} %\PrintIndex
+\DocInput{ctable.dtx} \PrintChanges\PrintIndex
 \end{document}
 %</driver>
 % \fi
 %
-% \CheckSum{326}
+% \CheckSum{323}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -70,39 +95,41 @@
 %   Right brace   \}     Tilde         \~}
 %
 %
-% \changes{v1.0}{2000/06/01}{First release.}
-% \changes{v1.1}{2001/03/17}{Making use of booktabs package}
-% \changes{v1.2}{2002/06/24}{Using keyval to reduce args to 4}
-% \changes{v1.3}{2002/07/16}{Many syntactic correction,
+% \changes{v1.00}{2000/06/01}{First release.}
+% \changes{v1.01}{2001/03/17}{Making use of booktabs package}
+% \changes{v1.02}{2002/06/24}{Using keyval to reduce args to 4}
+% \changes{v1.03}{2002/07/16}{Many syntactic corrections,
 %                            thanks to Johannes Braams}
-% \changes{v1.4}{2003/08/11}{Caption, if empty, will not be typeset
+% \changes{v1.04}{2003/08/11}{Caption, if empty, will not be typeset
 %                            rotate option added
 %                            star option added to use table* and figure*
 %                            environments}
-% \changes{v1.6}{2004/03/20}{left, right and center options added
+% \changes{v1.06}{2004/03/20}{left, right and center options added
 %                            frame{sep,rule,fg,bg} options added
 %                            error in width-setting corrected}
-% \changes{v1.5}{2003/10/03}{maxwidth option added}
-% \changes{v1.6a}{2004/04/01}{two errors corrected:
+% \changes{v1.05}{2003/10/03}{maxwidth option added}
+% \changes{v1.06a}{2004/04/01}{two errors corrected:
 %                            made setting fboxsep and fboxrule only temporary
 %                            removed superfluous space after tabulars}
-% \changes{v1.6b}{2004/06/19}{Added several % at eol to remove superfluous
+% \changes{v1.06b}{2004/06/19}{Added several % at eol to remove superfluous
 %                             whitespace occurring sometimes}
-% \changes{v1.7}{2005/08/09}{Added option sideways, option rotate now obsolete;
+% \changes{v1.07}{2005/08/09}{Added option sideways, option rotate now obsolete;
 %                            added option captionskip}
-% \changes{v1.8}{2006/04/10}{Standardized file setup following
+% \changes{v1.08}{2006/04/10}{Standardized file setup following
 %                            http://www.ctan.org/tex-archive/info/dtxtut/dtxtut.pdf
 %                            mincapwidth option added
 %                            Moved newdimen definition outside ctable macro
 %                           }
-% \changes{v1.9}{2007/03/04}{Added option nosuper;
+% \changes{v1.09}{2007/03/04}{Added option nosuper;
 %                            corrected incorrect positioning when table is wider than
 %                            mincapwidth}
-% \changes{v1.10}{2007/07/17}{Corrected some unwanted white space in captions,
-%                             footnote markers now stay superscript with
-%                             nosuper.
-%                             Documentation: Added many examples for the options,
-%                             example source code now in color
+% \changes{v1.10}{2007/08/17}{Footnote markers now stay superscript with nosuper.
+%                             Documentation: added many examples for the options.
+%                             Corrected some unwanted white space in captions.
+%                             Caption package included to correct booktabs
+%                             errors in caption position. And for later use of
+%                             its facilities. *Captionskip option redefined*: 0pt
+%                             value now corresponds to LaTeX defaults
 %                            }
 %
 % \GetFileInfo{ctable.dtx}
@@ -124,12 +151,23 @@
 % \author{Wybo Dekker \\ \texttt{wybo@dekkerdocumenten.nl}}
 %
 % \maketitle
+% \begin{abstract}\noindent
+% The \texttt{ctable} package provides a \texttt{ctable}
+% command for the typesetting of table and figure floats. You will
+% not need to type the usual nested begin...end sequences, as
+% \texttt{ctable} is a command, not an environment. \texttt{ctable}
+% has only 4 arguments, but the optional first one may hold many
+% \textsl{key=value} pairs and makes \texttt{ctable} very flexible
+% and extensible. It uses Simon Fear's \REF{booktabs} package for
+% better vertical spacing around horizontal rules and it provides
+% facilities for making table footnotes.
+% \end{abstract}
 %
 % \section{Purpose} The |ctable| package lets you easily typeset
 % captioned table and figure floats with optional
-% footnotes. Both caption and footnotes will be forced within the
+% footnotes. Both caption and footnotes will normally be forced within the
 % width of the table.
-% If the width of the table is specified, then tabularx will be used
+% If the width of the table is specified, then \REF{tabularx} will be used
 % to typeset it, and one or more |X| column specifiers should be specified.
 % Otherwise tabular will be used.
 %
@@ -139,11 +177,11 @@
 % around horizontal rules and are also useful for tabulars outside
 % this package.
 %
-% Since the |ctable| package imports the |array| and |booktabs|
+% Since the |ctable| package imports the \REF{array} and \REF{booktabs}
 % packages, all commands from those packages are available as well.
 %
 % Note that, in line with the comments that Simon Fear made
-% describing his |booktabs| package, vertical rules for column
+% describing his \REF{booktabs} package, vertical rules for column
 % separation can be produced with |\ctable|, but no provisions are
 % made to have them make contact with horizontal rules.
 %
@@ -154,7 +192,7 @@
 % |\ctable[options]       % key=value,...|\\
 % |       {coldefs}       % for \begin{tabular}|\\
 % |       {foottable}     % zero or more \tnote commands (see below)|\\
-% |       {table lines}   % lines for the table|\\
+% |       {table rows}    % rows for the table|\\
 %
 % Options are given as key=value pairs, separated by comma's.
 % Extra comma's, including one behind the last pair, don't hurt.
@@ -164,78 +202,82 @@
 % \\[2ex]
 % \begin{tabularx}{\hsize}{@{}lX@{}}
 % |caption={...}|& table caption; the braces are needed only if your
-%                   caption contains a comma or an equals sign.\NN
+%                   caption contains a comma or an equals sign.\NN[1ex]
 %
-% |cap={...}|    & for a short caption to go to the |\tableofcontents|.\NN
+% |cap={...}|    & for a short caption to go to the |\tableofcontents|.\NN[1ex]
 %
-% |captionskip=...| & set the whitespace between the caption and the table;
-%                  default is |2ex|.\NN
+% |captionskip=...| & moves the caption relative to the table;
+%                  the default is |0ex|, which puts captions at
+%                  their default \LaTeX\ positions: a top
+%                  caption's baseline at |1ex| above the top rule
+%                  position of the table and a bottom caption's
+%                  baseline at |4ex| below the bottom rule
+%                  position.\NN[1ex]
 %
-% |mincapwidth=...| & sets the minimum width of the float. Without this option,
-%                  the width is set to that of the tabular, and the caption and
-%                  footnotes are typeset within that width. This may be a problem
-%                  with very narrow tables; |mincapwidth| can then be used to
-%                  give the float a minimum width. The tabular will be centered
-%                  in it.\NN
+% |mincapwidth=...| & sets the minimum width of the float. Without
+%                  this option, the width is set to that of the
+%                  tabular, and the caption and footnotes are
+%                  typeset within that width. This may be a
+%                  problem with very narrow tables; |mincapwidth|
+%                  can then be used to give the float a minimum
+%                  width. The tabular will be centered in it.\NN[1ex]
 %
-% |pos=...|      & float position, default: |tbp|.\NN
-% \end{tabularx}
-% 
-% \begin{tabularx}{\hsize}{@{}lX@{}}
-% |label=...|    & for |\label|\NN
+% |pos=...|      & float position, default: |tbp|.\NN[1ex]
 %
-% |width=...|    & tabularx will be used to typeset the table at the
+% |label=...|    & for |\label|\NN[1ex]
+%
+% |width=...|    & \REF{tabularx} will be used to typeset the table at the
 %                  specified width\,---\,one or more |X| column
-%                  specifiers must be provided.\NN
+%                  specifiers must be provided.\NN[1ex]
 %
 % |maxwidth=...| & like the \textsl{width} option, but any |X| column
 %                  specifiers will be replaced with |l| if the resulting
 %                  table width would thus stay within the specified
 %                  maximum width. This is especially useful where the
-%                  \LaTeX\ source is generated by a script.\NN
+%                  \LaTeX\ source is generated by a script.\NN[1ex]
 %
 % |center|       & center the table in the available text width; this is
-%                  the default.\NN
+%                  the default.\NN[1ex]
 %
-% |left|         & left align the table in the available text width.\NN
+% |left|         & left align the table in the available text width.\NN[1ex]
 %
-% |right|        & right align the table in the available text width.\NN
+% |right|        & right align the table in the available text width.\NN[1ex]
 %
-% |figure|       & produce a figure float instead of a table float.\NN
+% |figure|       & produce a figure float instead of a table float.\NN[1ex]
 %
 % |botcap|       & put the caption at the bottom of the float instead
-%                  of on top of it.\NN
+%                  of on top of it.\NN[1ex]
 %
 % |sideways|     & rotate table or figure by 90 degrees anticlockwise
 %                  and put it on a separate page. With the twoside option
 %                  for the standard \LaTeX\ document classes, rotation
 %                  will be -90 on even pages. If you use this option,
-%                  the |pos| option is not allowed.\NN
+%                  the |pos| option is not allowed.\NN[1ex]
 %
 % |star|         & use the starred versions of the |table| and |figure|
 %                  environments, which place the float over two columns
 %                  when the |twocolumn| option or the |\twocolumn|
-%                  command is active.\NN
+%                  command is active.\NN[1ex]
 %
 % |nosuper|      & in the footnote table, typeset footnote markers on
-%                  the line, instead of superscripted.\NN
+%                  the line, instead of superscripted.\NN[1ex]
 %
 % |framerule=...|& draw a frame around the table with the given rule
 %                  thickness. The default is |0pt|, so that no frame
-%                  will be seen.\NN
+%                  will be seen.\NN[1ex]
 %
 % |framesep=...| & set the distance between the frame and the table
-%                 to the given dimension. The default is |0pt|.\NN
+%                 to the given dimension. The default is |0pt|.\NN[1ex]
 %
 % |framefg=|\sl r g b & set the foreground color of the frame (the
 %                 rule color) to the given triplet of
 %                 \textsl{rgb}-values. The values should be numbers
-%                 between 0 and 1. The default is |0 0 0| (black).\NN
+%                 between 0 and 1. The default is |0 0 0| (black).\NN[1ex]
 %
 % |framebg=|\sl r g b & set the background color of the frame (the
 %                 color inside the frame) to the given triplet of
 %                 \textsl{rgb}-values. The values should be numbers
-%                 between 0 and 1. The default is |1 1 1| (white).\NN
+%                 between 0 and 1. The default is |1 1 1| (white).\NN[1ex]
 % \end{tabularx}
 % \\[2ex]
 % The footnotes are placed under the table, without a rule.
@@ -256,7 +298,7 @@
 % The label is optional, the default label is a single $a$.
 % \par
 % The newline generating commands are a combination of
-% |\tabularnewline| and zero or one of |booktabs|' |\toprule|,
+% |\tabularnewline| and zero or one of \REF{booktabs} |\toprule|,
 % |\midrule| or |\bottomrule|. These combinations have been made, and
 % short names have been defined, because source texts for complex
 % tables often become very crowded:
@@ -279,7 +321,7 @@
 % \par
 % These macros can be used outside |\ctable| constructs.
 % \par
-% Finally, for completeness, here are some of |booktabs|' commands
+% Finally, for completeness, here are some of \REF{booktabs}' commands
 % that may be useful:
 % \par
 % \DescribeMacro{\toprule} |\toprule[<wd>]|
@@ -302,39 +344,22 @@
 % \DescribeMacro{\specialrule}
 % |\specialrule{<wd>}{<abovespace>}{<belowspace>}|.
 % \par
-% See the |booktabs| documentation for details.
+% See the \REF{booktabs} documentation for details.
 %
-% \ctable[
-%    cap     = The Skewing Angles,
-%    caption = The Skewing Angles ($\beta$) for
-%              $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark,
-%    label   = nowidth,
-% ]{rlcc}{
-%    \tnote{for the abstraction reaction,
-%           $\fam0 Mu+HX \rightarrow MuH+X$.}
-%    \tnote[b]{1 degree${} = \pi/180$ radians.}
-%    \tnote[c]{this is a particularly long note, showing that
-%              footnotes are set in raggedright mode as we don't like
-%              hyphenation in table footnotes.}
-% }{                                                          \FL
-%   &            & $\fam0 H(Mu)+F_2$     & $\fam0 H(Mu)+Cl_2$ \ML
-%   &$\beta$(H)  & $80.9^\circ$\tmark[b] & $83.2^\circ$       \NN
-%   &$\beta$(Mu) & $86.7^\circ$          & $87.7^\circ$       \LL
-% }
 % \subsection{The width and maxwidth options}
 % When \LaTeX-sources containing tables are generated automatically by a
-% script, it is often not known in advance what the maximum size of an l
-% column will be. A good solution for this is to use an |X| specifier,
-% typesetteing the table at the text width with the tabularx package.
+% script, it is often not known in advance what the maximum size of an
+% |l|~column will be. A good solution for this is to use an |X|~specifier,
+% typesetteing the table at the text width with the \REF{tabularx} package.
 % However, this will result in too much white space in cases where the
 % column contains small texts only. This problem can be solved by using
-% the maxwidth option instead of the width option. The |X| specifiers will
+% the maxwidth option instead of the width option. The |X|~specifiers will
 % then be replaced with |l| as long as the width of the resulting table
 % stays with the specified maximum width.
 %
 % \section{Examples}
 % Table~\ref{nowidth} is an example taken from the related package
-% threeparttable.sty by Donald Arseneau, with an extra footnote.
+% \REF{threeparttable} by Donald Arseneau, with an extra footnote.
 % It was typeset with:
 % \color{vbgreen}
 % \begin{verbatim}
@@ -343,7 +368,6 @@
 %    caption = The Skewing Angles ($\beta$) for
 %              $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark,
 %    label   = nowidth,
-%    pos     = h  
 % ]{rlcc}{
 %    \tnote{for the abstraction reaction,
 %           $\fam0 Mu+HX \rightarrow MuH+X$.}
@@ -358,19 +382,36 @@
 % }
 % \end{verbatim}
 % \color{black}
+% \ctable[
+%    cap     = The Skewing Angles,
+%    caption = The Skewing Angles ($\beta$) for
+%              $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark,
+%    label   = nowidth,
+% ]{rlcc}{
+%    \tnote{for the abstraction reaction,
+%           $\fam0 Mu+HX \rightarrow MuH+X$.}
+%    \tnote[b]{1 degree${} = \pi/180$ radians.}
+%    \tnote[c]{this is a particularly long note, showing that
+%              footnotes are set in raggedright mode as we don't like
+%              hyphenation in table footnotes.}
+% }{                                                          \FL
+%   &            & $\fam0 H(Mu)+F_2$     & $\fam0 H(Mu)+Cl_2$ \ML
+%   &$\beta$(H)  & $80.9^\circ$\tmark[b] & $83.2^\circ$       \NN
+%   &$\beta$(Mu) & $86.7^\circ$          & $87.7^\circ$       \LL
+% }
 % Table~\ref{width} is an example with a width specification,
-% taken from the |tabularx| documentation, with the vertical rules
-% removed. By using the trimming parameters of the |\LR|, |\MR|, and
-% |\RR| commands of the |booktabs| package, some of the horizontal
-% splitting was regained. By using the |left| option, the table has
-% been left aligned. It was typeset with:
+% taken from the \REF{tabularx} documentation, with the vertical rules
+% removed. 
+% By using the trimming parameters of the \REF{booktabs} |\cmidrule|
+% command, some of the horizontal splitting was regained.
+% The |left| option left aligns the table. It was typeset with:
 % \color{vbgreen}
 % \begin{verbatim}
 % \ctable[
 %    caption = Example with a specified width of 100mm,
 %    label   = width,
-%    pos     = h,
 %    width   = 100mm,
+%    pos     = h,
 %    left
 % ]{c>{\raggedright}Xc>{\raggedright}X}{
 %    \tnote{footnotes are placed under the table}
@@ -390,8 +431,8 @@
 % \ctable[
 %    caption = Example with a specified width of 100mm,
 %    label   = width,
-%    pos     = h,
 %    width   = 100mm,
+%    pos     = h,
 %    left
 % ]{c>{\raggedright}Xc>{\raggedright}X}{
 %    \tnote{footnotes are placed under the table}
@@ -411,16 +452,18 @@
 % particularly handy for single pictures, but it eases the construction
 % of arrays of pictures, including sub-captions, delineation, and spacing.
 % Figure~\ref{fig} shows a figure that has been produced with the |\ctable|
-% command, in combination with |\usepackage{carom}|;
+% command, in combination with
+% |\usepackage|\{%
+% \href{http://tug.ctan.org/obsolete/macros/latex/contrib/xymtex/carom.sty}{\texttt{carom}}\}
 % it has been typeset with:
 % \color{vbgreen}
 % \begin{verbatim}
 % \ctable[
 %    figure,
 %    botcap,
+%    pos       = h,
 %    caption   = The di- and tri-bromobenzenes,
 %    label     = fig,
-%    pos       = h,
 %    framebg   = .53 .81 .92,
 %    framerule = 1pt,
 %    framesep  = 4ex,
@@ -439,9 +482,9 @@
 % \ctable[
 %    figure,
 %    botcap,
+%    pos       = h,
 %    caption   = The di- and tri-bromobenzenes,
 %    label     = fig,
-%    pos       = h,
 %    framebg   = .53 .81 .92,
 %    framerule = 1pt,
 %    framesep  = 4ex,
@@ -456,8 +499,9 @@
 %    1,2,3 & 1,2,4 & 1,3,5
 % }
 % (The excessive whitespace at the left of the figure is caused by
-% the bounding boxes generated by the \textsl{carom} package.)
-% \section{Further examples}
+% the bounding boxes generated by the |carom| package.)
+%
+% \section{Option examples}
 % In the following, small examples will be shown illustrating the effect of
 % options. In the left column the relevant part of the source is shown, in the
 % right column you see the result. In most cases you see a standard example on a
@@ -465,134 +509,118 @@
 % background. Where necessary, the example will show boxes to indicate the page
 % and the text body.
 %
-% \subsection{\ttfamily\bfseries figure, botcap}
-% By default, |ctable| generates a table float, but with the |figure| option, a
-% figure float is generated instead. The caption stays on top, so if you are
-% accustomed to have bottom caption for your figures, you will probably also need
-% the |botcap| option:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s01a}& \includegraphics{01a}\NN[2ex]
-% \BLU\includegraphics{s01b}& \includegraphics{01b}\NN
-% \end{tabularx}
-%
+% \newpage
 % \subsection{\ttfamily\bfseries center, left, right}
 % These options align the float in the page; the default is |center|:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s02k}& \includegraphics{02k}\NN
-% \BLU\includegraphics{s02l}& \includegraphics{02l}\NN
-% \BLU\includegraphics{s02m}& \includegraphics{02m}\NN
-% \end{tabularx}
-%
-% \subsection{\ttfamily\bfseries captionskip}
-% The distance between a top caption and the table is \texttt{2ex},
-% but it can be varied with \texttt{captionskip}:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s03a}& \includegraphics{03a}\NN
-% \BLU\includegraphics{s03b}& \includegraphics{03b}\NN
-% \end{tabularx}
-%
-% This works for bottom caption, too:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s04a}& \includegraphics{04a}\NN
-% \BLU\includegraphics{s04b}& \includegraphics{04b}\NN
-% \end{tabularx}
-%
+% \medskip\\
+% \ROW{Y}{s02k}{02k}
+% \ROW{B}{s02l}{02l}
+% \ROW{B}{s02m}{02m}
+% 
+% \subsection{\ttfamily\bfseries nosuper}
+% Footnote markers in |ctable| are typeset superscripted by default. Use the
+% |nosuper| option to place them on the base line:
+% \medskip\\
+% \ROW{Y}{s07a}{07a}
+% \ROW{B}{s07b}{07b}
+% 
+% \newpage
 % \subsection{\ttfamily\bfseries mincapwidth}
 % |ctable| forces caption and footnotes to stay within the width of the table.
 % Sometimes, however, tables are so narrow, that this is not really what you want.
 % In such cases, use the |mincapwidth| option to give caption and footnotes some
 % extra room:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s05a}& \includegraphics{05a}\NN
-% \BLU\includegraphics{s05b}& \includegraphics{05b}\NN
-% \end{tabularx}
-%
+% \medskip\\
+% \ROW{Y}{s05a}{05a}
+% \ROW{B}{s05b}{05b}
+% \medskip
 % You can set |mincapwidth| to a large value, say |\hsize|, if you want a one-line
 % caption. Note, however, that this may influence the horizontal positioning of
 % the table: values larger than |\hsize| will move a centered table out of the
 % center, a value of |\hsize| will prevent the |left| and |right| options to do
 % their work, because the table is already captured between the left and right
 % margins.
-%
+% 
 % \subsection{\ttfamily\bfseries maxwidth}
 % When \LaTeX-sources containing tables are generated automatically by a
 % script, it is often not known in advance what the maximum size of an |l|
 % column will be. A good solution for this is to use an |X| specifier,
-% typesetting the table at the text width with the tabularx package.
+% typesetting the table at the text width with the \REF{tabularx} package.
 % However, this will result in too much white space in cases where the
 % column contains small texts only. This problem can be solved by using
 % the maxwidth option instead of the width option. The |X| specifiers will
 % then be replaced with |l| as long as the width of the resulting table
 % stays with the specified maximum width.
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s06a}& \includegraphics{06a}\NN
-% \BLU\includegraphics{s06b}& \includegraphics{06b}\NN
-% \end{tabularx}
-%
-% \subsection{\ttfamily\bfseries nosuper}
-% Footnote markers in |ctable| are typeset superscripted by default. Use the
-% |nosuper| option to place them on the base line:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s07a}& \includegraphics{07a}\NN
-% \BLU\includegraphics{s07b}& \includegraphics{07b}\NN
-% \end{tabularx}
-%
+% \medskip\\
+% \ROW{Y}{s06a}{06a}
+% \ROW{B}{s06b}{06b}
+% 
+% \newpage
 % \subsection{\ttfamily\bfseries framerule}
 % The following examples show the use of frames and backgrounds. Every table
 % is typeset by |ctable| with a frame around it, but the frame is, by default,
 % drawn with a zero width line, and is therefore invisible. You can make it
 % visible by either changing the linewidth to a positive value or by giving it a
 % background color, which will be used to fill the frame.
-%
-% Here is a simple table without a frame, followed by one with a red, 1pt thick
+% 
+% Here is a simple table without a frame, followed by one with a red, |1pt| thick
 % frame:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s08a}& \includegraphics{08a}\NN
-% \BLU\includegraphics{s08b}& \includegraphics{08b}\NN
-% \end{tabularx}
-%
+% \medskip\\
+% \ROW{Y}{s08a}{08a}
+% \ROW{B}{s08b}{08b}
+% \medskip
 % As you see, the frame fits closely to the first (|\FL|) and last (|\LL|) table
 % lines. This can be a reason to either remove those lines, or to introduce some
 % whitespace between the frame and the table with the |framesep| option:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \BLU\includegraphics{s09b}& \includegraphics{09b}\NN
-% \end{tabularx}
-%
+% \medskip\\
+% \ROW{B}{s09b}{09b}
+% \medskip
 % And finally, we could also frame the table by giving it a, say, yellow backgound
 % instead of a red frame line, or even do both:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s10a}& \includegraphics{10a}\NN
-% \BLU\includegraphics{s10b}& \includegraphics{10b}\NN
-% \end{tabularx}
-%
+% \medskip\\
+% \ROW{Y}{s10a}{10a}
+% \ROW{B}{s10b}{10b}
+% 
+% \newpage
+% \subsection{\ttfamily\bfseries captionskip}
+% The distance between a top caption and the table is \texttt{2ex},
+% but it can be varied with \texttt{captionskip}:
+% \medskip\\
+% \ROW{Y}{s03a}{03a}
+% \ROW{B}{s03b}{03b}
+% \medskip
+% This works for bottom caption, too:
+% \medskip\\
+% \ROW{Y}{s04a}{04a}
+% \ROW{B}{s04b}{04b}
+% 
+% \subsection{\ttfamily\bfseries figure, botcap}
+% By default, |ctable| generates a table float, but with the |figure| option, a
+% figure float is generated instead. The caption stays on top, so if you are
+% accustomed to have bottom caption for your figures, you will probably also need
+% the |botcap| option:
+% \medskip\\
+% \ROW{Y}{s01a}{01a}
+% \ROW{B}{s01b}{01b}
+% 
+% \newpage
 % \subsection{\ttfamily\bfseries sideways}
 % The |sideways| option creates a landscape table with its head pointing at the
-% spine\,---\,when the documentclass' twoside option has been use, that is. The
+% spine\,---\,when the documentclass' twoside option has been used, that is. The
 % following examples show the effect of the |sideways| option, first on page one,
 % then on page 2. Note that the |caption| option has not been used, so no caption
 % appears:
-%
-% \begin{tabularx}{\hsize}{>{\hsize=.5\hsize\center}X>{\hsize=.5\hsize\center}X}
-% \YEL\includegraphics{s11k}& \includegraphics{11k}\NN
-% \BLU\includegraphics{s11l}& \includegraphics{11l}\NN
-% \BLU\includegraphics{s11m}& \includegraphics{11m}\NN
-% \end{tabularx}
-%
+% \medskip\\
+% \ROW{Y}{s11k}{11k}
+% \ROW{B}{s11l}{11l}
+% \ROW{B}{s11m}{11m}
+% 
+% \newpage
 % \StopEventually{}
 %
 % \section{Implementation}
 % \begin{macrocode}
-\RequirePackage{xspace,color,xkeyval,array,tabularx,booktabs,rotating}
+\RequirePackage{xspace,color,xkeyval,array,tabularx,booktabs,rotating,caption}
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
@@ -681,7 +709,7 @@
    \definecolor{@ctblframefg}{rgb}{0,0,0}%
    \definecolor{@ctblframebg}{rgb}{1,1,1}%
    \@ctblframerule0pt
-   \@ctblcaptionskip2ex
+   \@ctblcaptionskip0ex
    \@ctblframesep0pt
    \@ctblwidth=0pt
    \@ctblmaxwidth=0pt
@@ -778,7 +806,7 @@
    \@ctblbegin
       \begin{\@ctblalign}
          \begin{minipage}{\@ctblfloatwidth}\parindent0pt
-            \ifx\@ctblbotcap\empty\@ctblCaption\vskip-1pt\vskip\@ctblcaptionskip\fi
+            \ifx\@ctblbotcap\empty\@ctblCaption\vskip\@ctblcaptionskip\fi
             \centering{\usebox\ctbl@t} % insert the tabular
             \def\@ctblfootnotes{#3}%
             \ifx#3\empty\else % append footnotes, if any
@@ -787,7 +815,7 @@
                   #3%
                \end{tabularx}
             \fi
-            \ifx\@ctblbotcap\empty\else\vskip-2ex\vskip-1pt\vskip\@ctblcaptionskip\@ctblCaption\fi
+            \ifx\@ctblbotcap\empty\else\vskip\@ctblcaptionskip\@ctblCaption\fi
          \end{minipage}
       \end{\@ctblalign}
    \@ctblend
