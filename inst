@@ -19,8 +19,10 @@ cd ..
 
 echo Creating documentation
 pdflatex --interaction=batchmode $NAME.dtx  || exit 1
-if [ -f $NAME.idx ]; then
+if [ -f $NAME.glo ]; then
   makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo || exit 1
+fi
+if [ -f $NAME.idx ]; then
   makeindex -q -s gind.ist -o $NAME.ind $NAME.idx || exit 1
 fi
 pdflatex --interaction=batchmode $NAME.dtx > /dev/null || exit 1
