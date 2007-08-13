@@ -1,5 +1,5 @@
 \ctable[
     caption =  Caption,
-captionskip = 4ex,
+captionskip = 1ex,
 ]{c}{}{\FL Table's first row\LL}
 $Id$
