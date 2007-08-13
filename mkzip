@@ -35,7 +35,7 @@ if files.size > 0
 end 
 
 # create sty and pdf if need so:
-system("./inst") or 
+system("export NOINSTALL=true; ./inst") or 
    die "Problems creating sty and pdf files"
 
 files= Array.new # files to zip
