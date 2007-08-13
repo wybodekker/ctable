@@ -18,23 +18,34 @@ end
 name = 'ctable'
 
 # is cvs up to date?
+files = []
 open("|cvs -Q status").each do |line|
    if line =~ /File:\s+([.\w]+)\s+Status:\s+([\w-]+)/
       f,s = $1,$2
       f or next
       next if f == 'mktar'
-      die "cvs status of file #{f} not up-to-date" unless s == "Up-to-date"
+      files.push(f) unless s == "Up-to-date"
    end
 end
+if files.size > 0
+  puts "These files differ from their CVS-versions:",
+       files.join("\n"),
+       "Go on (y/n)?"
+  gets =~ /^y/ or die "install cancelled by user request"
+end 
 
 # create sty and pdf if need so:
-system("echo y|tex ctable.ins >& /dev/null&& mk --noview --noprint ctable") or 
+system("./inst") or 
    die "Problems creating sty and pdf files"
 
 files= Array.new # files to zip
 for i in %w{dtx ins sty pdf} do
    f = "#{name}.#{i}"
    FileTest.exist?(f) or raise "file #{f} does not exist"
+   files.push(f)
+end
+
+Dir["doc/*.pdf","doc/[0-9][0-9]","doc/[0-9][0-9]?"].each do |f|
    files.push(f)
 end
 
@@ -59,12 +70,12 @@ y,m,d = ParseDate.parsedate(@cvsdate)
 cd=Date.new(y,m,d)
 if (cd-pd).abs > 1
    warn "package and cvs dates differ by more than 1 day;"
-   say  "still go on (y/n)?"
+   say  "Go on (y/n)?"
    gets =~ /^y/ or die "install cancelled by user request"
 end
 
 targz = "#{name}-#{@version}.tar.gz"
 
-system("tar czf #{name}-#{@version}.tar.gz #{files.join(' ')}")
+system("tar czf #{targz} #{files.join(' ')}")
 
 say "     created: #{targz}"
