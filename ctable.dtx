@@ -23,9 +23,8 @@
 %</package>
 %
 %<*driver>
-\documentclass[a4paper]{ltxdoc}
+\documentclass{ltxdoc}
 \usepackage{carom,ctable,txfonts}
-\usepackage[colorlinks=false]{hyperref}
 \usepackage[
    verbose,
    pdftex,
@@ -33,6 +32,14 @@
    bottom=30mm,
    nohead
 ]{geometry}
+\usepackage{hyperref}
+\graphicspath{{./doc/}}
+\definecolor{vbgreen}{rgb}{0,.6,0}
+\definecolor{B}{rgb}{0.77, 0.90, 0.96}
+\definecolor{Y}{rgb}{1,1,.878}
+\def\URL#1{http://www.ctan.org/tex-archive/help/Catalogue/entries/#1.html}
+\def\REF#1{\href{\URL{#1}}{\texttt{#1}}}
+\parindent0pt\parskip1ex
 \long\def\ROW#1#2#3{\noindent\parskip0pt%
   %\fboxsep0pt
   \colorbox{#1}{%
@@ -44,7 +51,11 @@
     }
   }\par
 }
+\AtBeginDocument{\RecordChanges}
+\AtEndDocument{\PrintChanges}
+\EnableCrossrefs
 \hypersetup{
+   colorlinks = true,
      pdftitle = The ctable package,
     pdfauthor = Wybo Dekker,
    pdfsubject = {Typesetting centered, right, and left aligned table and figure
@@ -60,18 +71,8 @@
                 },
   bookmarksopen
 }
-\graphicspath{{./doc/}}
-\definecolor{vbgreen}{rgb}{0,.6,0}
-\definecolor{B}{rgb}{0.77, 0.90, 0.96}
-\definecolor{Y}{rgb}{1,1,.878}
-\def\URL#1{http://www.ctan.org/tex-archive/help/Catalogue/entries/#1.html}
-\def\REF#1{\href{\URL{#1}}{\texttt{#1}}}
-\parindent0pt\parskip1ex
-\RecordChanges
-\EnableCrossrefs
-\OnlyDescription%\PageIndex\CodelineIndex
 \begin{document}
-\DocInput{ctable.dtx} \PrintChanges\PrintIndex
+\DocInput{ctable.dtx}
 \end{document}
 %</driver>
 % \fi
@@ -651,30 +652,30 @@
 % command like |\@ctblbegin| we put
 % |\begin{table}[tbp]| in it.
 %    \begin{macrocode}
-\define@key{ctbl}{caption}{\def\@ctblcaption{#1}}%
-\define@key{ctbl}{cap}{\def\@ctblcap{#1}}%
-\define@key{ctbl}{label}{\def\@ctbllabel{#1}}%
-\define@key{ctbl}{pos}{\def\@ctblpos{#1}\def\@ctblbegin{\@ctblbeg[#1]}}%
-\define@key{ctbl}{width}{\@ctblwidth=#1}%
-\define@key{ctbl}{maxwidth}{\@ctblmaxwidth=#1}%
-\define@key{ctbl}{mincapwidth}{\@ctblmincapwidth=#1}%
-\define@key{ctbl}{botcap}[]{\def\@ctblbotcap{1}}%
-\define@key{ctbl}{sideways}[]{\def\@ctblsideways{sideways}}%
-\define@key{ctbl}{rotate}[]{\def\@ctblsideways{sideways}%
-                            \PackageWarning{ctable}{%
+\define@key{ctbl}{caption}{\def\@ctblcaption{#1}}
+\define@key{ctbl}{cap}{\def\@ctblcap{#1}}
+\define@key{ctbl}{label}{\def\@ctbllabel{#1}}
+\define@key{ctbl}{pos}{\def\@ctblpos{#1}\def\@ctblbegin{\@ctblbeg[#1]}}
+\define@key{ctbl}{width}{\@ctblwidth=#1}
+\define@key{ctbl}{maxwidth}{\@ctblmaxwidth=#1}
+\define@key{ctbl}{mincapwidth}{\@ctblmincapwidth=#1}
+\define@key{ctbl}{botcap}[]{\def\@ctblbotcap{1}}
+\define@key{ctbl}{sideways}[]{\def\@ctblsideways{sideways}}
+\define@key{ctbl}{rotate}[]{\def\@ctblsideways{sideways}
+                            \PackageWarning{ctable}{
                               using obsolete option 'rotate', use 'sideways' instead}
-                            }%
-\define@key{ctbl}{figure}[]{\def\@ctbltaborfig{figure}}%
-\define@key{ctbl}{center}[]{\def\@ctblalign{center}}%
-\define@key{ctbl}{right}[]{\def\@ctblalign{flushright}}%
-\define@key{ctbl}{left}[]{\def\@ctblalign{flushleft}}%
-\define@key{ctbl}{star}[]{\def\@ctblstarred {*}}%
-\define@key{ctbl}{framerule}{\@ctblframerule=#1}%
-\define@key{ctbl}{framesep}{\@ctblframesep=#1}%
-\define@key{ctbl}{framefg}{\@ctblfgcolor#1=}%
-\define@key{ctbl}{framebg}{\@ctblbgcolor#1=}%
-\define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}%
-\define@key{ctbl}{nosuper}[]{\let\@cttextsuperscript\@ctcopy}%
+                            }
+\define@key{ctbl}{figure}[]{\def\@ctbltaborfig{figure}}
+\define@key{ctbl}{center}[]{\def\@ctblalign{center}}
+\define@key{ctbl}{right}[]{\def\@ctblalign{flushright}}
+\define@key{ctbl}{left}[]{\def\@ctblalign{flushleft}}
+\define@key{ctbl}{star}[]{\def\@ctblstarred {*}}
+\define@key{ctbl}{framerule}{\@ctblframerule=#1}
+\define@key{ctbl}{framesep}{\@ctblframesep=#1}
+\define@key{ctbl}{framefg}{\@ctblfgcolor#1=}
+\define@key{ctbl}{framebg}{\@ctblbgcolor#1=}
+\define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}
+\define@key{ctbl}{nosuper}[]{\let\@cttextsuperscript\@ctcopy}
 %    \end{macrocode}
 % a caption will only be generated if the \textsl{caption} option was used:
 %    \begin{macrocode}
@@ -694,27 +695,27 @@
 \newcommand{\tmark}[1][a]{%
    \hbox{\textsuperscript{\normalfont\textit{#1\xspace}}}}
 \newcommand{\ctable}[4][]{%
-   \def\@ctbltaborfig{table}%
-   \def\@ctblalign   {center}%
-   \def\@ctblsideways  {}%
-   \def\@ctblpos     {}%
-   \def\@ctblcaption {}%
-   \def\@ctblcap     {}%
-   \def\@ctbllabel   {}%
-   \def\@ctblbeg     {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
-   \def\@ctblbegin   {\@ctblbeg}%
-   \def\@ctblend     {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
-   \def\@ctblbotcap  {}%
-   \def\@ctblstarred {}%
-   \definecolor{@ctblframefg}{rgb}{0,0,0}%
-   \definecolor{@ctblframebg}{rgb}{1,1,1}%
+   \def\@ctbltaborfig{table}
+   \def\@ctblalign   {center}
+   \def\@ctblsideways  {}
+   \def\@ctblpos     {}
+   \def\@ctblcaption {}
+   \def\@ctblcap     {}
+   \def\@ctbllabel   {}
+   \def\@ctblbeg     {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
+   \def\@ctblbegin   {\@ctblbeg}
+   \def\@ctblend     {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
+   \def\@ctblbotcap  {}
+   \def\@ctblstarred {}
+   \definecolor{@ctblframefg}{rgb}{0,0,0}
+   \definecolor{@ctblframebg}{rgb}{1,1,1}
    \@ctblframerule0pt
    \@ctblcaptionskip0ex
    \@ctblframesep0pt
    \@ctblwidth=0pt
    \@ctblmaxwidth=0pt
    \@ctblmincapwidth=0pt
-   \setkeys{ctbl}{#1}%
+   \setkeys{ctbl}{#1}
 %    \end{macrocode}
 % It makes no sense to use \textsl{width} together with \textsl{maxwidth} or
 % \textsl{pos} together with \textsl{sideways}
@@ -722,14 +723,14 @@
    \ifdim\@ctblwidth=0pt\else
       \ifdim\@ctblmaxwidth=0pt\else
          \PackageError{ctable}{
-            You may not use the width and maxwidth options together}{%
+            You may not use the width and maxwidth options together}{
             Use either width or maxwidth}
       \fi
    \fi
    \ifx\@ctblpos\empty\else
       \ifx\@ctblsideways\empty\else
       \PackageError{ctable}{
-         You may not use the pos and sideways options together}{%
+         You may not use the pos and sideways options together}{
          Rotated tables and figures are always typeset on a separate page}
       \fi
    \fi
@@ -740,7 +741,7 @@
    \ifx\@ctblcaption\empty
       \ifx\@ctbllabel\empty\else
          \PackageError{ctable}{
-            You may not label a captionless table}{%
+            You may not label a captionless table}{
             Such a label can't be referenced}
       \fi
    \fi
@@ -753,7 +754,7 @@
       \newcolumntype{X}{l}% temporarily make  type X = l
       \@ctblframe{@ctblframefg}{@ctblframebg}{%
          \begin{tabular}{#2}
-            #4
+            #4%
          \end{tabular}%
       }%
    }%
@@ -779,7 +780,7 @@
          \newcolumntype{X}{Y}% restore X
          \@ctblframe{@ctblframefg}{@ctblframebg}{%
             \begin{tabularx}{\ifdim\@ctblwidth>0pt\@ctblwidth\else\@ctblmaxwidth\fi}{#2}
-               #4
+               #4%
             \end{tabularx}%
          }%
       }%
@@ -813,7 +814,7 @@
                \\
                \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}
                   #3%
-               \end{tabularx}
+               \end{tabularx}%
             \fi
             \ifx\@ctblbotcap\empty\else\vskip\@ctblcaptionskip\@ctblCaption\fi
          \end{minipage}
