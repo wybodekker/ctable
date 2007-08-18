@@ -1,77 +1,100 @@
-#!/bin/sh
+#!/usr/bin/env ruby
+require 'optparse'
+require 'erb'
+require 'rubygems'
+require 'rio'
+require 'session'
 
-# doit - make all or one example picture sets.
+# doit - make all or some example picture sets.
 
-# Usage: doit       # make them all
-#        doit nn    # make set nn
+# Usage: doit      # make them all
+#        doit nnx  # make nnx.pdf and snnx.pdf
 #
 # pictures are numbered 01, 02, etc.
-# nn has description text
-# nn[a-z] has code to typeset a \ctable; for [k-z] page layout will be shown
-# for each nn[a-z] two pdfs are generated: nn[a-z].pdf for the ctable picture
-#     and snn[a-z].pdf for the source code verbatim.
+# nn[a-z] has code to typeset a \ctable; for nn[k-z] page layout will be shown
+# for each nn[a-z] two pdfs are generated:
+#      nn[a-z].pdf for the ctable picture
+# and snn[a-z].pdf for the source code verbatim.
+# The number of digits (nn) is set with DIGS
+# The prefix (s) for source verbatims and (empty) for result files is set by PRE
+# Windows users should replace NULL with perhaps "c:/temp/null"
 
-if [ "$1" = "" ]; then 
-  new=`ls [0-9][0-9]`
-else
-  if [ ! -e $1 ]; then
-    echo "Error: file $1 not found"
-    exit 1
-  fi
-  new=$1
-fi
+MYNAME = File.basename($0)
+  DIGS = 2
+   ALL = Dir["[0-9]"*DIGS+"[a-z]"].sort
+  NULL = '/dev/null'
+   PRE = ['s','']
 
-cat <<'EOF' >main.tex || exit 1
-\documentclass[12pt]{article}
-\usepackage{ctable,verbatfi,colortbl,doc}
-\usepackage{pxfonts}
-\definecolor{lightblue}{rgb}{0.529, 0.808, 0.922}
-\definecolor{lightyellow}{rgb}{1,1,.878}
-\MakeShortVerb{\|}
-\parindent0pt\parskip2ex
-\setcounter{secnumdepth}{1}
-\begin{document}
-EOF
+# clean up directory
+# all = false: keep pdf's
+# all = true: remove pdf's, too
+def clean(all=false)
+  ALL.map{|x| PRE.map{|y| y+x }}.flatten.each do |f|
+    exts = %w{aux tex log chk fls out}
+    exts << 'pdf' if all
+    exts.each do |e|
+      fe = "#{f}.#{e}"
+      File.delete(fe) if File.exist?(fe)
+    end
+  end
+  exit(0)
+end
 
-temp=`mktemp`
-for i in $new; do 
-  cat $i |grep -v ^\$Id >> main.tex
-  echo -e '\n\\begin{tabularx}{\hsize}{>{\\hsize=.5\\hsize\\center}X>{\\hsize=.5\\hsize\\center}X}' >>main.tex
-  for j in $i[a-z]; do 
-    echo '\documentclass[twoside]{article}' >$j.tex
-    echo $j|grep "[k-z]$" >/dev/null &&
-      echo '\usepackage[papersize={65mm,40mm},showframe,margin=5mm,noheadfoot]{geometry}' >>$j.tex
-    echo '\usepackage{ctable}
-      \usepackage{txfonts}
-      \pagestyle{empty}
-      \parindent0pt
-      \begin{document}
-    ' >>$j.tex
-    cat $j |grep -v ^\$Id >> $j.tex
-    echo '\end{document}' >> $j.tex
-    mk --noview --noprint $j.tex || exit 1 # mk: CTAN see catalogue
-    pdfcrop $j.pdf $j.pdf
-    cat $j |grep -v ^\$Id |asc2pdf --batch=o$temp
-    if ! pdfcrop --margins 2 $temp.pdf s$j.pdf 2>/dev/null; then
-       echo error running "pdfcrop --margins 2 $temp.pdf s$j.pdf"
-       exit 1
-    else 
-      rm -f $temp $temp.pdf
-    fi
-    if [ $j = $i'a' -o $j = $i'k' ]; then 
-      echo -n '\rowcolor{lightyellow}' >> main.tex
-    else
-      echo -n '\rowcolor{lightblue}' >> main.tex
-    fi
-    echo '\includegraphics{s'$j'}& \includegraphics{'$j'}\NN' >> main.tex
-    case $j in
-    *[ak]*) echo '\rowcolor{lightyellow} & \NN' >> main.tex;;
-    *)    echo '\rowcolor{lightblue} & \NN' >> main.tex;;
-    esac
-  done
-  echo -e '\\end{tabularx}\n' >>main.tex
-done
-echo '\end{document}' >>main.tex
-mk --noview --noprint
+# call the system shell with command
+# exit on error
+def sys(command)
+  sh ||= Session::Shell.new
+  o,e = sh.execute(command)
+  unless sh.exit_status == 0
+    puts "error running: #{command}",
+         "  exit_status: #{sh.exit_status}",
+         "error message: #{e}"
+    exit(sh.exit_status)
+  end
+end
 
+@quiet = false
+ARGV.options do |opt|
+  opt.banner = "Create example images\n"
+  opt.banner << "No arguments: create them all\n"
+  opt.banner << "Example: ./#{MYNAME} 03? # creates 03a.pdf, 03b.pdf, s03a.pdf, and s03b.pdf"
+  opt.separator ""
+  opt.on('-h','--help','print this help and exit')       do puts opt.help; exit end
+  opt.on("-c","--clean","Clean up, but keep pdf files")  do clean end
+  opt.on("-C","--Clean","Clean up, including pdf files") do clean(true) end
+  opt.on("-q","--quiet","Be silent")                     do @quiet = true end
+  opt.parse!
+end
+set = ARGV.empty? ? ALL : ARGV
+tex = DATA.readlines("\n\n") # tex[0] -> source verbatim, tex[1] -> result
+sh = Session::Shell.new
+set.each do |j|
+  puts j unless @quiet
+  0.upto(1) do |i|
+    f = "#{PRE[i]}#{j}"
+    r = rio(f+'.tex') < ERB.new(tex[i]).result(binding)
+    sys("pdflatex --interaction=batchmode #{r.path} > #{NULL}")
+    sys("pdfcrop #{f}.pdf #{f}.pdf")
+  end
+end
 # $Id$
+__END__
+\documentclass{article}
+\usepackage[a4paper,margin=20mm,noheadfoot]{geometry}
+\pagestyle{empty}
+\begin{document}\ttfamily
+\fontsize{10}{12 pt}\selectfont
+\begin{verbatim}<%= open(j).readlines.delete_if {|x| x =~ /\$Id:/ } %>}\end{verbatim}
+\end{document}
+
+\documentclass[twoside]{article}
+<% if j =~ /[k-z]$/ %>
+\usepackage[papersize={65mm,40mm},showframe,margin=5mm,noheadfoot]{geometry}
+<% end %>
+\usepackage{ctable}
+\usepackage{txfonts}
+\pagestyle{empty}
+\parindent0pt
+\begin{document}
+<%= open(j).readlines.delete_if {|x| x =~ /\$Id:/ } %>
+\end{document}
