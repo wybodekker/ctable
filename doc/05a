@@ -1,4 +1,4 @@
 \ctable[
   caption = a lengthy caption
-]{c}{}{\FL test\LL}
+]{c}{}{\FL row1\LL}
 $Id$
