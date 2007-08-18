@@ -40,7 +40,7 @@
 \def\URL#1{http://www.ctan.org/tex-archive/help/Catalogue/entries/#1.html}
 \def\REF#1{\href{\URL{#1}}{\texttt{#1}}}
 \parindent0pt\parskip1ex
-\long\def\ROW#1#2#3{\noindent\parskip0pt%
+\newcommand{\ROW}[3]{\noindent\parskip0pt%
   %\fboxsep0pt
   \colorbox{#1}{%
     \parbox{.98\hsize}{%
