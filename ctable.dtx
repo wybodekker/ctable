@@ -621,7 +621,7 @@
 %
 % \section{Implementation}
 % \begin{macrocode}
-\RequirePackage{xspace,color,xkeyval,array,tabularx,booktabs,rotating,caption}
+\RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating,caption}
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
@@ -693,29 +693,29 @@
 \newcommand{\tnote}[2][a]{%
    \hbox{\@cttextsuperscript{\normalfont\textit{#1}}}&#2\NN}
 \newcommand{\tmark}[1][a]{%
-   \hbox{\textsuperscript{\normalfont\textit{#1\xspace}}}}
+   \hbox{\textsuperscript{\normalfont\textit{#1}}}}
 \newcommand{\ctable}[4][]{%
-   \def\@ctbltaborfig{table}
-   \def\@ctblalign   {center}
-   \def\@ctblsideways  {}
-   \def\@ctblpos     {}
-   \def\@ctblcaption {}
-   \def\@ctblcap     {}
-   \def\@ctbllabel   {}
-   \def\@ctblbeg     {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
-   \def\@ctblbegin   {\@ctblbeg}
-   \def\@ctblend     {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
-   \def\@ctblbotcap  {}
-   \def\@ctblstarred {}
-   \definecolor{@ctblframefg}{rgb}{0,0,0}
-   \definecolor{@ctblframebg}{rgb}{1,1,1}
+   \def\@ctbltaborfig{table}%
+   \def\@ctblalign   {center}%
+   \def\@ctblsideways  {}%
+   \def\@ctblpos     {}%
+   \def\@ctblcaption {}%
+   \def\@ctblcap     {}%
+   \def\@ctbllabel   {}%
+   \def\@ctblbeg     {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
+   \def\@ctblbegin   {\@ctblbeg}%
+   \def\@ctblend     {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
+   \def\@ctblbotcap  {}%
+   \def\@ctblstarred {}%
+   \definecolor{@ctblframefg}{rgb}{0,0,0}%
+   \definecolor{@ctblframebg}{rgb}{1,1,1}%
    \@ctblframerule0pt
    \@ctblcaptionskip0ex
    \@ctblframesep0pt
    \@ctblwidth=0pt
    \@ctblmaxwidth=0pt
    \@ctblmincapwidth=0pt
-   \setkeys{ctbl}{#1}
+   \setkeys{ctbl}{#1}%
 %    \end{macrocode}
 % It makes no sense to use \textsl{width} together with \textsl{maxwidth} or
 % \textsl{pos} together with \textsl{sideways}
