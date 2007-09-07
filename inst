@@ -10,7 +10,7 @@ for i in [0-9][0-9]?; do
   if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then
     echo Creating example graphics
     ./doit || exit 1
-    ./clean
+    ./doit -c
     break
   fi
 done
