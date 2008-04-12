@@ -77,7 +77,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{322}
+% \CheckSum{348}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -266,6 +266,8 @@
 %
 % |nosuper|      & in the footnote table, typeset footnote markers on
 %                  the line, instead of superscripted.\NN[1ex]
+%
+% |notespar|     & typeset footnotes in a parapgraph instead of in a table.\NN[1ex]
 %
 % |framerule=...|& draw a frame around the table with the given rule
 %                  thickness. The default is |0pt|, so that no frame
@@ -529,6 +531,12 @@
 % \ROW{Y}{s07a}{07a}
 % \ROW{B}{s07b}{07b}
 % 
+% \subsection{\ttfamily\bfseries notespar}
+% Footnotes in |ctable| are typeset in a paragraph, instead of a table: 
+% \medskip\\
+% \ROW{Y}{s12a}{12a}
+% \ROW{B}{s12b}{12b}
+% 
 % \newpage
 % \subsection{\ttfamily\bfseries mincapwidth}
 % |ctable| forces caption and footnotes to stay within the width of the table.
@@ -680,6 +688,7 @@
 \define@key{ctbl}{framebg}{\@ctblbgcolor#1=}
 \define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}
 \define@key{ctbl}{nosuper}[]{\let\@cttextsuperscript\@ctcopy}
+\define@key{ctbl}{notespar}[]{\def\@ctblnotespar{1}}
 %    \end{macrocode}
 % a caption will only be generated if the \textsl{caption} option was used:
 %    \begin{macrocode}
@@ -695,13 +704,18 @@
    \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule #3}%
 }
 \newcommand{\tnote}[2][a]{%
-   \hbox{\@cttextsuperscript{\normalfont\textit{#1}}}&#2\NN}
+   \ifx\@ctblnotespar\empty%
+     \hbox{\@cttextsuperscript{\normalfont\textit{#1}}}&#2\NN
+   \else%
+     \@cttextsuperscript{\normalfont\textit{#1}}\,#2
+   \fi
+}
 \newcommand{\tmark}[1][a]{%
    \hbox{\textsuperscript{\normalfont\textit{#1}}}}
 \newcommand{\ctable}[4][]{%
    \def\@ctbltaborfig{table}%
    \def\@ctblalign   {center}%
-   \def\@ctblsideways  {}%
+   \def\@ctblsideways{}%
    \def\@ctblpos     {}%
    \def\@ctblcaption {}%
    \def\@ctblcap     {}%
@@ -711,6 +725,7 @@
    \def\@ctblend     {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
    \def\@ctblbotcap  {}%
    \def\@ctblstarred {}%
+   \def\@ctblnotespar{}%
    \definecolor{@ctblframefg}{rgb}{0,0,0}%
    \definecolor{@ctblframebg}{rgb}{1,1,1}%
    \@ctblframerule0pt
@@ -815,10 +830,17 @@
             \centering{\usebox\ctbl@t} % insert the tabular
             \def\@ctblfootnotes{#3}%
             \ifx#3\empty\else % append footnotes, if any
-               \\
-               \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}
-                  #3%
-               \end{tabularx}%
+               \ifx\@ctblnotespar\empty%
+                  \\
+                  \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}
+                     #3%
+                  \end{tabularx}%
+               \else%
+                  \\[.2ex]
+                  \begin{minipage}{\hsize}\footnotesize\raggedright%
+                     #3%
+                  \end{minipage}%
+               \fi
             \fi
             \ifx\@ctblbotcap\empty\else\vskip\@ctblcaptionskip\@ctblCaption\fi
          \end{minipage}
