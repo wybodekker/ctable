@@ -1,6 +1,8 @@
 \ctable[notespar]{c}{
-  \tnote[a.]{First footnote}
-  \tnote[b.]{Second footnote}
-}{\FL Table's\tmark\ first\tmark[b]\ row\LL}
+  \tnote[a]{First note.}
+  \tnote[b]{Second note.}
+  \tnote[c]{Third note.}
+}{\FL Table's\tmark\ first\tmark[b]\ row
+      with footnotes\tmark[c]\LL}
 
 $Id$
