@@ -8,12 +8,39 @@
 \begin{document}
 This text shows some tests. The heading is used to tell what is being tested, so
 use one page per test and use fancyhead to set the heading. 
+\clearpage
 
+\fancyhead[C]{notespar sets notes in a block}
+\ctable[
+  caption=Notes in tabular form,
+]{l}{
+  \tnote[a]{note.}
+  \tnote[b]{other note.}
+  \tnote[c]{yet another.}
+  \tnote[d]{fourth note; this is a lengthy one, long enough to be wider than the table.}
+}{\FL
+Some\tmark[a] text\tmark[b] for the first line\NN
+and some\tmark[c] for the second line\tmark[d]\LL
+}
+
+\ctable[
+  caption=Notes in a block,
+  notespar
+]{l}{
+  \tnote[a]{note.}
+  \tnote[b]{other note.}
+  \tnote[c]{yet another.}
+  \tnote[d]{fourth note; this is a lengthy one, long enough to be wider than the table.}
+}{\FL
+Some\tmark[a] text\tmark[b] for the first line\NN
+and some\tmark[c] for the second line\tmark[d]\LL
+}
+
+\clearpage
+\fancyhead[C]{A figure}
 \ctable[figure,botcap,caption=Terminology]{c}{}{\includegraphics{metrics}}
 
-\def\CAP{Zetmeel (enzymatisch), gebruikte enzymen}
-\newlength{\capwidth}\settowidth{\capwidth}{Table 3: \CAP}
-\newpage
+\clearpage
 
 \fancyhead[C]{captionskip; first: without ctable}
 \begin{table}[h]\begin{center}
@@ -41,7 +68,7 @@ Without ascenders and descenders:
   \caption{xTx}
 \end{center}\end{table}
 
-\newpage
+\clearpage
 \fancyhead[C]{captionskip; now ctable: default 2ex, test 4ex}
 \setcounter{table}{0}
 \ctable[pos=h!,caption=xxx]{c}{}{\FL a single line ctable\LL}
@@ -52,7 +79,7 @@ Without ascenders and descenders:
 \setcounter{table}{0}
 \ctable[pos=h!,botcap,captionskip=4ex,caption=xxx]{c}{}{\FL a single line ctable\LL}
 
-\newpage
+\clearpage
 \fancyhead[C]{captionskip; now ctable: default 2ex, test 4ex}
 \setcounter{table}{0}
 \ctable[pos=h!,caption=xpx]{c}{}{\FL a single line ctable\LL}
@@ -63,9 +90,11 @@ Without ascenders and descenders:
 \setcounter{table}{0}
 \ctable[pos=h!,botcap,captionskip=4ex,caption=xTx]{c}{}{\FL a single line ctable\LL}
 
-\newpage
+\clearpage
 \fancyhead[C]{CENTERED}
 
+\def\CAP{Zetmeel (enzymatisch), gebruikte enzymen}
+\newlength{\capwidth}\settowidth{\capwidth}{Table 3: \CAP}
 \ctable[
   pos=h,
   framerule=1pt,
@@ -94,7 +123,7 @@ lab& tijd & temperatuur \NN
 23 & 16 & 60 \NN
 26 & 12 & 60 \LL
 }
-\newpage
+\clearpage
 
 \fancyhead[C]{RIGHT ALIGNED}
 
@@ -146,7 +175,7 @@ lab& tijd & temperatuur \NN
 26 & 12 & 60 \LL
 }
 
-\newpage
+\clearpage
 \fancyhead[C]{LEFT ALIGNED}
 
 
@@ -197,7 +226,7 @@ lab& tijd & temperatuur \NN
 26 & 12 & 60 \LL
 }
 
-\newpage
+\clearpage
 
 \fancyhead[C]{BIG CAPTION AND FOOTNOTE, SMALL TABLE, MINCAPWIDTH=111mm}
 
@@ -217,6 +246,7 @@ outline, summarize, itemize, review, dip into,
 flip through, browse, glance into, leaf through, skim,
 refine, enumerate, glean, synopsize, winnow the wheat
 from the chaff and separate the sheep from the goats.}
+{\LARGE
 \ctable[
   caption={\CAP},
   mincapwidth=111mm
@@ -225,6 +255,6 @@ from the chaff and separate the sheep from the goats.}
 Anzahl\NN
 \%\LL
 }
-\newpage
+}
 \end{document}
 $Id$
