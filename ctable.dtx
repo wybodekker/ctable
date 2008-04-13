@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2008/04/12 v1.11 ctable package]
+    [2008/04/13 v1.12 ctable package]
 %</package>
 %
 %<*driver>
@@ -132,11 +132,11 @@
 %                             its facilities. *Captionskip option redefined*: 0pt
 %                             value now corresponds to LaTeX defaults
 %                            }
-% \changes{v1.11}{2008/04/12}{Added some percent signs at EOL to prevent
+% \changes{v1.11}{2007/09/07}{Added some percent signs at EOL to prevent
 %                             whitespace, 
 %                             Removed xspace usage - caused overfull badness
-%                             Option notespar added
 %                            }
+% \changes{v1.12}{2008/04/12}{Option notespar added}
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -716,7 +716,7 @@
 \newcommand{\ctable}[4][]{%
    \def\@ctbltaborfig{table}%
    \def\@ctblalign   {center}%
-   \def\@ctblsideways{}%
+   \def\@ctblsideways  {}%
    \def\@ctblpos     {}%
    \def\@ctblcaption {}%
    \def\@ctblcap     {}%
