@@ -23,7 +23,7 @@ open("|cvs -Q status").each do |line|
    if line =~ /File:\s+([.\w]+)\s+Status:\s+([\w-]+)/
       f,s = $1,$2
       f or next
-      next if f == 'mktar'
+      next if f == 'mkzip'
       files.push(f) unless s == "Up-to-date"
    end
 end
@@ -45,7 +45,7 @@ for i in %w{dtx ins sty pdf} do
    files.push(f)
 end
 
-Dir["doc/*.pdf","doc/[0-9][0-9]","doc/[0-9][0-9]?"].each do |f|
+Dir["doc/*.pdf"].each do |f|
    files.push(f)
 end
 
@@ -74,8 +74,8 @@ if (cd-pd).abs > 1
    gets =~ /^y/ or die "install cancelled by user request"
 end
 
-targz = "#{name}-#{@version}.tar.gz"
+zip = "#{name}-#{@version}.zip"
 
-system("tar czf #{targz} #{files.join(' ')}")
+system("zip -Dqr #{zip} #{files.join(' ')}")
 
-say "     created: #{targz}"
+say "     created: #{zip}"
