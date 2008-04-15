@@ -38,7 +38,7 @@ end
 system("export NOINSTALL=true; ./inst") or 
    die "Problems creating sty and pdf files"
 
-files= Array.new # files to zip
+files = ['README'] # files to zip
 for i in %w{dtx ins sty pdf} do
    f = "#{name}.#{i}"
    FileTest.exist?(f) or raise "file #{f} does not exist"
@@ -63,6 +63,16 @@ open(name+'.dtx').each do |line|
    end
 end
 say "     version: #{@version}\npackage date: #{@packdate}\n    cvs-date: #{@cvsdate}"
+
+# is README updated?
+found = false
+open('README').each do |line|
+  if line =~ /v#{@version} relative to/
+    found = true
+    break
+  end
+end
+die "README not updated" unless found
 
 y,m,d = ParseDate.parsedate(@packdate)
 pd=Date.new(y,m,d)
