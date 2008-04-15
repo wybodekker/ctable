@@ -7,15 +7,15 @@
 
 - LPPL
 
-- major changes (relative to v1.11):
+- major changes of v1.12 relative to v1.11):
   - added option notespar, typesetting footnotes in a paragraph, one
     after the other. Useful for tables with many short footnotes. 
 
-- major changes (relative to v1.10):
+- major changes of v1.11 relative to v1.10):
    - added %'s at eol to prevent whitespace
    - removed \xspace usage -caused overfull badness
 
-- major changes (relative to v1.9):
+- major changes of v1.10 relative to v1.9):
    - Footnote markers in the text now stay superscript with nosuper.
    - Documentation: added many examples for the options.
    - Corrected some unwanted white space in captions.
