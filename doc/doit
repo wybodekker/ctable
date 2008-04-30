@@ -84,7 +84,7 @@ __END__
 \pagestyle{empty}
 \begin{document}\ttfamily
 \fontsize{10}{12 pt}\selectfont
-\begin{verbatim}<%= open(j).readlines.delete_if {|x| x =~ /\$Id:/ } %>}\end{verbatim}
+\begin{verbatim}<%= open(j).readlines.delete_if {|x| x =~ /\$Id|remove for source/ } %>}\end{verbatim}
 \end{document}
 
 \documentclass[twoside]{article}
@@ -96,5 +96,5 @@ __END__
 \pagestyle{empty}
 \parindent0pt
 \begin{document}
-<%= open(j).readlines.delete_if {|x| x =~ /\$Id:/ } %>
+<%= open(j).readlines.delete_if {|x| x =~ /\$Id/ } %>
 \end{document}
