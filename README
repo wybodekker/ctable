@@ -1,25 +1,32 @@
-- ctable.sty provides commands to easily typeset centered or left or
-  right aligned tables and (multiple-)figure floats, with footnotes.
-  Instead of an environment, a command with 4 arguments is used; the
-  first is optional and is used for key,value pairs generating
-  variations on the defaults and offering a route for future
-  extensions.
+This is version 1.13 of the ctable package
 
-- LPPL
+ctable.sty provides commands to easily typeset centered or left or
+right aligned tables and (multiple-)figure floats, with footnotes.
+Instead of an environment, a command with 4 arguments is used; the
+first is optional and is used for key,value pairs generating
+variations on the defaults and offering a route for future
+extensions.
 
-- major changes of v1.12 relative to v1.11):
-  - added option notespar, typesetting footnotes in a paragraph, one
-    after the other. Useful for tables with many short footnotes. 
+License: LPPL
 
-- major changes of v1.11 relative to v1.10):
-   - added %'s at eol to prevent whitespace
-   - removed \xspace usage -caused overfull badness
+major changes of v1.13 relative to v1.12):
+- cap option with empty argument will prohibit insertion in lot/lof
+- added option continued, for continuation tables: same number as 
+  previous table, ` (continued' added to caption.
 
-- major changes of v1.10 relative to v1.9):
-   - Footnote markers in the text now stay superscript with nosuper.
-   - Documentation: added many examples for the options.
-   - Corrected some unwanted white space in captions.
-   - Caption package included to correct booktabs errors
-     in caption position. As a consequence:
-   - *Captionskip option redefined*: 0pt value now corresponds
-     to LaTeX defaults
+major changes of v1.12 relative to v1.11):
+- added option notespar, typesetting footnotes in a paragraph, one
+  after the other. Useful for tables with many short footnotes. 
+
+major changes of v1.11 relative to v1.10):
+ - added %'s at eol to prevent whitespace
+ - removed \xspace usage -caused overfull badness
+
+major changes of v1.10 relative to v1.9):
+ - Footnote markers in the text now stay superscript with nosuper.
+ - Documentation: added many examples for the options.
+ - Corrected some unwanted white space in captions.
+ - Caption package included to correct booktabs errors
+   in caption position. As a consequence:
+ - *Captionskip option redefined*: 0pt value now corresponds
+   to LaTeX defaults
