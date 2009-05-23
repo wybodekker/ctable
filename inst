@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 NAME=ctable
 LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex
 echo y |tex $NAME.ins >/dev/null
@@ -25,7 +25,7 @@ echo y |tex $NAME.ins >/dev/null
   if [ -f $NAME.idx ]; then
     makeindex -q -s gind.ist -o $NAME.ind $NAME.idx || exit 1
   fi
-  pdflatex --interaction=batchmode $NAME.dtx > /dev/null || exit 1
+  pdflatex --interaction=nonstopmode $NAME.dtx > /dev/null || exit 1
   
   # set environment variable NOINSTALL to skip installation in your textree
   if [ "$NOINSTALL" = "" ]; then
@@ -35,7 +35,7 @@ echo y |tex $NAME.ins >/dev/null
   fi
   echo cleanup
   rm -f $NAME.{aux,idx,ilg,ind,log,glo,gls,out} # doc/*.pdf 
-  sudo mktexlsr || exit 1
+  sudo -i mktexlsr || exit 1
 )
 if [ $? != 0 ]; then 
   echo errors detected
