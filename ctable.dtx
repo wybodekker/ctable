@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2008/08/12 v1.14a ctable package]
+    [2009/05/23 v1.14b ctable package]
 %</package>
 %
 %<*driver>
@@ -77,7 +77,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{394}
+% \CheckSum{393}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -564,7 +564,6 @@
 % \ROW{B}{s13b}{13b}
 % \ROW{B}{s13c}{13c}
 % 
-% \newpage
 % \subsection{\ttfamily\bfseries mincapwidth}
 % |ctable| forces caption and footnotes to stay within the width of the table.
 % Sometimes, however, tables are so narrow, that this is not really what you want.
@@ -873,18 +872,20 @@
             \ifx\@ctblbotcap\empty\@ctblCaption\vskip\@ctblcaptionskip\fi
             \centering{\usebox\ctbl@t} % insert the tabular
             \def\@ctblfootnotes{#3}%
-            \ifx#3\empty\else % append footnotes, if any
+            \ifx#3\empty\else{% append footnotes, if any
+               \footnotesize
                \ifx\@ctblnotespar\empty%
                   \\
-                  \begin{tabularx}{\hsize}{r@{\,}>{\footnotesize\raggedright}X}
+                  \begin{tabularx}{\hsize}{r@{\,}>{\raggedright}X}
                      #3%
                   \end{tabularx}%
                \else%
                   \\[.2ex]
-                  \begin{minipage}{\hsize}\footnotesize\raggedright%
+                  \begin{minipage}{\hsize}\raggedright%
                      #3%
                   \end{minipage}%
                \fi
+            }
             \fi
             \ifx\@ctblbotcap\empty\else\vskip\@ctblcaptionskip\@ctblCaption\fi
          \end{minipage}
