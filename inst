@@ -35,10 +35,10 @@ echo y |tex $NAME.ins >/dev/null
   fi
   echo cleanup
   rm -f $NAME.{aux,idx,ilg,ind,log,glo,gls,out} # doc/*.pdf 
-  sudo -i mktexlsr || exit 1
+  sudo `which mktexlsr` || exit 1
 )
 if [ $? != 0 ]; then 
-  echo errors detected
+  echo errors detected, see ctable.log
 else
   echo ctable successfully installed
 fi
