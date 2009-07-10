@@ -43,12 +43,14 @@ end
 # call the system shell with command
 # exit on error
 def sys(command)
-  sh ||= Session::Shell.new
+  sh = Session::Bash.new
   o,e = sh.execute(command)
-  unless sh.exit_status == 0
+  unless sh.exit_status == 0 || o =~ /! Package caption Error: Not available in compatibility mode./m
     puts "error running: #{command}",
          "  exit_status: #{sh.exit_status}",
-         "error message: #{e}"
+         "       output: #{o}",
+         "        error: #{e}"
+
     exit(sh.exit_status)
   end
 end
@@ -73,7 +75,7 @@ set.each do |j|
   0.upto(1) do |i|
     f = "#{PRE[i]}#{j}"
     r = rio(f+'.tex') < ERB.new(tex[i]).result(binding)
-    sys("pdflatex --interaction=batchmode #{r.path} > #{NULL}")
+    sys("pdflatex --interaction=nonstopmode #{r.path}")
     sys("pdfcrop #{f}.pdf #{f}.pdf")
   end
 end
