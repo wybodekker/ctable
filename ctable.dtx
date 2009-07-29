@@ -77,7 +77,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{393}
+% \CheckSum{401}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -245,6 +245,10 @@
 %                  problem with very narrow tables; |mincapwidth|
 %                  can then be used to give the float a minimum
 %                  width. The tabular will be centered in it.\NN[1ex]
+%
+% |doinside=...| & command to be run inside, just before the tabular
+%                  or tabularx environment. You can use this, for example, 
+%                  for the adjustment of the font size with |\small|.\NN[1ex]
 %
 % |pos=...|      & float position, default: |tbp|.\NN[1ex]
 %
@@ -667,6 +671,7 @@
 \def\@ctblfgcolor#1 #2 #3={\definecolor{@ctblframefg}{rgb}{#1,#2,#3}}
 \def\@ctblbgcolor#1 #2 #3={\definecolor{@ctblframebg}{rgb}{#1,#2,#3}}
 \def\@ctbltextsuperscript#1{\ifx\@ctblnosuper\empty\@textsuperscript{#1}\else{\footnotesize#1}\fi}
+\def\@ctbldoinside{\relax}
 \newdimen\@ctblframesep
 \newdimen\@ctblframerule
 \newdimen\@ctblwidth
@@ -715,6 +720,7 @@
 \define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}
 \define@key{ctbl}{nosuper}[]{\def\@ctblnosuper{1}}
 \define@key{ctbl}{notespar}[]{\def\@ctblnotespar{1}}
+\define@key{ctbl}{doinside}{\def\@ctbldoinside{#1}}
 %    \end{macrocode}
 % A caption will only be generated if the \textsl{caption} option was used. 
 % First adapt |\@caption| so that it does not insert empty (short) captions
@@ -814,6 +820,7 @@
    \sbox\ctbl@t{%
       \newcolumntype{X}{l}% temporarily make  type X = l
       \@ctblframe{@ctblframefg}{@ctblframebg}{%
+         \@ctbldoinside
          \begin{tabular}{#2}
             #4%
          \end{tabular}%
@@ -840,6 +847,7 @@
       \sbox\ctbl@t{%
          \newcolumntype{X}{Y}% restore X
          \@ctblframe{@ctblframefg}{@ctblframebg}{%
+            \@ctbldoinside
             \begin{tabularx}{\ifdim\@ctblwidth>0pt\@ctblwidth\else\@ctblmaxwidth\fi}{#2}
                #4%
             \end{tabularx}%
