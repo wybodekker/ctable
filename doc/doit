@@ -45,7 +45,7 @@ end
 def sys(command)
   sh = Session::Bash.new
   o,e = sh.execute(command)
-  unless sh.exit_status == 0 || o =~ /! Package caption Error: Not available in compatibility mode./m
+  unless sh.exit_status == 0
     puts "error running: #{command}",
          "  exit_status: #{sh.exit_status}",
          "       output: #{o}",
@@ -86,7 +86,7 @@ __END__
 \pagestyle{empty}
 \begin{document}\ttfamily
 \fontsize{10}{12 pt}\selectfont
-\begin{verbatim}<%= open(j).readlines.delete_if {|x| x =~ /\$Id|remove for source/ } %>}\end{verbatim}
+\begin{verbatim}<%= open(j).readlines.delete_if {|x| x =~ /\$Id|remove for source/ } %>\end{verbatim}
 \end{document}
 
 \documentclass[twoside]{article}
