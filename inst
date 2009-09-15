@@ -1,6 +1,30 @@
 #!/bin/bash
+
+function die {
+  echo -e "$1"
+  exit 1
+}
+
 NAME=ctable
-LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex
+LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex/ctable
+CLEAN={aux,idx,ilg,chk,fls,ind,log,glo,gls,out,tex}
+ALLCLEAN={aux,idx,ilg,chk,fls,ind,log,glo,gls,out,tex,sty,cls,pdf}
+
+function clean {
+  eval "rm -f $NAME.$CLEAN doc/*.$CLEAN"
+}
+function Clean {
+  eval "rm -f $NAME.$ALLCLEAN doc/*.$ALLCLEAN"
+}
+
+case "$1"
+in
+-c|--clean) clean; exit;;
+-C|--Clean) Clean; exit;;
+-h|--help)  echo 'Usage: ./inst [-c|C|h]'; exit;;
+?*)         echo 'Illegal argument(s)'; exit;;
+esac
+
 echo y |tex $NAME.ins >/dev/null
 (
   # recompile example graphics if any is missing:
@@ -18,9 +42,9 @@ echo y |tex $NAME.ins >/dev/null
   cd ..
   
   echo Creating documentation
-  pdflatex --interaction=batchmode $NAME.dtx  || exit 1
+  pdflatex --interaction=batchmode $NAME.dtx  || die "`texlog_extract $NAME.log`"
   if [ -f $NAME.glo ]; then
-    makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo || exit 1
+    makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo || echo makeindex-error
   fi
   if [ -f $NAME.idx ]; then
     makeindex -q -s gind.ist -o $NAME.ind $NAME.idx || exit 1
@@ -30,12 +54,12 @@ echo y |tex $NAME.ins >/dev/null
   # set environment variable NOINSTALL to skip installation in your textree
   if [ "$NOINSTALL" = "" ]; then
     echo Installing $NAME.{dtx,sty,pdf}
-    sudo cp $NAME.dtx $LOCAL || exit 1
-    sudo mv -f $NAME.sty $NAME.pdf $LOCAL || exit 1
+    rm -rf $LOCAL
+    mkdir -p $LOCAL
+    cp $NAME.{dtx,sty,pdf} $LOCAL || exit 1
   fi
-  echo cleanup
-  rm -f $NAME.{aux,idx,ilg,ind,log,glo,gls,out} # doc/*.pdf 
   sudo `which mktexlsr` || exit 1
+  exit 0
 )
 if [ $? != 0 ]; then 
   echo errors detected, see ctable.log
