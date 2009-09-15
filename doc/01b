@@ -1,10 +1,10 @@
-\let\H\hsize   
+\newcommand{\F}[1]{\includegraphics[width=\hsize]{#1}}
+\newcolumntype{H}[1]{>{\hsize=#1\hsize}X}
 \ctable[
   caption = a figure,
   figure, botcap,
-  width=.4\H,
-]{@{}>{\H=.4\H}X>{\H=.6\H}X@{}}{}{\FL
-  \includegraphics[width=\H]{penguin}&
-  \includegraphics[width=\H]{lion}\LL
+  width=.4\hsize,
+]{H{.4}H{.6}}{}{\FL
+  \F{penguin}& \F{lion}\LL
 }
 $Id$
