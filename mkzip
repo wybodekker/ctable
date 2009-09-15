@@ -45,7 +45,7 @@ for i in %w{dtx ins sty pdf} do
    files.push(f)
 end
 
-Dir["doc/*.pdf"].each do |f|
+Dir["doc/{[0-9][0-9][a-z],doit,lion.png,penguin.jpg}"].each do |f|
    files.push(f)
 end
 
@@ -56,7 +56,7 @@ end
 @cvsdate = @packdate = @version = 'empty'
 open(name+'.dtx').each do |line|
   case line
-    when /Id: .*(\d\d\d\d\/\d\d\/\d\d)/
+    when /Id: .*(\d\d\d\d-\d\d-\d\d)/
       @cvsdate = $1
    when /(\d\d\d\d\/\d\d\/\d\d) v(\d+\.\d+[a-z]*) /
       @packdate,@version = $1,$2
