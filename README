@@ -1,4 +1,4 @@
-This is version 1.13 of the ctable package
+This is version 1.14 of the ctable package
 
 ctable.sty provides commands to easily typeset centered or left or
 right aligned tables and (multiple-)figure floats, with footnotes.
@@ -8,6 +8,14 @@ variations on the defaults and offering a route for future
 extensions.
 
 License: LPPL
+
+major changes of v1.14 relative to v1.13):
+- nosuper propagation to later tables prohibited
+- added option doinside
+- use of (obsolete) carom.sty for docs discontinued
+- empty labels not created
+- newcolumntype warnings removed
+- caption package not needed anymore
 
 major changes of v1.13 relative to v1.12):
 - cap option with empty argument will prohibit insertion in lot/lof
@@ -30,3 +38,5 @@ major changes of v1.10 relative to v1.9):
    in caption position. As a consequence:
  - *Captionskip option redefined*: 0pt value now corresponds
    to LaTeX defaults
+
+$Id$
