@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2009/09/15 v1.14 ctable package]
+    [2009/09/17 v1.15 ctable package]
 %</package>
 %
 %<*driver>
@@ -30,7 +30,6 @@
    verbose,
    pdftex,
    paper=a4paper,
-   nomarginpar,
    bottom=30mm,
    nohead
 ]{geometry}
@@ -145,12 +144,15 @@
 %                             same number as previous table, ` (continued' added
 %                             to caption.
 %                            }
-% \changes{v1.14}{2008/08/12}{nosuper propagation to later tables prohibited
+% \changes{v1.14}{2009/09/15}{nosuper propagation to later tables prohibited
 %                             added option doinside
 %                             use of (obsolete) carom.sty for docs discontinued
 %                             empty labels not created
 %                             newcolumntype warnings removed
 %                             caption package not needed anymore
+%                            }
+% \changes{v1.15}{2009/09/17}{removed whitespace before tables,
+%                             corrected marginpars in the documentation
 %                            }
 %
 % \GetFileInfo{ctable.dtx}
@@ -699,9 +701,9 @@
 % Save the standard X type once in the new type Y
 %    \begin{macrocode}
 \newcolumntype{Y}{X}
-\def\@ctblXcolumntype#1{
+\def\@ctblXcolumntype#1{%
   \let\NC@find@X\undefined
-  \newcolumntype{X}{#1}
+  \newcolumntype{X}{#1}%
 }
 \def\@ctblframe#1#2#3{%
    \@ctbloldsep\fboxsep\fboxsep\@ctblframesep%
