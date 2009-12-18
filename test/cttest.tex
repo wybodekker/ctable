@@ -7,6 +7,9 @@
 \fancyhead{}\fancyfoot{}
 \bibliographystyle{plain}
 \begin{document}
+
+\listoftables
+\clearpage
 This text shows some tests. The heading is used to tell what is being tested, so
 use one page per test and use fancyhead to set the heading. 
 \clearpage
@@ -52,7 +55,6 @@ and some\tmark[c] for the second line\tmark[d]\LL
 \end{center}\end{table}
 
 Without ascenders and descenders:
-\def\tablename{xxx}
 \begin{table}[h]\begin{center}
   \setcounter{table}{0}
   \caption{xxx}
@@ -262,5 +264,27 @@ Anzahl\NN
 \fancyhead[C]{FULL WIDTH FIGURE MUST FIT IN TEXTWIDTH}
 \CAP
 \ctable{@{}c@{}}{}{\FL\includegraphics[width=\textwidth]{metrics}\LL}
+
+\clearpage
+\fancyhead[C]{NO ENTRY IN LOT}
+\ctable[
+  caption={This table should be seen in the LOT},
+  mincapwidth=111mm
+]{l} {\tnote{\input{tufte}}}
+{\FL
+Anzahl\NN
+\%\LL
+}
+
+\ctable[
+  caption={This table should not be seen in the LOT},
+  cap=,
+  mincapwidth=111mm
+]{l} {\tnote{\input{tufte}}}
+{\FL
+Anzahl\NN
+\%\LL
+}
+
 \end{document}
 $Id$
