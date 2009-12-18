@@ -1,4 +1,6 @@
-\newcommand{\F}[1]{\includegraphics[width=\hsize]{#1}}
+\newcommand{\F}[1]{
+  \includegraphics[width=\hsize]{#1}
+}
 \newcolumntype{H}[1]{>{\hsize=#1\hsize}X}
 \ctable[
   caption = a figure,
