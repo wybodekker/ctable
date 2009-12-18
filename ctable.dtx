@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2009/09/17 v1.15 ctable package]
+    [2009/11/02 v1.16 ctable package]
 %</package>
 %
 %<*driver>
@@ -30,7 +30,9 @@
    verbose,
    pdftex,
    paper=a4paper,
+   margin=20mm,
    bottom=30mm,
+   left=50mm,
    nohead
 ]{geometry}
 \usepackage{hyperref}
@@ -41,16 +43,15 @@
 \def\URL#1{http://www.ctan.org/tex-archive/help/Catalogue/entries/#1.html}
 \def\REF#1{\href{\URL{#1}}{\texttt{#1}}}
 \parindent0pt\parskip1ex
-\newcommand{\ROW}[3]{\noindent\parskip0pt%
-  %\fboxsep0pt
+\newcommand{\ROW}[3]{\parskip0pt%
   \colorbox{#1}{%
     \parbox{.98\hsize}{%
-      \rule{0pt}{1.5ex}\\
-      \parbox{.5\hsize}{\includegraphics{#2}}
-      \parbox{.5\hsize}{\centering{\includegraphics{#3}}}
-      \\\rule{0pt}{1.5ex}
-    }
-  }\par
+      \rule{0pt}{1.5ex}\\%%
+      \parbox{.5\hsize}{\includegraphics{#2}}%%
+      \parbox{.5\hsize}{\centering{\includegraphics{#3}}}%%
+      \\\rule{0pt}{1.5ex}%%
+    }%%
+  }\par%%
 }
 \AtBeginDocument{\RecordChanges}
 \AtEndDocument{\PrintChanges}
@@ -78,7 +79,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{387}
+% \CheckSum{397}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -154,6 +155,8 @@
 % \changes{v1.15}{2009/09/17}{removed whitespace before tables,
 %                             corrected marginpars in the documentation
 %                            }
+% \changes{v1.16}{2009/11/02}{option cap={} did not suppress lot/lof entry
+%                            }
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -194,11 +197,11 @@
 % to typeset it, and one or more |X| column specifiers should be specified.
 % Otherwise tabular will be used.
 %
-% This package defines the commands |\ctable|,
-% |\tnote| and |\tmark|, as well as four |\tabularnewline| generating
+% This package defines the commands |\ctable|, |\tnote| and
+% |\tmark|, and four |\tabularnewline| generating
 % commands. The latter generate reasonable amounts of whitespace
-% around horizontal rules and are also useful for tabulars outside
-% this package.
+% around horizontal rules and are also useful for tabulars
+% outside this package.
 %
 % Since the |ctable| package imports the \REF{array} and \REF{booktabs}
 % packages, all commands from those packages are available as well.
@@ -450,7 +453,7 @@
 %    caption = Example with a specified width of 100mm,
 %    label   = width,
 %    width   = 100mm,
-%    pos     = h,
+%    pos     = ht,
 %    left
 % ]{c>{\raggedright}Xc>{\raggedright}X}{
 %    \tnote{footnotes are placed under the table}
@@ -471,7 +474,7 @@
 %    caption = Example with a specified width of 100mm,
 %    label   = width,
 %    width   = 100mm,
-%    pos     = h,
+%    pos     = ht,
 %    left
 % ]{c>{\raggedright}Xc>{\raggedright}X}{
 %    \tnote{footnotes are placed under the table}
@@ -626,14 +629,16 @@
 %
 % \section{Implementation}
 % \begin{macrocode}
-\RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating}
+\RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating,caption}
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
 \def\LL{\NN\bottomrule}
 \def\@ctblfgcolor#1 #2 #3={\definecolor{@ctblframefg}{rgb}{#1,#2,#3}}
 \def\@ctblbgcolor#1 #2 #3={\definecolor{@ctblframebg}{rgb}{#1,#2,#3}}
-\def\@ctbltextsuperscript#1{\ifx\@ctblnosuper\empty\@textsuperscript{#1}\else{\footnotesize#1}\fi}
+\def\@ctbltextsuperscript#1{%
+  \ifx\@ctblnosuper\empty\@textsuperscript{#1}\else{\footnotesize#1}\fi
+}
 \def\@ctbldoinside{\relax}
 \newdimen\@ctblframesep
 \newdimen\@ctblframerule
@@ -685,14 +690,21 @@
 \define@key{ctbl}{notespar}[]{\def\@ctblnotespar{1}}
 \define@key{ctbl}{doinside}{\def\@ctbldoinside{#1}}
 %    \end{macrocode}
-% A caption will only be generated if the \textsl{caption} option was used. 
-% First adapt |\@caption| so that it does not insert empty (short) captions
-% in the lot/lof
+% A caption will only be generated if the \textsl{caption} option was used, with a
+% non-empty value. If so, it goes in the lot/lof, unless the \textsl{cap} option 
+% specified a different (probably shorter) value for it. A \textsl{cap} option with
+% an empty value inhibits a tof/lof entry.
 %    \begin{macrocode}
 \def\@ctblCaption{
    \ifx\@ctblcap\undefined\let\@ctblcap\@ctblcaption\fi
    \ifx\@ctblcaption\empty\else
-      \caption[\@ctblcap]{\ifx\@ctbllabel\empty\else\label{\@ctbllabel}\fi\@ctblcaption\ \@ctblcontinued\strut}
+      \def\@ctblcaptionarg{\ifx\@ctbllabel\empty\else\label{\@ctbllabel}\fi
+         \@ctblcaption\ \@ctblcontinued\strut}
+      \ifx\@ctblcap\empty
+         \caption[]{\@ctblcaptionarg}
+      \else
+         \caption[\@ctblcap]{\@ctblcaptionarg}
+      \fi
    \fi
 }
 %    \end{macrocode}
