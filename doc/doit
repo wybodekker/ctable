@@ -1,8 +1,7 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby
 require 'optparse'
 require 'erb'
 require 'rubygems'
-require 'rio'
 require 'session'
 
 # doit - make all or some example picture sets.
@@ -74,8 +73,9 @@ set.each do |j|
   puts j unless @quiet
   0.upto(1) do |i|
     f = "#{PRE[i]}#{j}"
-    r = rio(f+'.tex') < ERB.new(tex[i]).result(binding)
-    sys("pdflatex --interaction=nonstopmode #{r.path}")
+    open(f+'.tex','w') do |o| o.print ERB.new(tex[i]).result(binding) end
+    #r = rio(f+'.tex') < ERB.new(tex[i]).result(binding)
+    sys("pdflatex --interaction=nonstopmode #{f}")
     sys("pdfcrop #{f}.pdf #{f}.pdf")
   end
 end
