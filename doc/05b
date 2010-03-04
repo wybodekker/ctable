@@ -1,5 +1,5 @@
 \ctable[
 mincapwidth = 55mm,
-    caption = a lengthy caption
-]{c}{}{\FL row1\LL}
+    caption = a more or less lengthy caption
+]{c}{\tnote[x]{a more or less lengthy note}}{\FL row1\tmark[x]\LL}
 $Id$
