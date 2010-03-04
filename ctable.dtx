@@ -634,6 +634,8 @@
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
 \def\LL{\NN\bottomrule}
+\definecolor{@ctblframefg}{rgb}{0,0,0}%
+\definecolor{@ctblframebg}{rgb}{1,1,1}%
 \def\@ctblfgcolor#1 #2 #3={\definecolor{@ctblframefg}{rgb}{#1,#2,#3}}
 \def\@ctblbgcolor#1 #2 #3={\definecolor{@ctblframebg}{rgb}{#1,#2,#3}}
 \def\@ctbltextsuperscript#1{%
@@ -745,10 +747,8 @@
    \def\@ctblend     {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
    \def\@ctblbotcap  {}%
    \def\@ctblstarred {}%
-   \def\@ctblnosuper{}
+   \def\@ctblnosuper {}%
    \def\@ctblnotespar{}%
-   \definecolor{@ctblframefg}{rgb}{0,0,0}%
-   \definecolor{@ctblframebg}{rgb}{1,1,1}%
    \@ctblframerule0pt
    \@ctblcaptionskip=0ex
    \@ctblframesep0pt
