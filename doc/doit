@@ -1,8 +1,6 @@
 #!/usr/bin/ruby
-require 'optparse'
 require 'erb'
-require 'rubygems'
-require 'session'
+require 'scriptingutils'
 
 # doit - make all or some example picture sets.
 
@@ -18,10 +16,8 @@ require 'session'
 # The prefix (s) for source verbatims and (empty) for result files is set by PRE
 # Windows users should replace NULL with perhaps "c:/temp/null"
 
-MYNAME = File.basename($0)
   DIGS = 2
    ALL = Dir["[0-9]"*DIGS+"[a-z]"].sort
-  NULL = '/dev/null'
    PRE = ['s','']
 
 # clean up directory
@@ -39,42 +35,28 @@ def clean(all=false)
   exit(0)
 end
 
-# call the system shell with command
-# exit on error
-def sys(command)
-  sh = Session::Bash.new
-  o,e = sh.execute(command)
-  unless sh.exit_status == 0
-    puts "error running: #{command}",
-         "  exit_status: #{sh.exit_status}",
-         "       output: #{o}",
-         "        error: #{e}"
-
-    exit(sh.exit_status)
+@quiet = false
+def handle_options
+  ARGV.options do |opt|
+    opt.banner = "Create example images\n"
+    opt.banner << "No arguments: create them all\n"
+    opt.banner << "Example: ./#{MYNAME} 03? # creates 03a.pdf, 03b.pdf, s03a.pdf, and s03b.pdf"
+    opt.separator ""
+    opt.on('-h','--help','print this help and exit')       do puts opt.help; exit end
+    opt.on("-c","--clean","Clean up, but keep pdf files")  do clean end
+    opt.on("-C","--Clean","Clean up, including pdf files") do clean(true) end
+    opt.on("-q","--quiet","Be silent")                     do @quiet = true end
+    opt.parse!
   end
 end
-
-@quiet = false
-ARGV.options do |opt|
-  opt.banner = "Create example images\n"
-  opt.banner << "No arguments: create them all\n"
-  opt.banner << "Example: ./#{MYNAME} 03? # creates 03a.pdf, 03b.pdf, s03a.pdf, and s03b.pdf"
-  opt.separator ""
-  opt.on('-h','--help','print this help and exit')       do puts opt.help; exit end
-  opt.on("-c","--clean","Clean up, but keep pdf files")  do clean end
-  opt.on("-C","--Clean","Clean up, including pdf files") do clean(true) end
-  opt.on("-q","--quiet","Be silent")                     do @quiet = true end
-  opt.parse!
-end
+init(nil,:handle_options)
 set = ARGV.empty? ? ALL : ARGV
 tex = DATA.readlines("\n\n") # tex[0] -> source verbatim, tex[1] -> result
-sh = Session::Shell.new
 set.each do |j|
   puts j unless @quiet
   0.upto(1) do |i|
     f = "#{PRE[i]}#{j}"
     open(f+'.tex','w') do |o| o.print ERB.new(tex[i]).result(binding) end
-    #r = rio(f+'.tex') < ERB.new(tex[i]).result(binding)
     sys("pdflatex --interaction=nonstopmode #{f}")
     sys("pdfcrop #{f}.pdf #{f}.pdf")
   end
@@ -86,7 +68,7 @@ __END__
 \pagestyle{empty}
 \begin{document}\ttfamily
 \fontsize{10}{12 pt}\selectfont
-\begin{verbatim}<%= open(j).readlines.delete_if {|x| x =~ /\$Id|remove for source/ } %>\end{verbatim}
+\begin{verbatim}<%= open(j).readlines.delete_if {|x| x =~ /\$Id|remove for source/ }.join %>\end{verbatim}
 \end{document}
 
 \documentclass[twoside]{article}
@@ -98,5 +80,5 @@ __END__
 \pagestyle{empty}
 \parindent0pt
 \begin{document}
-<%= open(j).readlines.delete_if {|x| x =~ /\$Id/ } %>
+<%= open(j).readlines.delete_if {|x| x =~ /\$Id/ }.join %>
 \end{document}
