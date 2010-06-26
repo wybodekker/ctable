@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'date'
-require 'parsedate'
 
 def say(s)
    STDERR.puts(s)
@@ -45,7 +44,7 @@ for i in %w{dtx ins sty pdf} do
    files.push(f)
 end
 
-Dir["doc/{[0-9][0-9][a-z],doit,lion.png,penguin.jpg}"].each do |f|
+Dir["doc/{[0-9][0-9][a-z],doit,inst,lion.png,penguin.jpg}"].each do |f|
    files.push(f)
 end
 
@@ -74,10 +73,8 @@ open('README').each do |line|
 end
 die "README not updated" unless found
 
-y,m,d = ParseDate.parsedate(@packdate)
-pd=Date.new(y,m,d)
-y,m,d = ParseDate.parsedate(@cvsdate)
-cd=Date.new(y,m,d)
+pd=Date.parse(@packdate)
+cd=Date.parse(@cvsdate)
 if (cd-pd).abs > 1
    warn "package and cvs dates differ by more than 1 day;"
    say  "Go on (y/n)?"
