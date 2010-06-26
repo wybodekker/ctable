@@ -44,9 +44,10 @@ for i in %w{dtx ins sty pdf} do
    files.push(f)
 end
 
-Dir["doc/{[0-9][0-9][a-z],doit,inst,lion.png,penguin.jpg}"].each do |f|
+Dir["doc/{[0-9][0-9][a-z],doit,lion.png,penguin.jpg}"].each do |f|
    files.push(f)
 end
+files.push('inst')
 
 # check for equal dates and warn if date older than a day:
 # $Id$
