@@ -1,4 +1,4 @@
-This is version 1.16 of the ctable package
+This is version 1.17 of the ctable package
 License: LPPL
 
 ctable.sty provides commands to easily typeset centered or left or
@@ -8,12 +8,11 @@ first is optional and is used for key,value pairs generating
 variations on the defaults and offering a route for future
 extensions.
 
+major changes of v1.17 relative to v1.16):
+- doinside option propagated in subsequent ctable calls
+
 major changes of v1.16 relative to v1.15):
 - option cap={} did not suppress lot/lof entry
 - notespar option now generates fully justified notes 
-
-major changes of v1.15 relative to v1.14):
-- removed whitespace before tables,
-- corrected marginpars in the documentation
 
 $Id$
