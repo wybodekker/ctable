@@ -19,12 +19,12 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2010/06/26 v1.16 ctable package]
+    [2010/10/30 v1.17 ctable package]
 %</package>
 %
 %<*driver>
 \documentclass{ltxdoc}
-\usepackage{ctable,txfonts}
+\usepackage{ctable,txfonts,paralist}
 \usepackage[l2tabu,orthodox]{nag}
 \usepackage[
    verbose,
@@ -79,7 +79,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{396}
+% \CheckSum{398}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -155,7 +155,10 @@
 % \changes{v1.15}{2009/09/17}{removed whitespace before tables,
 %                             corrected marginpars in the documentation
 %                            }
-% \changes{v1.16}{2009/11/02}{option cap={} did not suppress lot/lof entry
+% \changes{v1.16}{2010/06/26}{option cap={} did not suppress lot/lof entry
+%                             notespar option now generates fully justified notes
+%                            }
+% \changes{v1.17}{2010/10/30}{option cap={} did not suppress lot/lof entry
 %                             notespar option now generates fully justified notes
 %                            }
 %
@@ -400,6 +403,11 @@
 % then be replaced with |l| as long as the width of the resulting table
 % stays with the specified maximum width.
 %
+% \section{Tips}
+% \begin{compactitem}
+% \item When you a table wider than |\textwidth|, use the geometry package
+% and surround your ctable call with |\newgeometry{width=...,margin=...}| and |\restoregeometry|.
+% \end{compactitem}
 % \section{Examples}
 % Table~\ref{nowidth} is an example taken from the related package
 % \REF{threeparttable} by Donald Arseneau, with an extra footnote.
@@ -750,6 +758,7 @@
    \def\@ctblstarred {}%
    \def\@ctblnosuper {}%
    \def\@ctblnotespar{}%
+   \def\@ctbldoinside{}%
    \@ctblframerule0pt
    \@ctblcaptionskip=0ex
    \@ctblframesep0pt
