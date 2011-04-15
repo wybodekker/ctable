@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2005 by Wybo Dekker <wybodekker@xs4all.nl>
+% Copyright (C) 2005 by Wybo Dekker <wybo@dekkerdocumenten.nl>
 % -------------------------------------------------------
 %
 % This file may be distributed and/or modified under the
@@ -19,12 +19,12 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2010/10/30 v1.17a ctable package]
+    [2011/04/15 v1.18 ctable package]
 %</package>
 %
 %<*driver>
 \documentclass{ltxdoc}
-\usepackage{ctable,txfonts,paralist}
+\usepackage{ctable,txfonts,paralist,desclist}
 \usepackage[l2tabu,orthodox]{nag}
 \usepackage[
    verbose,
@@ -79,7 +79,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{398}
+% \CheckSum{551}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -161,6 +161,9 @@
 % \changes{v1.17}{2010/10/30}{option cap={} did not suppress lot/lof entry
 %                             notespar option now generates fully justified notes
 %                            }
+% \changes{v1.18}{2011/04/15}{added \setupctable for option defaults
+%                             added complement for several options (topcap, nosideways, et cetera
+%                            }
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -178,7 +181,7 @@
 %
 % \title{The \textsf{ctable} package\thanks{This document
 %   corresponds to \textsf{ctable}~\fileversion, dated \filedate.}}
-% \author{Wybo Dekker \\ \texttt{wybodekker@xs4all.nl}}
+% \author{Wybo Dekker \\ \texttt{wybo@dekkerdocumenten.nl}}
 %
 % \maketitle
 % \begin{abstract}\noindent
@@ -228,115 +231,194 @@
 % Extra comma's, including one behind the last pair, don't hurt.
 % Arguments to option should be put between braces if they contain
 % comma's or equals signs.
+% \section{Options}
 % Currently the following option keys have been defined:
-% \\[2ex]
-% \begin{tabularx}{\hsize}{@{}lX@{}}
-% |caption={...}|& table caption; the braces are needed only if your
-%                   caption contains a comma or an equals sign.\NN[1ex]
+% 
+% { \marginparwidth25mm
+% \DescribeMacro{botcap\hfill}
+% put the caption at the bottom of the float instead of on top of it.
+% See also: |topcap|.
 %
-% |cap={...}|    & for a short caption to go to the |\listoftables|.
-%                  Without the |cap| option, the full caption will go
-%                  into the |\listoftables|. If |cap| is given an empty 
-%                  value, no entry in the |\listoftables| will be made.
-%                  This may be useful, for example, with the |continued|
-%                  option.\NN[1ex]
+% \DescribeMacro{captionskip=...\hfill}
+% moves the caption relative to the table; the default is |0ex|, which puts
+% captions at their default \LaTeX\ positions: a top caption's baseline at
+% |1ex| above the top rule position of the table and a bottom caption's
+% baseline at |4ex| below the bottom rule position.
 %
-% |continued[=...]| & if used, the table will be numbered the same as the
-%                  previous table. If used without an argument, the caption
-%                  will be suffixed with ` (continued)', if used with an
-%                  argument, the suffix will be the argument.\NN[1ex]
+% \DescribeMacro{caption=...\hfill}
+% table caption; the braces are needed only if your caption contains a
+% comma or an equals sign.
 %
-% |captionskip=...| & moves the caption relative to the table;
-%                  the default is |0ex|, which puts captions at
-%                  their default \LaTeX\ positions: a top
-%                  caption's baseline at |1ex| above the top rule
-%                  position of the table and a bottom caption's
-%                  baseline at |4ex| below the bottom rule
-%                  position.\NN[1ex]
+% \DescribeMacro{cap=...\hfill}
+% for a short caption to go to the |\listoftables|. Without the |cap|
+% option, the full caption will go into the |\listoftables|. If |cap| is
+% given an empty value, no entry in the |\listoftables| will be made. This
+% may be useful, for example, with the |continued| option.
 %
-% |mincapwidth=...| & sets the minimum width of the float. Without
-%                  this option, the width is set to that of the
-%                  tabular, and the caption and footnotes are
-%                  typeset within that width. This may be a
-%                  problem with very narrow tables; |mincapwidth|
-%                  can then be used to give the float a minimum
-%                  width. The tabular will be centered in it.\NN[1ex]
+% \DescribeMacro{center\hfill}
+% center the table in the available text width; this is the default.
+% See also: |left|, |right|.
 %
-% |doinside=...| & command to be run inside, just before the tabular
-%                  or tabularx environment. You can use this, for example, 
-%                  for the adjustment of the font size with |\small|.\NN[1ex]
+% \DescribeMacro{continued=...\hfill}
+% if used, the table will be numbered the same as the previous table. If
+% used without an argument, the caption will be suffixed with `
+% (continued)', if used with an argument, the suffix will be the argument.
 %
-% |pos=...|      & float position, default: |tbp|.\NN[1ex]
+% \DescribeMacro{doinside=...\hfill}
+% command to be run inside, just before the tabular or tabularx
+% environment. You can use this, for example, for the adjustment of the
+% font size with |\small|.
 %
-% |label=...|    & for |\label|\NN[1ex]
+% \DescribeMacro{figure\hfill}
+% produce a figure float instead of a table float. See also: |table|.
 %
-% |width=...|    & \REF{tabularx} will be used to typeset the table at the
-%                  specified width\,---\,one or more |X| column
-%                  specifiers must be provided.\NN[1ex]
+% \DescribeMacro{framebg={\slshape r g b}\hfill}
+% set the background color of the frame (the color inside the frame) to the
+% given triplet of \textsl{rgb}-values. The values should be numbers
+% between 0 and 1. The default is |1 1 1| (white).
 %
-% |maxwidth=...| & like the \textsl{width} option, but any |X| column
-%                  specifiers will be replaced with |l| if the resulting
-%                  table width would thus stay within the specified
-%                  maximum width. This is especially useful where the
-%                  \LaTeX\ source is generated by a script.\NN[1ex]
 %
-% |center|       & center the table in the available text width; this is
-%                  the default.\NN[1ex]
+% \DescribeMacro{framefg={\slshape r g b}\hfill}
+% set the foreground color of the frame (the rule color) to the given
+% triplet of \textsl{rgb}-values. The values should be numbers between 0
+% and 1. The default is |0 0 0| (black).
 %
-% |left|         & left align the table in the available text width.\NN[1ex]
 %
-% |right|        & right align the table in the available text width.\NN[1ex]
+% \DescribeMacro{framerule=...\hfill}
+% draw a frame around the table with the given rule thickness. The default
+% is |0pt|, so that no frame will be seen.
 %
-% |figure|       & produce a figure float instead of a table float.\NN[1ex]
 %
-% |botcap|       & put the caption at the bottom of the float instead
-%                  of on top of it.\NN[1ex]
+% \DescribeMacro{framesep=...\hfill}
+% set the distance between the frame and the table to the given dimension.
+% The default is |0pt|.
 %
-% |sideways|     & rotate table or figure by 90 degrees anticlockwise
-%                  and put it on a separate page. With the twoside option
-%                  for the standard \LaTeX\ document classes, rotation
-%                  will be -90 on even pages. If you use this option,
-%                  the |pos| option is not allowed.\NN[1ex]
 %
-% |star|         & use the starred versions of the |table| and |figure|
-%                  environments, which place the float over two columns
-%                  when the |twocolumn| option or the |\twocolumn|
-%                  command is active.\NN[1ex]
+% \DescribeMacro{label=...\hfill}
+% labels the float with |\label|.
 %
-% |nosuper|      & in the footnote table, typeset footnote markers on
-%                  the line, instead of superscripted.\NN[1ex]
+% \DescribeMacro{left\hfill}
+% left align the table in the available text width. See also: |center|, |right|.
 %
-% |notespar|     & typeset footnotes in a parapgraph instead of in a table.\NN[1ex]
+% \DescribeMacro{maxwidth=...\hfill}
+% like the \textsl{width} option, but any |X| column specifiers will be
+% replaced with |l| if the resulting table width would thus stay within the
+% specified maximum width. This is especially useful where the \LaTeX\
+% source is generated by a script.
 %
-% |framerule=...|& draw a frame around the table with the given rule
-%                  thickness. The default is |0pt|, so that no frame
-%                  will be seen.\NN[1ex]
+% \DescribeMacro{mincapwidth=...\hfill}
+% sets the minimum width of the float. Without this option, the width is
+% set to that of the tabular, and the caption and footnotes are typeset
+% within that width. This may be a problem with very narrow tables;
+% |mincapwidth| can then be used to give the float a minimum width. The
+% tabular will be centered in it.
 %
-% |framesep=...| & set the distance between the frame and the table
-%                 to the given dimension. The default is |0pt|.\NN[1ex]
+% \DescribeMacro{nonotespar\hfill}
+% typeset footnotes in a table; this is the default. See also: |notespar|.
 %
-% |framefg=|\slshape r g b & set the foreground color of the frame (the
-%                 rule color) to the given triplet of
-%                 \textsl{rgb}-values. The values should be numbers
-%                 between 0 and 1. The default is |0 0 0| (black).\NN[1ex]
+% \DescribeMacro{nosideways\hfill}
+% undo the sideways option. See also: |sideways|.
 %
-% |framebg=|\slshape r g b & set the background color of the frame (the
-%                 color inside the frame) to the given triplet of
-%                 \textsl{rgb}-values. The values should be numbers
-%                 between 0 and 1. The default is |1 1 1| (white).\NN[1ex]
-% \end{tabularx}
-% \\[2ex]
-% The footnotes are placed under the table, without a rule.
-% You therefore probably will want to use the |\LL| (last line)
-% command if you use footnotes.
+% \DescribeMacro{nostar\hfill}
+% use the un-starred versions of the |table| and |figure| environments;
+% this is the default
+%
+% \DescribeMacro{nosuper\hfill}
+% in the footnote table, typeset footnote markers on the line, instead of
+% superscripted.
+%
+% \DescribeMacro{notespar\hfill}
+% typeset footnotes in a paragraph instead of in a table.
+%
+% \DescribeMacro{pos=...\hfill}
+% float position, default: |tbp|.
+%
+% \DescribeMacro{right\hfill}
+% right align the table in the available text width.
+%
+% \DescribeMacro{sideways\hfill}
+% rotate table or figure by 90 degrees anticlockwise and put it on a
+% separate page. With the twoside option for the standard \LaTeX\ document
+% classes, rotation will be -90 on even pages. If you use this option, the
+% |pos| option is not allowed. See also: |nosideways|.
+%
+% \DescribeMacro{star\hfill}
+% use the starred versions of the |table| and |figure| environments, which
+% place the float over two columns when the |twocolumn| option or the
+% |\twocolumn| command is active. See also: |nostar|.
+%
+% \DescribeMacro{super\hfill}
+% in the footnote table, typeset footnote markers as superscripts; this is
+% the default. See also: |nosuper|.
+%
+% \DescribeMacro{table\hfill}
+% produce a table float (this is the default). See also: |figure|.
+%
+% \DescribeMacro{topcap\hfill}
+% put the caption top of the float; this is the default. See also: |botcap|.
+%
+% \DescribeMacro{width=...\hfill}
+% \REF{tabularx} will be used to typeset the table at the specified
+% width\,---\,one or more |X| column specifiers must be provided.
+%
+% }
+%
+% \section{The width and maxwidth options}
+% When \LaTeX-sources containing tables are generated automatically by a
+% script, it is often not known in advance what the maximum size of an
+% |l|~column will be. A good solution for this is to use an |X|~specifier,
+% typesetting the table at the text width with the \REF{tabularx} package.
+% However, this will result in too much white space in cases where the
+% column contains small texts only. This problem can be solved by using
+% the maxwidth option instead of the width option. The |X|~specifiers will
+% then be replaced with |l| as long as the width of the resulting table
+% stays with the specified maximum width.
+%
+% \section{Tables wider than the text width}
+% When you make a table wider than |\textwidth|, it will extend in the right margin. 
+% If it is a large table, occupying a whole page, you can use the geometry package
+% and surround your ctable call with |\newgeometry{width=...,margin=...}| and |\restoregeometry|.
+% However, both geometry commands imply |\clearpage|, so your table will appear on an otherwise 
+% empty page. 
+%
+% Alternatively, you can center the table on the paper, extending in both margins, by using the 
+% option |doinside=\hspace*{<dimen>}| with an appropriate negative |dimen>|.
+%
+% \section{Setting option defaults: setupctable}
+% Every call of |\ctable| resets the options to their defaults before evaluating the
+% first (optional) argument. So if you make two ctables: |\ctable[left,...| and
+% |\ctable[...|, the first will be left-aligned on the page, but the second, lacking
+% the |left| option, will be centered, because that is the default. If you want all
+% your tables left-aligned, it's more practical to change the default by calling
+% \DescribeMacro{\setupctable}
+% |\setupctable{left}|, either in the preamble or somewhere in the body. In latter
+% case only tables following the call will have their defaults changed. \par
+% |\setupctable| can set the defaults for all options except (of course) |caption|,
+% |cap|, and |label|. Actually, the initial option defaults are set by
+% calling |\setupctable| as follows:
+% \begin{verbatim}
+% \setupctable{
+%   captionskip=0pt,        framerule=0pt,    nostar,
+%   center,                 framesep=0pt,     pos=tbp,
+%   continued=(continued),  maxwidth=0pt,     super,
+%   doinside={},            mincapwidth=0pt,  table,
+%   framebg=1 1 1,          nonotespar,       topcap,
+%   framefg=0 0 0,          nosideways,       width=0pt
+% }
+% \end{verbatim}
+% \section{Other commands}
 % \DescribeMacro{\tnote}
 % |\tnote[label]{footnote text}| places {\footnotesize
 % \textsuperscript{\normalfont\textit{label}}\,footnote text}
 % under the table.
-% Can only be used in the foottable parameter described above. The
+% This command can only be used in |\ctable|'s third argument, i.e.\ the foottable
+% argument described above. The
 % label is optional, the default label is a single $a$. For more
 % detailed control, you can also replace this command with something
 % like |labeltext&footnotetext\NN|.
+% The footnotes are placed under the table, without a rule.
+% You therefore probably will want to use the |\LL| (last line)
+% command if you use footnotes.
 % \par
 % \DescribeMacro{\tmark}
 % |\tmark[label]| this command places the superscripted label in the
@@ -351,19 +433,22 @@
 % \par
 % \DescribeMacro{\NN} Normal Newline, generates just a normal new line.
 % An optional dimen parameter inserts extra vertical space under the
-% line.
+% line. Is an alias for |\tabularnewline|
 % \par
 % \DescribeMacro{\FL} First Line, generates a new line and a thick
 % rule with some extra space under it.
 % An optional dimen parameter sets the line width; the default is 0.08em.
+% Is an alias for |\toprule|
 % \par
 % \DescribeMacro{\ML} Middle Line: generates a new line and a thin
 % rule with some extra space over and under it.
 % An optional dimen parameter sets the line width; the default is 0.05em.
+% Is an alias for |\tabularnewline\midrule|
 % \par
 % \DescribeMacro{\LL} Last Line:  generates a new line and a thick
 % rule with some extra space over it.
 % An optional dimen parameter sets the line width; the default is 0.08em.
+% Is an alias for |\tabularnewline\bottomrule|
 % \par
 % These macros can be used outside |\ctable| constructs.
 % \par
@@ -391,28 +476,7 @@
 % |\specialrule{<wd>}{<abovespace>}{<belowspace>}|.
 % \par
 % See the \REF{booktabs} documentation for details.
-%
-% \subsection{The width and maxwidth options}
-% When \LaTeX-sources containing tables are generated automatically by a
-% script, it is often not known in advance what the maximum size of an
-% |l|~column will be. A good solution for this is to use an |X|~specifier,
-% typesetting the table at the text width with the \REF{tabularx} package.
-% However, this will result in too much white space in cases where the
-% column contains small texts only. This problem can be solved by using
-% the maxwidth option instead of the width option. The |X|~specifiers will
-% then be replaced with |l| as long as the width of the resulting table
-% stays with the specified maximum width.
-%
-% \subsection{Tables wider than the text width}
-% When you make a table wider than |\textwidth|, it will extend in the right margin. 
-% If it is a large table, occupying a whole page, you can use the geometry package
-% and surround your ctable call with |\newgeometry{width=...,margin=...}| and |\restoregeometry|.
-% However, both geometry commands imply |\clearpage|, so your table will appear on an otherwise 
-% empty page. 
-%
-% Alternatively, you can center the table on the paper, extending in both margins, by using the 
-% option |doinside=\hspace*{<dimen>}| with an appropriate negative |dimen>|.
-%
+% \newpage
 % \section{Examples}
 % Table~\ref{nowidth} is an example taken from the related package
 % \REF{threeparttable} by Donald Arseneau, with an extra footnote.
@@ -424,6 +488,7 @@
 %    caption = The Skewing Angles ($\beta$) for
 %              $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark,
 %    label   = nowidth,
+%    pos     = h
 % ]{rlcc}{
 %    \tnote{for the abstraction reaction,
 %           $\fam0 Mu+HX \rightarrow MuH+X$.}
@@ -443,6 +508,7 @@
 %    caption = The Skewing Angles ($\beta$) for
 %              $\fam0 Mu(H)+X_2$ and $\fam0 Mu(H)+HX$~\tmark,
 %    label   = nowidth,
+%    pos     = h
 % ]{rlcc}{
 %    \tnote{for the abstraction reaction,
 %           $\fam0 Mu+HX \rightarrow MuH+X$.}
@@ -476,11 +542,9 @@
 %    \multicolumn{2}{c}{Multicolumn entry!} & THREE & FOUR   \NN
 %        \cmidrule(r){1-2}\cmidrule(rl){3-3}\cmidrule(l){4-4}
 %    one&
-%    The width of this column depends on the width of the
-%        table.\tmark &
+%    The width of this column depends on the width of the table.\tmark &
 %    three&
-%    Column four will act in the same way as
-%    column two, with the same width.                        \LL
+%    Column four will act in the same way as column two, with the same width.                        \LL
 % }
 % \end{verbatim}
 % \color{black}
@@ -526,15 +590,17 @@
 % \ROW{B}{s02l}{02l}
 % \ROW{B}{s02m}{02m}
 % 
-% \subsection{\ttfamily\bfseries nosuper}
+% \subsection{\ttfamily\bfseries super, nosuper}
 % Footnote markers in |ctable| are typeset superscripted by default. Use the
 % |nosuper| option to place them on the base line:
 % \medskip\\
 % \ROW{Y}{s07a}{07a}
 % \ROW{B}{s07b}{07b}
 % 
-% \subsection{\ttfamily\bfseries notespar}
-% Footnotes in |ctable| are typeset in a paragraph, instead of a table: 
+% \subsection{\ttfamily\bfseries notespar, nonotespar}
+% By default, footnotes in |ctable| are typeset in a table, one line per note. 
+% This corresponds with the |nonotespar| option.You can also typeset them in a paragraph,
+% one after the other, by using the |notespar| option: 
 % \medskip\\
 % \ROW{Y}{s12a}{12a}
 % \ROW{B}{s12b}{12b}
@@ -648,20 +714,26 @@
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
 \def\LL{\NN\bottomrule}
-\definecolor{@ctblframefg}{rgb}{0,0,0}%
-\definecolor{@ctblframebg}{rgb}{1,1,1}%
-\def\@ctblfgcolor#1 #2 #3={\definecolor{@ctblframefg}{rgb}{#1,#2,#3}}
-\def\@ctblbgcolor#1 #2 #3={\definecolor{@ctblframebg}{rgb}{#1,#2,#3}}
+\def\@defaultctblfgcolor#1 #2 #3={\definecolor{@defaultctblframefg}{rgb}{#1,#2,#3}}
+\def\@defaultctblbgcolor#1 #2 #3={\definecolor{@defaultctblframebg}{rgb}{#1,#2,#3}}
+\def\@ctblfgcolor#1 #2 #3={%
+  \definecolor{@ctblframefg}{rgb}{#1,#2,#3}
+  \def\@ctblfgactual{@ctblframefg}}
+\def\@ctblbgcolor#1 #2 #3={%
+  \definecolor{@ctblframebg}{rgb}{#1,#2,#3}
+  \def\@ctblbgactual{@ctblframebg}}
 \def\@ctbltextsuperscript#1{%
-  \ifx\@ctblnosuper\empty\@textsuperscript{#1}\else{\footnotesize#1}\fi
+  \ifx\@ctblsuper\@ctbltrue\@textsuperscript{#1}\else{\footnotesize#1}\fi
 }
+\def\@ctbltrue{1}
+\def\@ctblfalse{0}
 \def\@ctbldoinside{\relax}
-\newdimen\@ctblframesep
-\newdimen\@ctblframerule
-\newdimen\@ctblwidth
-\newdimen\@ctblcaptionskip
-\newdimen\@ctblmaxwidth
-\newdimen\@ctblmincapwidth
+\newdimen\@ctblframesep         \newdimen\@defaultctblframesep
+\newdimen\@ctblframerule        \newdimen\@defaultctblframerule
+\newdimen\@ctblwidth            \newdimen\@defaultctblwidth
+\newdimen\@ctblcaptionskip      \newdimen\@defaultctblcaptionskip
+\newdimen\@ctblmaxwidth         \newdimen\@defaultctblmaxwidth
+\newdimen\@ctblmincapwidth      \newdimen\@defaultctblmincapwidth
 \newdimen\@ctblw % the final width
 \newdimen\@ctblfloatwidth
 \newdimen\@ctbloldsep
@@ -678,33 +750,85 @@
 % command like |\@ctblbegin| we put
 % |\begin{table}[tbp]| in it.
 %    \begin{macrocode}
+
+\define@key{suctbl}{botcap}[]{\let\@defaultctblbotcap\@ctbltrue}
+\define@key{suctbl}{captionskip}{\@defaultctblcaptionskip=#1}
+\define@key{suctbl}{center}[]{\let\@defaultctblalign\centering}
+\define@key{suctbl}{continued}{\def\@defaulttextcontinued{#1}}
+\define@key{suctbl}{doinside}{\def\@defaultctbldoinside{#1}}
+\define@key{suctbl}{figure}[]{\def\@defaultctbltaborfig{figure}}
+\define@key{suctbl}{framebg}{\@defaultctblbgcolor#1=}
+\define@key{suctbl}{framefg}{\@defaultctblfgcolor#1=}
+\define@key{suctbl}{framerule}{\@defaultctblframerule=#1}
+\define@key{suctbl}{framesep}{\@defaultctblframesep=#1}
+\define@key{suctbl}{left}[]{\let\@defaultctblalign\raggedright}
+\define@key{suctbl}{maxwidth}{\@defaultctblmaxwidth=#1}
+\define@key{suctbl}{mincapwidth}{\@defaultctblmincapwidth=#1}
+\define@key{suctbl}{nonotespar}[]{\let\@defaultctblnotespar\@ctblfalse}
+\define@key{suctbl}{nosideways}[]{\let\@defaultctblsideways\empty}
+\define@key{suctbl}{nostar}[]{\def\@defaultctblstarred{}}
+\define@key{suctbl}{nosuper}[]{\let\@defaultctblsuper\@ctblfalse}
+\define@key{suctbl}{notespar}[]{\let\@defaultctblnotespar\@ctbltrue}
+\define@key{suctbl}{pos}{\def\@defaultctblpos{#1}}
+\define@key{suctbl}{right}[]{\let\@defaultctblalign\raggedleft}
+\define@key{suctbl}{sideways}[]{\def\@defaultctblsideways{sideways}}
+\define@key{suctbl}{star}[]{\def\@defaultctblstarred{*}}
+\define@key{suctbl}{super}[]{\let\@defaultctblsuper\@ctbltrue}
+\define@key{suctbl}{table}[]{\def\@defaultctbltaborfig{table}}
+\define@key{suctbl}{topcap}[]{\let\@defaultctblbotcap\@ctblfalse}
+\define@key{suctbl}{width}{\@defaultctblwidth=#1}
+
+\newcommand{\setupctable}[1]{\setkeys{suctbl}{#1}}
+\setupctable{
+  table,
+  continued=(continued),
+  topcap,
+  pos=,
+  framerule=0pt,
+  captionskip=0pt,
+  framesep=0pt,
+  width=0pt,
+  maxwidth=0pt,
+  mincapwidth=0pt,
+  nosideways,
+  center,
+  nostar,
+  super,
+  nonotespar,
+  doinside={},
+  framebg=1 1 1,
+  framefg=0 0 0,
+}
+
+\define@key{ctbl}{botcap}[]{\let\@ctblbotcap\@ctbltrue}
+\define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}
 \define@key{ctbl}{caption}{\def\@ctblcaption{#1}}
 \define@key{ctbl}{cap}{\def\@ctblcap{#1}}
-\define@key{ctbl}{label}{\def\@ctbllabel{#1}}
-\define@key{ctbl}{continued}[(continued)]{\def\@ctblcontinued{#1}}
-\define@key{ctbl}{pos}{\def\@ctblpos{#1}\def\@ctblbegin{\@ctblbeg[#1]}}
-\define@key{ctbl}{width}{\@ctblwidth=#1}
-\define@key{ctbl}{maxwidth}{\@ctblmaxwidth=#1}
-\define@key{ctbl}{mincapwidth}{\@ctblmincapwidth=#1}
-\define@key{ctbl}{botcap}[]{\def\@ctblbotcap{1}}
-\define@key{ctbl}{sideways}[]{\def\@ctblsideways{sideways}}
-\define@key{ctbl}{rotate}[]{\def\@ctblsideways{sideways}
-                            \PackageWarning{ctable}{
-                              using obsolete option 'rotate', use 'sideways' instead}
-                            }
-\define@key{ctbl}{figure}[]{\def\@ctbltaborfig{figure}}
 \define@key{ctbl}{center}[]{\let\@ctblalign\centering}
-\define@key{ctbl}{right}[]{\let\@ctblalign\raggedleft}
-\define@key{ctbl}{left}[]{\let\@ctblalign\raggedright}
-\define@key{ctbl}{star}[]{\def\@ctblstarred {*}}
+\define@key{ctbl}{continued}[\@defaulttextcontinued]{\def\@ctblcontinued{#1}}
+\define@key{ctbl}{doinside}{\def\@ctbldoinside{#1}}
+\define@key{ctbl}{figure}[]{\def\@ctbltaborfig{figure}}
+\define@key{ctbl}{framebg}{\@ctblbgcolor#1=}
+\define@key{ctbl}{framefg}{\@ctblfgcolor#1=}
 \define@key{ctbl}{framerule}{\@ctblframerule=#1}
 \define@key{ctbl}{framesep}{\@ctblframesep=#1}
-\define@key{ctbl}{framefg}{\@ctblfgcolor#1=}
-\define@key{ctbl}{framebg}{\@ctblbgcolor#1=}
-\define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}
-\define@key{ctbl}{nosuper}[]{\def\@ctblnosuper{1}}
-\define@key{ctbl}{notespar}[]{\def\@ctblnotespar{1}}
-\define@key{ctbl}{doinside}{\def\@ctbldoinside{#1}}
+\define@key{ctbl}{label}{\def\@ctbllabel{#1}}
+\define@key{ctbl}{left}[]{\let\@ctblalign\raggedright}
+\define@key{ctbl}{maxwidth}{\@ctblmaxwidth=#1}
+\define@key{ctbl}{mincapwidth}{\@ctblmincapwidth=#1}
+\define@key{ctbl}{nonotespar}[]{\let\@ctblnotespar\@ctblfalse}
+\define@key{ctbl}{nosideways}[]{\let\@ctblsideways\empty}
+\define@key{ctbl}{nostar}[]{\def\@ctblstarred{}}
+\define@key{ctbl}{nosuper}[]{\let\@ctblsuper\@ctblfalse}
+\define@key{ctbl}{notespar}[]{\let\@ctblnotespar\@ctbltrue}
+\define@key{ctbl}{pos}{\def\@ctblpos{#1}\def\@ctblbegin{\@ctblbeg[#1]}}
+\define@key{ctbl}{right}[]{\let\@ctblalign\raggedleft}
+\define@key{ctbl}{sideways}[]{\def\@ctblsideways{sideways}}
+\define@key{ctbl}{star}[]{\def\@ctblstarred{*}}
+\define@key{ctbl}{super}[]{\let\@ctblsuper\@ctbltrue}
+\define@key{ctbl}{table}[]{\def\@ctbltaborfig{table}}
+\define@key{ctbl}{topcap}[]{\let\@ctblbotcap\@ctblfalse}
+\define@key{ctbl}{width}{\@ctblwidth=#1}
 %    \end{macrocode}
 % A caption will only be generated if the \textsl{caption} option was used, with a
 % non-empty value. If so, it goes in the lot/lof, unless the \textsl{cap} option 
@@ -739,38 +863,40 @@
    \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule #3}%
 }
 \newcommand{\tnote}[2][a]{%
-   \ifx\@ctblnotespar\empty%
-     \hbox{\@ctbltextsuperscript{\normalfont\textit{#1}}}&#2\NN
-   \else%
+   \ifx\@ctblnotespar\@ctbltrue%
      \@ctbltextsuperscript{\normalfont\textit{#1}}\,#2
+   \else%
+     \hbox{\@ctbltextsuperscript{\normalfont\textit{#1}}}&#2\NN
    \fi
 }
 \newcommand{\tmark}[1][a]{%
    \hbox{\textsuperscript{\normalfont\textit{#1}}}}
 \newcommand{\ctable}[4][]{%
-   \def\@ctbltaborfig{table}%
-   \let\@ctblalign\centering%
-   \def\@ctblsideways{}%
-   \def\@ctblcontinued{}%
-   \def\@ctblpos     {}%
-   \def\@ctblcaption {}%
-   \let\@ctblcap\undefined%
-   \def\@ctbllabel   {}%
-   \def\@ctblbeg     {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
-   \def\@ctblbegin   {\@ctblbeg}%
-   \def\@ctblend     {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
-   \def\@ctblbotcap  {}%
-   \def\@ctblstarred {}%
-   \def\@ctblnosuper {}%
-   \def\@ctblnotespar{}%
-   \def\@ctbldoinside{}%
-   \@ctblframerule0pt
-   \@ctblcaptionskip=0ex
-   \@ctblframesep0pt
-   \@ctblwidth=0pt
-   \@ctblmaxwidth=0pt
-   \@ctblmincapwidth=0pt
-   \setkeys{ctbl}{#1}%
+   \let\@ctbltaborfig  \@defaultctbltaborfig
+   \let\@ctblalign     \@defaultctblalign
+   \let\@ctblsideways  \@defaultctblsideways
+   \let\@ctblcontinued \empty
+   \let\@ctblpos       \@defaultctblpos
+   \let\@ctblcaption   \empty
+   \let\@ctblcap       \undefined
+   \let\@ctbllabel     \empty
+   \let\@ctblbotcap    \@defaultctblbotcap
+   \let\@ctblstarred   \@defaultctblstarred
+   \let\@ctblsuper     \@defaultctblsuper
+   \let\@ctblnotespar  \@defaultctblnotespar
+   \let\@ctbldoinside  \@defaultctbldoinside
+   \@ctblframerule     \@defaultctblframerule
+   \@ctblcaptionskip   \@defaultctblcaptionskip
+   \@ctblframesep      \@defaultctblframesep
+   \@ctblwidth         \@defaultctblwidth
+   \@ctblmaxwidth      \@defaultctblmaxwidth
+   \@ctblmincapwidth   \@defaultctblmincapwidth
+   \def\@ctblfgactual {@defaultctblframefg}
+   \def\@ctblbgactual {@defaultctblframebg}
+   \def\@ctblbeg      {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
+   \def\@ctblbegin    {\@ctblbeg}
+   \def\@ctblend      {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
+   \setkeys{ctbl}{#1}
 %    \end{macrocode}
 % It makes no sense to use \textsl{width} together with \textsl{maxwidth} or
 % \textsl{pos} together with \textsl{sideways}
@@ -782,7 +908,7 @@
             Use either width or maxwidth}
       \fi
    \fi
-   \ifx\@ctblpos\empty\else
+   \ifx\@ctblpos\empty
       \ifx\@ctblsideways\empty\else
       \PackageError{ctable}{
          You may not use the pos and sideways options together}{
@@ -806,7 +932,7 @@
 %    \begin{macrocode}
    \sbox\ctbl@t{%
       \@ctblXcolumntype{l}% temporarily make  type X = l
-      \@ctblframe{@ctblframefg}{@ctblframebg}{%
+      \@ctblframe{\@ctblfgactual}{\@ctblbgactual}{%
          \@ctbldoinside
          \begin{tabular}{#2}
             #4%
@@ -833,7 +959,7 @@
    \if@ctblusex
       \sbox\ctbl@t{%
          \@ctblXcolumntype{Y}% restore X
-         \@ctblframe{@ctblframefg}{@ctblframebg}{%
+         \@ctblframe{\@ctblfgactual}{\@ctblbgactual}{%
             \@ctbldoinside
             \begin{tabularx}{\ifdim\@ctblwidth>0pt\@ctblwidth\else\@ctblmaxwidth\fi}{#2}
                #4%
@@ -864,25 +990,26 @@
       \ifx\@ctblcontinued\empty\else\addtocounter{\@ctbltaborfig}{-1}\fi
       \@ctblalign
       \begin{minipage}{\@ctblfloatwidth}\parindent0pt
-         \ifx\@ctblbotcap\empty\@ctblCaption\vskip\@ctblcaptionskip\fi
+         \ifx\@ctblbotcap\@ctblfalse\@ctblCaption\vskip\@ctblcaptionskip\fi
          \centering{\usebox\ctbl@t} % insert the tabular
          \def\@ctblfootnotes{#3}%
          \ifx#3\empty\else{% append footnotes, if any
             \footnotesize
-            \ifx\@ctblnotespar\empty%
-               \\
-               \begin{tabularx}{\hsize}{r@{\,}>{\raggedright}X}
-                  #3%
-               \end{tabularx}%
-            \else%
+            \ifx\@ctblnotespar\@ctbltrue%
                \\[.2ex]
                \begin{minipage}{\hsize}%
                   #3%
                \end{minipage}%
+            \else%
+               \\
+               \begin{tabularx}{\hsize}{r@{\,}>{\raggedright}X}
+                  #3%
+               \end{tabularx}%
             \fi
+
          }
          \fi
-         \ifx\@ctblbotcap\empty\else\vskip\@ctblcaptionskip\@ctblCaption\fi
+         \ifx\@ctblbotcap\@ctbltrue\vskip\@ctblcaptionskip\@ctblCaption\fi
       \end{minipage}
    \@ctblend
 }
