@@ -1,5 +1,5 @@
 \ctable[
   caption = Right,
-     right
+    right
 ]{c}{}{\FL Table's first row\LL}
 $Id$
