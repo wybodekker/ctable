@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2011/04/15 v1.18 ctable package]
+    [2011/05/01 v1.19 ctable package]
 %</package>
 %
 %<*driver>
@@ -163,6 +163,8 @@
 %                            }
 % \changes{v1.18}{2011/04/15}{added setupctable for option defaults
 %                             added complement for several options (topcap, nosideways, et cetera
+%                            }
+% \changes{v1.19}{2011/05/01}{sideways option did not work anymore; corrected
 %                            }
 %
 % \GetFileInfo{ctable.dtx}
@@ -783,7 +785,6 @@
   table,
   continued=(continued),
   topcap,
-  pos=,
   framerule=0pt,
   captionskip=0pt,
   framesep=0pt,
