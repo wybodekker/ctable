@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# this script generates ctable's documentation into ctable.pdf
+NAME=ctable
+# this script generates NAME's documentation into NAME.pdf
 # and then installs (unless the environment variable NOINSTALL is not empty)
-# ctable in TEXMFLOCAL
+# NAME in TEXMFLOCAL
 # This is not a make-like process. If you changed any files, then first run
 # inst with the --Clean option, then run inst without options.
 
@@ -11,8 +12,7 @@ function die {
   exit 1
 }
 
-NAME=ctable
-LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex/ctable
+LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex/$NAME
 CLEAN={aux,idx,ilg,chk,fls,ind,log,glo,gls,out,tex}
 ALLCLEAN={aux,idx,ilg,chk,fls,ind,log,glo,gls,out,tex,sty,cls,pdf}
 
@@ -35,7 +35,7 @@ echo y |tex $NAME.ins >/dev/null
 (
   # recompile example graphics if any is missing:
   cd doc
-  ln -sf ../ctable.sty || exit 1 # use the ctable.sty version to be installed
+  ln -sf ../$NAME.sty || exit 1 # use the $NAME.sty version to be installed
   for i in [0-9][0-9]?; do 
     if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then
       echo Creating example graphics
@@ -44,7 +44,7 @@ echo y |tex $NAME.ins >/dev/null
       break
     fi
   done
-  rm ctable.sty
+  rm $NAME.sty
   cd ..
   
   echo Creating documentation
@@ -68,11 +68,11 @@ echo y |tex $NAME.ins >/dev/null
   exit 0
 )
 if [ $? != 0 ]; then 
-  echo errors detected, see ctable.log
+  echo errors detected, see $NAME.log
 else
-  echo ctable successfully installed
+  echo $NAME successfully installed
 fi
-texlog_extract ctable
+texlog_extract $NAME
 
 # $Id$
 
