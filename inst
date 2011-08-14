@@ -64,7 +64,7 @@ echo y |tex $NAME.ins >/dev/null
     mkdir -p $LOCAL
     cp $NAME.{dtx,sty,pdf} $LOCAL || exit 1
   fi
-  sudo `which mktexlsr` || exit 1
+  sudo mktexlsr $LOCAL
   exit 0
 )
 if [ $? != 0 ]; then 
