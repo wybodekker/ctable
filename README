@@ -1,4 +1,4 @@
-This is version 1.18 of the ctable package
+This is version 1.20 of the ctable package
 License: LPPL
 
 ctable.sty provides commands to easily typeset centered or left or
@@ -7,6 +7,12 @@ Instead of an environment, a command with 4 arguments is used; the
 first is optional and is used for key,value pairs generating
 variations on the defaults and offering a route for future
 extensions.
+
+changes of v1.20 relative to v1.19:
+- added (for \setupctable only) these options related to the sideways option:
+  captionsleft
+  captionsright
+  captionsinside
 
 changes of v1.19 relative to v1.18:
 - sideways option did not work anymore; corrected

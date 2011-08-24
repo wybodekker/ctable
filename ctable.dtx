@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2011/05/01 v1.19 ctable package]
+    [2011/08/24 v1.20 ctable package]
 %</package>
 %
 %<*driver>
@@ -79,7 +79,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{551}
+% \CheckSum{567}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -166,6 +166,9 @@
 %                            }
 % \changes{v1.19}{2011/05/01}{sideways option did not work anymore; corrected
 %                            }
+% \changes{v1.20}{2011/08/24}{added options captionsleft, captionsright, captionsinside;
+%                             (for setupctable only)
+%                            }
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -221,6 +224,12 @@
 % made to have them make contact with horizontal rules.
 %
 % \section{Usage}
+% \DescribeMacro{\setupctable}
+% |\ctable| defaults can be set, either in the preamble or in the body, 
+% with:\\
+%
+% |\setupctable{options}  % key=value,...|\\
+%
 % \DescribeMacro{\ctable}
 % |\ctable| is called with 4 parameters, of which the first is optional: \\
 %
@@ -241,12 +250,6 @@
 % put the caption at the bottom of the float instead of on top of it.
 % See also: |topcap|.
 %
-% \DescribeMacro{captionskip=...\hfill}
-% moves the caption relative to the table; the default is |0ex|, which puts
-% captions at their default \LaTeX\ positions: a top caption's baseline at
-% |1ex| above the top rule position of the table and a bottom caption's
-% baseline at |4ex| below the bottom rule position.
-%
 % \DescribeMacro{caption=...\hfill}
 % table caption; the braces are needed only if your caption contains a
 % comma or an equals sign.
@@ -256,6 +259,30 @@
 % option, the full caption will go into the |\listoftables|. If |cap| is
 % given an empty value, no entry in the |\listoftables| will be made. This
 % may be useful, for example, with the |continued| option.
+%
+% \DescribeMacro{captionskip=...\hfill}
+% moves the caption relative to the table; the default is |0ex|, which puts
+% captions at their default \LaTeX\ positions: a top caption's baseline at
+% |1ex| above the top rule position of the table and a bottom caption's
+% baseline at |4ex| below the bottom rule position.
+%
+% \DescribeMacro{captionsleft\hfill} This option is defined for
+% |\setupctable| only, and it is effective only where the |sideways| option
+% is used. After |\setupctable{captionsleft}| all tables typeset with the
+% |sideways| option will have their captions at the left.
+%
+% \DescribeMacro{captionsright\hfill} This option is defined for
+% |\setupctable| only, and it is effective only where the |sideways| option
+% is used. After |\setupctable{captionsright}| all tables typeset with the
+% |sideways| option will have their captions at the right.
+%
+% \DescribeMacro{captionsinside\hfill}
+% This option is defined for |\setupctable| only, it is the default, and it is effective
+% only where the |sideways| option is used. After
+% |\setupctable{captionsinside}| all tables typeset with the |sideways|
+% option will have their captions at the left in one-sided documents. In
+% twosided documents, captions will be on the left for odd-numbered pages
+% and on the right for even-numbered pages.
 %
 % \DescribeMacro{center\hfill}
 % center the table in the available text width; this is the default.
@@ -646,7 +673,6 @@
 % \ROW{Y}{s06a}{06a}
 % \ROW{B}{s06b}{06b}
 % 
-% \newpage
 % \subsection{\ttfamily\bfseries framerule}
 % The following examples show the use of frames and backgrounds. Every table
 % is typeset by |ctable| with a frame around it, but the frame is, by default,
@@ -761,6 +787,11 @@
 %    \begin{macrocode}
 
 \define@key{suctbl}{botcap}[]{\let\@defaultctblbotcap\@ctbltrue}
+\define@key{suctbl}{captionsinside}[]{\def\rot@LR{-1}
+                                      \if@twoside\@rot@twosidetrue
+                                      \else\@rot@twosidefalse\fi}
+\define@key{suctbl}{captionsleft}[]{\@rot@twosidefalse\def\rot@LR{-1}}
+\define@key{suctbl}{captionsright}[]{\@rot@twosidefalse\def\rot@LR{0}}
 \define@key{suctbl}{captionskip}{\@defaultctblcaptionskip=#1}
 \define@key{suctbl}{center}[]{\let\@defaultctblalign\centering}
 \define@key{suctbl}{continued}{\def\@defaulttextcontinued{#1}}
