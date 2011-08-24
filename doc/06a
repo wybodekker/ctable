@@ -1,6 +1,4 @@
-\ctable[
-  framerule = .1pt,
-  maxwidth=3cm
+\ctable[framerule=.1pt, maxwidth=3cm
 ]{lX}{}{\FL 1 & first row\LL}
 
 $Id$
