@@ -1,13 +1,15 @@
-\documentclass[12pt]{article}
+\documentclass[12pt,twoside]{article}
 \usepackage[a4paper,margin=25mm,top=30mm]{geometry}
 \usepackage{ctable,fancyhdr,osf-txfonts}
 \parindent0pt
 \pagestyle{fancy}
 \headheight=15pt
-\fancyhead{}\fancyfoot{}
+\fancyhead{}%\fancyfoot{}
 \bibliographystyle{plain}
+\author{Wybo Dekker}
+\title{Some tests for ctable}
 \begin{document}
-
+\maketitle
 \listoftables
 \clearpage
 This text shows some tests. The heading is used to tell what is being tested, so
@@ -254,10 +256,7 @@ from the chaff and separate the sheep from the goats.}
   caption={\CAP},
   mincapwidth=111mm
 ]{l} {\tnote{\input{tufte}}}
-{\FL
-Anzahl\NN
-\%\LL
-}
+{\FL Anzahl \LL }
 }
 
 \clearpage
@@ -271,19 +270,71 @@ Anzahl\NN
   caption={This table should be seen in the LOT},
   mincapwidth=111mm
 ]{l} {\tnote{\input{tufte}}}
-{\FL
-Anzahl\NN
-\%\LL
-}
+{\FL Anzahl \LL }
 
 \ctable[
   caption={This table should not be seen in the LOT},
   cap=,
   mincapwidth=111mm
 ]{l} {\tnote{\input{tufte}}}
-{\FL
-Anzahl\NN
-\%\LL
+{\FL Anzahl\LL }
+
+\ctable[
+  caption={This table should appear sideways},
+  mincapwidth=111mm,sideways
+]{l} {}{\FL
+     It should show its caption at the left for articles\NN
+     and left on odd, right on even pages,\NN
+     because that's the default for the rotating package\LL
+}
+
+\ctable[
+  caption={This table should appear sideways},
+  mincapwidth=111mm,sideways
+]{l} {}{\FL
+     It should show its caption at the left for articles\NN
+     and left on odd, right on even pages if this is a book,\NN
+     because that's the default for the rotating package\LL
+}
+
+\setupctable{captionsright}
+
+\ctable[
+  caption={This table should appear sideways},
+  mincapwidth=111mm,sideways
+]{l} {}{\FL
+     It should show its caption at the right,\NN
+     because setupctable{captionsright} was called\LL
+}
+
+\ctable[
+  caption={This table should appear sideways},
+  mincapwidth=111mm,sideways
+]{l} {}{\FL
+     It should show its caption at the right,\NN
+     because setupctable{captionsright} was called\LL
+}
+
+\setupctable{captionsinside}
+
+\ctable[
+  caption={This table should appear sideways},
+  mincapwidth=111mm,sideways
+]{l} {}{\FL
+     It should show its caption at the inside of the book,\NN
+     i.e.\ left on even, right on odd pages in books (where twoside is default)\NN
+     and all left in articles (where oneside is the default)\NN
+     because setupctable{captionsinside} was called\LL
+}
+
+\ctable[
+  caption={This table should appear sideways},
+  mincapwidth=111mm,sideways
+]{l} {}{\FL
+     It should show its caption at the inside of the book,\NN
+     i.e.\ left on even, right on odd pages in books (where twoside is default)\NN
+     and all left in articles (where oneside is the default)\NN
+     because setupctable{captionsinside} was called\LL
 }
 
 \end{document}
