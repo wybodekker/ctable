@@ -1,4 +1,4 @@
-This is version 1.20 of the ctable package
+This is version 1.21 of the ctable package
 License: LPPL
 
 ctable.sty provides commands to easily typeset centered or left or
@@ -8,17 +8,13 @@ first is optional and is used for key,value pairs generating
 variations on the defaults and offering a route for future
 extensions.
 
+changes of v1.21 relative to v1.20:
+- better documentaation for sideways, captionsleft/right/inside
+
 changes of v1.20 relative to v1.19:
 - added (for \setupctable only) these options related to the sideways option:
   captionsleft
   captionsright
   captionsinside
-
-changes of v1.19 relative to v1.18:
-- sideways option did not work anymore; corrected
-
-major changes of v1.18 relative to v1.17:
-- introduced \setupctable, setting defaults for the options
-- added complements for several option: topcap, nosideways, et cetera
 
 $Id$
