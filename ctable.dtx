@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2011/08/24 v1.20 ctable package]
+    [2011/09/05 v1.21 ctable package]
 %</package>
 %
 %<*driver>
@@ -169,6 +169,7 @@
 % \changes{v1.20}{2011/08/24}{added options captionsleft, captionsright, captionsinside;
 %                             (for setupctable only)
 %                            }
+% \changes{v1.21}{2011/09/05}{better documentation for sideways, captionsleft/right/inside options}
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -282,7 +283,7 @@
 % |\setupctable{captionsinside}| all tables typeset with the |sideways|
 % option will have their captions at the left in one-sided documents. In
 % twosided documents, captions will be on the left for odd-numbered pages
-% and on the right for even-numbered pages.
+% and on the right for even-numbered pages. This is the default. 
 %
 % \DescribeMacro{center\hfill}
 % center the table in the available text width; this is the default.
@@ -368,8 +369,9 @@
 % \DescribeMacro{sideways\hfill}
 % rotate table or figure by 90 degrees anticlockwise and put it on a
 % separate page. With the twoside option for the standard \LaTeX\ document
-% classes, rotation will be -90 on even pages. If you use this option, the
-% |pos| option is not allowed. See also: |nosideways|.
+% classes, rotation will be -90 on even pages, unless the options
+% |captionleft| or |captionsright| are used. If you use this option, the
+% |pos| option is not allowed. See also: |nosideways|, |captionsinside|.
 %
 % \DescribeMacro{star\hfill}
 % use the starred versions of the |table| and |figure| environments, which
@@ -728,18 +730,6 @@
 % \medskip\\
 % \ROW{Y}{s14a}{14a}
 %
-% \subsection{\ttfamily\bfseries sideways}
-% The |sideways| option creates a landscape table with its head pointing at the
-% spine\,---\,when the documentclass' twoside option has been used, that is. The
-% following examples show the effect of the |sideways| option, first on page one,
-% then on page 2. Note that the |caption| option has not been used, so no caption
-% appears:
-% \medskip\\
-% \ROW{Y}{s11k}{11k}
-% \ROW{B}{s11l}{11l}
-% \ROW{B}{s11m}{11m}
-% 
-% \newpage
 % \StopEventually{}
 %
 % \section{Implementation}
