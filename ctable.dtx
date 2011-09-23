@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2011/09/05 v1.21 ctable package]
+    [2011/09/23 v1.22 ctable package]
 %</package>
 %
 %<*driver>
@@ -79,7 +79,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{567}
+% \CheckSum{568}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -169,7 +169,11 @@
 % \changes{v1.20}{2011/08/24}{added options captionsleft, captionsright, captionsinside;
 %                             (for setupctable only)
 %                            }
-% \changes{v1.21}{2011/09/05}{better documentation for sideways, captionsleft/right/inside options}
+% \changes{v1.21}{2011/09/05}{better documentation for sideways, captionsleft/right/inside
+%                             options
+%                            }
+% \changes{v1.22}{2011/09/05}{allow empty lines in last (tabular) argument
+%                            }
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -886,7 +890,7 @@
   \let\NC@find@X\undefined
   \newcolumntype{X}{#1}%
 }
-\def\@ctblframe#1#2#3{%
+\long\def\@ctblframe#1#2#3{%
    \@ctbloldsep\fboxsep\fboxsep\@ctblframesep%
    \@ctbloldrule\fboxrule\fboxrule\@ctblframerule%
    \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule #3}%
