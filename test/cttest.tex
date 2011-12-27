@@ -1,6 +1,6 @@
 \documentclass[12pt,twoside]{article}
 \usepackage[a4paper,margin=25mm,top=30mm]{geometry}
-\usepackage{ctable,fancyhdr,osf-txfonts}
+\usepackage{ctable,fancyhdr,osf-txfonts,colortbl}
 \parindent0pt
 \pagestyle{fancy}
 \headheight=15pt
@@ -337,5 +337,13 @@ from the chaff and separate the sheep from the goats.}
      because setupctable{captionsinside} was called\LL
 }
 
+\def\GR#1{\multicolumn{1}{@{\,}>{\columncolor[gray]{.8}[1pt][1pt]}c@{\,}}{#1}}
+
+\arrayrulecolor[gray]{.8}
+\ctable[caption=test,mincapwidth=70mm]{@{}c@{\,}c@{\,}c@{\,}c@{\,}c@{}}{}{\FL
+d & d & d & d & d\NN
+d & d & \GR{d}& d & d\NN
+d & d & d & d & d\LL
+} 
 \end{document}
 $Id$
