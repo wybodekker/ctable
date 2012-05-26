@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2011/09/23 v1.22 ctable package]
+    [2012/05/26 v1.22 ctable package]
 %</package>
 %
 %<*driver>
@@ -79,7 +79,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{568}
+% \CheckSum{585}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -172,7 +172,9 @@
 % \changes{v1.21}{2011/09/05}{better documentation for sideways, captionsleft/right/inside
 %                             options
 %                            }
-% \changes{v1.22}{2011/09/05}{allow empty lines in last (tabular) argument
+% \changes{v1.22}{2012/05/25}{allow empty lines in last (tabular) argument
+%                             corrected error from hyperref's nameref calls
+%                             (thanks Marco Daniel!)
 %                            }
 %
 % \GetFileInfo{ctable.dtx}
@@ -728,17 +730,19 @@
 % 
 % \newpage
 % \subsection{\ttfamily\bfseries doinside}
-% The argument of doinside is supposed to be a command to be run inside, just before the tabular or tabularx
-% environment. You can use this, for example, for the adjustment of the
-% font size with |\small|:
+% The argument of doinside is supposed to be a command to be run inside,
+% just before the tabular or tabularx environment. You can use this, for
+% example, for the adjustment of the font size with |\small|:
 % \medskip\\
 % \ROW{Y}{s14a}{14a}
 %
 % \StopEventually{}
 %
 % \section{Implementation}
+% Package etoolbox provides |\expandonce|
 % \begin{macrocode}
 \RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating}
+\RequirePackage{etoolbox}
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
@@ -874,9 +878,14 @@
       \def\@ctblcaptionarg{\ifx\@ctbllabel\empty\else\label{\@ctbllabel}\fi
          \@ctblcaption\ \@ctblcontinued\strut}
       \ifx\@ctblcap\empty
-         \caption[]{\@ctblcaptionarg}
+      \begingroup
+        \edef\x{\endgroup\noexpand\caption[]{\expandonce\@ctblcaptionarg}}
+         \x
       \else
-         \caption[\@ctblcap]{\@ctblcaptionarg}
+      \begingroup
+        \edef\x{\endgroup\noexpand\caption[\expandonce\@ctblcap]%
+                                          {\expandonce\@ctblcaptionarg}}
+        \x
       \fi
    \fi
 }
