@@ -1,4 +1,4 @@
-This is version 1.21 of the ctable package
+This is version 1.22 of the ctable package
 License: LPPL
 
 ctable.sty provides commands to easily typeset centered or left or
@@ -8,8 +8,12 @@ first is optional and is used for key,value pairs generating
 variations on the defaults and offering a route for future
 extensions.
 
+changes of v1.22 relative to v1.21:
+- allow empty lines in last (tabular) argument
+- corrected error from hyperref's nameref calls (thanks Marco Daniel!)
+
 changes of v1.21 relative to v1.20:
-- better documentaation for sideways, captionsleft/right/inside
+- better documentation for sideways, captionsleft/right/inside
 
 changes of v1.20 relative to v1.19:
 - added (for \setupctable only) these options related to the sideways option:
