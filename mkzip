@@ -56,7 +56,7 @@ files.push('inst')
 @cvsdate = @packdate = @version = 'empty'
 open(name+'.dtx').each do |line|
   case line
-    when /Id: .*(\d\d\d\d-\d\d-\d\d)/
+    when /Id: .*(\d\d\d\d\/\d\d\/\d\d)/
       @cvsdate = $1
    when /(\d\d\d\d\/\d\d\/\d\d) v(\d+\.\d+[a-z]*) /
       @packdate,@version = $1,$2
