@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2012/05/26 v1.22 ctable package]
+    [2012/05/28 v1.23 ctable package]
 %</package>
 %
 %<*driver>
@@ -79,7 +79,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{584}
+% \CheckSum{604}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -175,6 +175,8 @@
 % \changes{v1.22}{2012/05/25}{allow empty lines in last (tabular) argument
 %                             corrected error from hyperref's nameref calls
 %                             (thanks Marco Daniel!)
+%                            }
+% \changes{v1.23}{2012/05/28}{footerwidth option added
 %                            }
 %
 % \GetFileInfo{ctable.dtx}
@@ -308,6 +310,13 @@
 % \DescribeMacro{figure\hfill}
 % produce a figure float instead of a table float. See also: |table|.
 %
+% \DescribeMacro{footerwidth=...\hfill}
+% Footnotes are typeset within the width of the table. When you use the
+% |mincapwidth| option, presumably because the table is very narrow, footnotes
+% are given the same width as the caption. With small footnotes this may not
+% be what you want; this option can be used to give the footnotes their own width. 
+% Without an argument, they will be type set within the width of of the table. 
+% 
 % \DescribeMacro{framebg={\slshape r g b}\hfill}
 % set the background color of the frame (the color inside the frame) to the
 % given triplet of \textsl{rgb}-values. The values should be numbers
@@ -347,7 +356,8 @@
 % set to that of the tabular, and the caption and footnotes are typeset
 % within that width. This may be a problem with very narrow tables;
 % |mincapwidth| can then be used to give the float a minimum width. The
-% tabular will be centered in it.
+% tabular will be centered in it. If you don't want the footnotes to be affected
+% see the |footerwidth| option.
 %
 % \DescribeMacro{nonotespar\hfill}
 % typeset footnotes in a table; this is the default. See also: |notespar|.
@@ -665,7 +675,11 @@
 % the table: values larger than |\hsize| will move a centered table out of the
 % center, a value of |\hsize| will prevent the |left| and |right| options to do
 % their work, because the table is already captured between the left and right
-% margins.
+% margins. When footnotes are small, you may wish to undo the effect of the
+% |mincapwidth| option on them:
+% \medskip\\
+% \ROW{B}{s05c}{05c}
+% \medskip
 % 
 % \subsection{\ttfamily\bfseries maxwidth}
 % When \LaTeX-sources containing tables are generated automatically by a
@@ -767,6 +781,7 @@
 \newdimen\@ctblcaptionskip      \newdimen\@defaultctblcaptionskip
 \newdimen\@ctblmaxwidth         \newdimen\@defaultctblmaxwidth
 \newdimen\@ctblmincapwidth      \newdimen\@defaultctblmincapwidth
+\newdimen\@ctblfooterwidth      \newdimen\@defaultctblfooterwidth
 \newdimen\@ctblw % the final width
 \newdimen\@ctblfloatwidth
 \newdimen\@ctbloldsep
@@ -802,6 +817,7 @@
 \define@key{suctbl}{left}[]{\let\@defaultctblalign\raggedright}
 \define@key{suctbl}{maxwidth}{\@defaultctblmaxwidth=#1}
 \define@key{suctbl}{mincapwidth}{\@defaultctblmincapwidth=#1}
+\define@key{suctbl}{footerwidth}[-1pt]{\@defaultctblfooterwidth=#1}
 \define@key{suctbl}{nonotespar}[]{\let\@defaultctblnotespar\@ctblfalse}
 \define@key{suctbl}{nosideways}[]{\let\@defaultctblsideways\empty}
 \define@key{suctbl}{nostar}[]{\def\@defaultctblstarred{}}
@@ -827,6 +843,7 @@
   width=0pt,
   maxwidth=0pt,
   mincapwidth=0pt,
+  footerwidth=0pt,
   nosideways,
   center,
   nostar,
@@ -853,6 +870,7 @@
 \define@key{ctbl}{left}[]{\let\@ctblalign\raggedright}
 \define@key{ctbl}{maxwidth}{\@ctblmaxwidth=#1}
 \define@key{ctbl}{mincapwidth}{\@ctblmincapwidth=#1}
+\define@key{ctbl}{footerwidth}[-1pt]{\@ctblfooterwidth=#1}
 \define@key{ctbl}{nonotespar}[]{\let\@ctblnotespar\@ctblfalse}
 \define@key{ctbl}{nosideways}[]{\let\@ctblsideways\empty}
 \define@key{ctbl}{nostar}[]{\def\@ctblstarred{}}
@@ -933,6 +951,7 @@
    \@ctblwidth         \@defaultctblwidth
    \@ctblmaxwidth      \@defaultctblmaxwidth
    \@ctblmincapwidth   \@defaultctblmincapwidth
+   \@ctblfooterwidth   \@defaultctblfooterwidth
    \def\@ctblfgactual {@defaultctblframefg}
    \def\@ctblbgactual {@defaultctblframebg}
    \def\@ctblbeg      {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
@@ -1044,11 +1063,20 @@
                \end{minipage}%
             \else%
                \\
-               \begin{tabularx}{\hsize}{r@{\,}>{\raggedright}X}
+%    \end{macrocode}
+% Footnotes: if the |footerwidth| is 0pt (the default), typeset the footer as
+% wide as the caption (which may be wider than the table because of the
+% |mincapwidth| option); if it is -1pt (because |footerwidth| was set without an argument)
+% make it as wide as the table; otherwise, give it the width set by the
+% |footerwidth| option.
+%    \begin{macrocode}
+               \begin{tabularx}{\ifdim\@ctblfooterwidth=-1pt\@ctblw\else
+                                \ifdim\@ctblfooterwidth=0pt\hsize\else
+                                \@ctblfooterwidth\fi\fi
+                  }{r@{\,}>{\raggedright}X}
                   #3%
                \end{tabularx}%
             \fi
-
          }
          \fi
          \ifx\@ctblbotcap\@ctbltrue\vskip\@ctblcaptionskip\@ctblCaption\fi
