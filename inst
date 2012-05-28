@@ -28,7 +28,7 @@ in
 -c|--clean) clean; exit;;
 -C|--Clean) Clean; exit;;
 -h|--help)  echo 'Usage: ./inst [-c|C|h]'; exit;;
-?*)         echo 'Illegal argument(s)'; exit;;
+?*)         echo 'Illegal argument(s): use -c|-C|-h|--clean|--Clean|--help'; exit;;
 esac
 
 echo y |tex $NAME.ins >/dev/null
