@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2012/05/28 v1.23 ctable package]
+    [2012/08/28 v2.01 ctable package]
 %</package>
 %
 %<*driver>
@@ -79,7 +79,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{604}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -255,9 +255,17 @@
 % Currently the following option keys have been defined:
 % 
 % { \marginparwidth25mm
+% \DescribeMacro{bgopacity=...\hfill}
+% Sets the opacity of the table's background color, where 1 is 100\% opaque
+% (the default), and 0 is completely transparent. One application is with
+% watermarking: most watermarking packages print their watermark on the
+% background. |ctable|'s background color, which is opaque by default, may
+% make the watermark (partially) invisible. You can avoid this by setting
+% the |bgopacity| option to a value lower than 1.
+% 
 % \DescribeMacro{botcap\hfill}
 % put the caption at the bottom of the float instead of on top of it.
-% See also: |topcap|.
+% See also: |topcap|, |sidecap|.
 %
 % \DescribeMacro{caption=...\hfill}
 % table caption; the braces are needed only if your caption contains a
@@ -266,14 +274,21 @@
 % \DescribeMacro{cap=...\hfill}
 % for a short caption to go to the |\listoftables|. Without the |cap|
 % option, the full caption will go into the |\listoftables|. If |cap| is
-% given an empty value, no entry in the |\listoftables| will be made. This
-% may be useful, for example, with the |continued| option.
+% given an empty value, \textsl{and you have loaded the |caption| package},
+% no entry in the |\listoftables| will be made. This may be useful, for
+% example, with the |continued| option.
 %
 % \DescribeMacro{captionskip=...\hfill}
 % moves the caption relative to the table; the default is |0ex|, which puts
-% captions at their default \LaTeX\ positions: a top caption's baseline at
+% captions at their default \LaTeX\ positions. For the standard \LaTeX\
+% classes this means that a top caption's baseline at
 % |1ex| above the top rule position of the table and a bottom caption's
-% baseline at |4ex| below the bottom rule position.
+% baseline at |4ex| below the bottom rule position. These dimensions may be
+% different for other classes or when other packages are included. The
+% |memoir| class and the |caption| package, for example, typeset both
+% captions differently. Keep in mind that when you use the |caption| package 
+% in the |memoir| class, |memoir|'s caption commands are suspended and |caption|'s
+% commands must be used.  
 %
 % \DescribeMacro{captionsleft\hfill} This option is defined for
 % |\setupctable| only, and it is effective only where the |sideways| option
@@ -382,6 +397,13 @@
 % \DescribeMacro{right\hfill}
 % right align the table in the available text width.
 %
+% \DescribeMacro{sidecap\hfill}
+% put the caption at the side of the float. Currently, this works only if
+% you have loaded the |memoir| class, otherwise an error message is
+% generated. The parameters for the caption, such as its vertical
+% positioning, width and more, must be set with the appropriate |memoir|
+% commands. See also: |botcap|, |topcap|.
+%
 % \DescribeMacro{sideways\hfill}
 % rotate table or figure by 90 degrees anticlockwise and put it on a
 % separate page. With the twoside option for the standard \LaTeX\ document
@@ -402,7 +424,7 @@
 % produce a table float (this is the default). See also: |figure|.
 %
 % \DescribeMacro{topcap\hfill}
-% put the caption top of the float; this is the default. See also: |botcap|.
+% put the caption top of the float; this is the default. See also: |botcap|, |sidecap|.
 %
 % \DescribeMacro{width=...\hfill}
 % \REF{tabularx} will be used to typeset the table at the specified
@@ -755,8 +777,7 @@
 % \section{Implementation}
 % Package etoolbox provides |\expandonce|
 % \begin{macrocode}
-\RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating}
-\RequirePackage{etoolbox}
+\RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating,transparent}
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
@@ -772,9 +793,29 @@
 \def\@ctbltextsuperscript#1{%
   \ifx\@ctblsuper\@ctbltrue\@textsuperscript{#1}\else{\footnotesize#1}\fi
 }
+%    \end{macrocode}
+% define a true and a false value
+%    \begin{macrocode}
 \def\@ctbltrue{1}
 \def\@ctblfalse{0}
+%    \end{macrocode}
+% normally we do nothing special inside the float, but that can be changed with the doinside option
+%    \begin{macrocode}
 \def\@ctbldoinside{\relax}
+%    \end{macrocode}
+% Need three booleans to remember:
+%  if we use tabularx,
+%  if we are running in the memoir class,
+%  if the caption package is loaded
+%    \begin{macrocode}
+\newif\if@ctblusex
+\newif\if@ctblinmemoir
+\newif\if@ctblhascaption
+\@ifclassloaded{memoir}{\@ctblinmemoirtrue}{\@ctblinmemoirfalse}
+\@ifpackageloaded{caption}{\@ctblhascaptiontrue}{\@ctblhascaptionfalse}
+%    \end{macrocode}
+% Need lots of dimens and their defaults
+%    \begin{macrocode}
 \newdimen\@ctblframesep         \newdimen\@defaultctblframesep
 \newdimen\@ctblframerule        \newdimen\@defaultctblframerule
 \newdimen\@ctblwidth            \newdimen\@defaultctblwidth
@@ -799,6 +840,7 @@
 % |\begin{table}[tbp]| in it.
 %    \begin{macrocode}
 
+\define@key{suctbl}{bgopacity}{\def\@defaultctblbgopacity{#1}}
 \define@key{suctbl}{botcap}[]{\let\@defaultctblbotcap\@ctbltrue}
 \define@key{suctbl}{captionsinside}[]{\def\rot@LR{-1}
                                       \if@twoside\@rot@twosidetrue
@@ -834,26 +876,28 @@
 
 \newcommand{\setupctable}[1]{\setkeys{suctbl}{#1}}
 \setupctable{
-  table,
-  continued=(continued),
-  topcap,
-  framerule=0pt,
+  bgopacity=1,
   captionskip=0pt,
-  framesep=0pt,
-  width=0pt,
-  maxwidth=0pt,
-  mincapwidth=0pt,
-  footerwidth=0pt,
-  nosideways,
   center,
-  nostar,
-  super,
-  nonotespar,
+  continued=(continued),
   doinside={},
+  footerwidth=0pt,
   framebg=1 1 1,
   framefg=0 0 0,
+  framerule=0pt,
+  framesep=0pt,
+  maxwidth=0pt,
+  mincapwidth=0pt,
+  nonotespar,
+  nosideways,
+  nostar,
+  super,
+  table,
+  topcap,
+  width=0pt,
 }
 
+\define@key{ctbl}{bgopacity}{\def\@ctblbgopacity{#1}}
 \define@key{ctbl}{botcap}[]{\let\@ctblbotcap\@ctbltrue}
 \define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}
 \define@key{ctbl}{caption}{\def\@ctblcaption{#1}}
@@ -878,6 +922,7 @@
 \define@key{ctbl}{notespar}[]{\let\@ctblnotespar\@ctbltrue}
 \define@key{ctbl}{pos}{\def\@ctblpos{#1}\def\@ctblbegin{\@ctblbeg[#1]}}
 \define@key{ctbl}{right}[]{\let\@ctblalign\raggedleft}
+\define@key{ctbl}{sidecap}[]{\let\@ctblbotcap\undefined}
 \define@key{ctbl}{sideways}[]{\def\@ctblsideways{sideways}}
 \define@key{ctbl}{star}[]{\def\@ctblstarred{*}}
 \define@key{ctbl}{super}[]{\let\@ctblsuper\@ctbltrue}
@@ -889,22 +934,22 @@
 % non-empty value. If so, it goes in the lot/lof, unless the \textsl{cap} option 
 % specified a different (probably shorter) value for it. A \textsl{cap} option with
 % an empty value inhibits a tof/lof entry.
+% The |\expandonce| trick below is from Marco Daniel. It expands the arguments of |\caption|
+% so that the hyperref command |\nameref| works OK.
 %    \begin{macrocode}
+\newcommand{\expandonce}[1]{\unexpanded\expandafter{#1}}
 \def\@ctblCaption{
-   \ifx\@ctblcap\undefined\let\@ctblcap\@ctblcaption\fi
    \ifx\@ctblcaption\empty\else
       \def\@ctblcaptionarg{\ifx\@ctbllabel\empty\else\label{\@ctbllabel}\fi
          \@ctblcaption\ \@ctblcontinued\strut}
-      \ifx\@ctblcap\empty
       \begingroup
-        \edef\x{\endgroup\noexpand\caption[]{\expandonce\@ctblcaptionarg}}
-         \x
-      \else
-      \begingroup
+        \ifx\@ctblcap\empty
+          \edef\x{\endgroup\noexpand\caption[]{\expandonce\@ctblcaptionarg}}
+        \else
         \edef\x{\endgroup\noexpand\caption[\expandonce\@ctblcap]%
                                           {\expandonce\@ctblcaptionarg}}
-        \x
-      \fi
+        \fi
+      \x
    \fi
 }
 %    \end{macrocode}
@@ -920,7 +965,8 @@
 \long\def\@ctblframe#1#2#3{%
    \@ctbloldsep\fboxsep\fboxsep\@ctblframesep%
    \@ctbloldrule\fboxrule\fboxrule\@ctblframerule%
-   \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule #3}%
+   \transparent{\@ctblbgopacity}%
+   \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule\transparent{1}#3}%
 }
 \newcommand{\tnote}[2][a]{%
    \ifx\@ctblnotespar\@ctbltrue%
@@ -945,6 +991,7 @@
    \let\@ctblsuper     \@defaultctblsuper
    \let\@ctblnotespar  \@defaultctblnotespar
    \let\@ctbldoinside  \@defaultctbldoinside
+   \let\@ctblbgopacity \@defaultctblbgopacity
    \@ctblframerule     \@defaultctblframerule
    \@ctblcaptionskip   \@defaultctblcaptionskip
    \@ctblframesep      \@defaultctblframesep
@@ -959,20 +1006,45 @@
    \def\@ctblend      {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
    \setkeys{ctbl}{#1}
 %    \end{macrocode}
+% Make the short caption equal to the caption if it has not been defined
+%    \begin{macrocode}
+   \ifx\@ctblcap\undefined\let\@ctblcap\@ctblcaption\fi
+%    \end{macrocode}
+% Issue a warning if the short caption is empty and the caption package is not loaded
+%    \begin{macrocode}
+   \ifx\@ctblcap\empty
+     \if@ctblhascaption\else
+       \PackageWarning{ctable}{\MessageBreak
+          An empty cap= option prevents lot/loc entry only\MessageBreak
+          if the caption package is loaded!}
+     \fi
+   \fi
+%    \end{macrocode}
+% Currently, the sidecap option can only be used from within the memoir class; 
+% here we test if memoir is loaded:
+%    \begin{macrocode}
+   \if@ctblinmemoir\else
+      \ifx\@ctblbotcap\undefined
+         \PackageError{ctable}{\MessageBreak
+            You can, currently, use the sidecap option only with memoir documents\MessageBreak
+            Use topcap or botcap only}
+      \fi
+   \fi  
+%    \end{macrocode}
 % It makes no sense to use \textsl{width} together with \textsl{maxwidth} or
 % \textsl{pos} together with \textsl{sideways}
 %    \begin{macrocode}
    \ifdim\@ctblwidth=0pt\else
       \ifdim\@ctblmaxwidth=0pt\else
-         \PackageError{ctable}{
-            You may not use the width and maxwidth options together}{
+         \PackageError{ctable}{\MessageBreak
+            You may not use the width and maxwidth options together\MessageBreak
             Use either width or maxwidth}
       \fi
    \fi
    \ifx\@ctblpos\empty
       \ifx\@ctblsideways\empty\else
-      \PackageError{ctable}{
-         You may not use the pos and sideways options together}{
+      \PackageError{ctable}{\MessageBreak
+         You may not use the pos and sideways options together\MessageBreak
          Rotated tables and figures are always typeset on a separate page}
       \fi
    \fi
@@ -982,8 +1054,8 @@
 %    \begin{macrocode}
    \ifx\@ctblcaption\empty
       \ifx\@ctbllabel\empty\else
-         \PackageError{ctable}{
-            You may not label a captionless table}{
+         \PackageError{ctable}{\MessageBreak
+            You may not label a captionless table\MessageBreak
             Such a label can't be referenced}
       \fi
    \fi
@@ -1003,7 +1075,7 @@
 %    \end{macrocode}
 % then look if we'll need the tabularx environment:
 %    \begin{macrocode}
-   \newif\if@ctblusex\@ctblusexfalse
+   \@ctblusexfalse
    \ifdim\@ctblmaxwidth=0pt
       \ifdim\@ctblwidth=0pt
       \else
@@ -1052,6 +1124,7 @@
       \@ctblalign
       \begin{minipage}{\@ctblfloatwidth}\parindent0pt
          \ifx\@ctblbotcap\@ctblfalse\@ctblCaption\vskip\@ctblcaptionskip\fi
+         \ifx\@ctblbotcap\undefined\begin{sidecaption}[\@ctblcap]{\@ctblcaption}[ label ]\fi
          \centering{\usebox\ctbl@t} % insert the tabular
          \def\@ctblfootnotes{#3}%
          \ifx#3\empty\else{% append footnotes, if any
@@ -1079,6 +1152,7 @@
             \fi
          }
          \fi
+         \ifx\@ctblbotcap\undefined\end{sidecaption}\fi
          \ifx\@ctblbotcap\@ctbltrue\vskip\@ctblcaptionskip\@ctblCaption\fi
       \end{minipage}
    \@ctblend
