@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 require 'erb'
 require 'scriptingutils'
 
@@ -73,7 +73,7 @@ __END__
 
 \documentclass[twoside]{article}
 <% if j =~ /[k-z]$/ %>
-\usepackage[papersize={65mm,40mm},showframe,margin=5mm,noheadfoot]{geometry}
+\usepackage[papersize={65mm,40mm},showframe,margin=1mm,noheadfoot]{geometry}
 <% end %>
 \usepackage{ctable}
 \usepackage{txfonts}
