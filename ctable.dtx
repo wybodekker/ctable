@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2012/08/23 v1.24 ctable package]
+    [2012/08/23 v1.24 Easy, key=value directed, option-rich, typesetting of floats]
 %</package>
 %
 %<*driver>
@@ -187,7 +187,7 @@
 % \ifx,            \setkeys,      \end,           \label,
 % \specialrule,    \fboxrule,     \let,           \tabularnewline,
 % \PackageError,   \fboxsep,      \newbox,        \textit,
-% \PackageWarning, \fcolorbox,    \newcolumntype, \usebox,
+% \PackageWarningNoLine, \fcolorbox,    \newcolumntype, \usebox,
 % \RequirePackage, \fi,           \newdimen,      \vspace,
 % \begin,          \footnotesize, \normalfont,    \wd,
 % \define@key,
@@ -261,7 +261,8 @@
 % watermarking: most watermarking packages print their watermark on the
 % background. |ctable|'s background color, which is opaque by default, may
 % make the watermark (partially) invisible. You can avoid this by setting
-% the |bgopacity| option to a value lower than 1.
+% the |bgopacity| option to a value lower than 1. Note that this works only
+% in PDF mode, a warning is issued otherwise.
 % 
 % \DescribeMacro{botcap\hfill}
 % put the caption at the bottom of the float instead of on top of it.
@@ -775,9 +776,20 @@
 % \StopEventually{}
 %
 % \section{Implementation}
-% Package etoolbox provides |\expandonce|
 % \begin{macrocode}
-\RequirePackage{color,xkeyval,array,tabularx,booktabs,rotating,transparent}
+\RequirePackage{ifpdf,color,xkeyval,array,tabularx,booktabs,rotating}
+%    \end{macrocode}
+% The transparency package works only in pdf mode, otherwise define 
+% a dummy |\transparent| and issue a warning.
+%    \begin{macrocode}
+\ifpdf
+  \RequirePackage{transparent}
+\else
+  \PackageWarningNoLine{ctable}{\MessageBreak
+    Transparency disabled: pdfTeX is not running in PDF mode
+  }
+  \def\transparent#1{}
+\fi
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
@@ -934,20 +946,21 @@
 % non-empty value. If so, it goes in the lot/lof, unless the \textsl{cap} option 
 % specified a different (probably shorter) value for it. A \textsl{cap} option with
 % an empty value inhibits a tof/lof entry.
-% The |\expandonce| trick below is from Marco Daniel. It expands the arguments of |\caption|
+% The |\ctbl@expandonce| trick below is from Marco Daniel.
+% It expands the arguments of |\caption|
 % so that the hyperref command |\nameref| works OK.
 %    \begin{macrocode}
-\newcommand{\expandonce}[1]{\unexpanded\expandafter{#1}}
+\newcommand{\ctbl@expandonce}[1]{\unexpanded\expandafter{#1}}
 \def\@ctblCaption{
    \ifx\@ctblcaption\empty\else
       \def\@ctblcaptionarg{\ifx\@ctbllabel\empty\else\label{\@ctbllabel}\fi
          \@ctblcaption\ \@ctblcontinued\strut}
       \begingroup
         \ifx\@ctblcap\empty
-          \edef\x{\endgroup\noexpand\caption[]{\expandonce\@ctblcaptionarg}}
+          \edef\x{\endgroup\noexpand\caption[]{\ctbl@expandonce\@ctblcaptionarg}}
         \else
-        \edef\x{\endgroup\noexpand\caption[\expandonce\@ctblcap]%
-                                          {\expandonce\@ctblcaptionarg}}
+        \edef\x{\endgroup\noexpand\caption[\ctbl@expandonce\@ctblcap]%
+                                          {\ctbl@expandonce\@ctblcaptionarg}}
         \fi
       \x
    \fi
@@ -1014,7 +1027,7 @@
 %    \begin{macrocode}
    \ifx\@ctblcap\empty
      \if@ctblhascaption\else
-       \PackageWarning{ctable}{\MessageBreak
+       \PackageWarningNoLine{ctable}{\MessageBreak
           An empty cap= option prevents lot/loc entry only\MessageBreak
           if the caption package is loaded!}
      \fi
