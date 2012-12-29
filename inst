@@ -8,8 +8,20 @@ NAME=ctable
 # inst with the --Clean option, then run inst without options.
 
 function die {
-  echo -e "$1"
-  exit 1
+   echo -e "$*"
+   exit 1
+}
+
+function help {
+   cat <<-EOD
+	Usage: inst [option] 
+	Options:
+	-h, --help	Print this help
+	-c, --clean	Clean up, but keep $NAME.{sty,pdf}
+	-C, --Clean	Clean up all files that can be regenerated
+	-z, --zip	Create zip for CTAN (developer only)
+	EOD
+   exit
 }
 
 LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex/$NAME
@@ -17,62 +29,119 @@ CLEAN={aux,idx,ilg,chk,fls,ind,log,glo,gls,out,tex}
 ALLCLEAN={aux,idx,ilg,chk,fls,ind,log,glo,gls,out,tex,sty,cls,pdf}
 
 function clean {
-  eval "rm -f $NAME.$CLEAN doc/*.$CLEAN"
+   rm -f {$NAME,doc/*}.{aux,idx,ilg,chk,fls,ind,log,glo,gls,out,tex}
+   rm -f doc/*.pdf
 }
 function Clean {
-  eval "rm -f $NAME.$ALLCLEAN doc/*.$ALLCLEAN"
+   clean
+   rm -f {$NAME,doc/*}.{sty,cls,pdf}
 }
 
-case "$1"
-in
--c|--clean) clean; exit;;
--C|--Clean) Clean; exit;;
--h|--help)  echo 'Usage: ./inst [-c|C|h]'; exit;;
-?*)         echo 'Illegal argument(s): use -c|-C|-h|--clean|--Clean|--help'; exit;;
-esac
+function makeall {
+   echo y |tex $NAME.ins >/dev/null
+   (
+      # recompile example graphics if any is missing:
+      cd doc
+      ln -sf ../$NAME.sty || exit 1 # use the $NAME.sty version to be installed
+      for i in [0-9][0-9]?; do 
+         if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then
+            echo Creating example graphics
+            ./doit || exit 1
+            ./doit -c
+            break
+         fi
+      done
+      rm $NAME.sty
+      cd ..
+      
+      echo Creating documentation
+      pdflatex --recorder --interaction=batchmode $NAME.dtx  || die "`texlog_extract $NAME.log`"
+      if [ -f $NAME.glo ]; then
+         makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo || echo makeindex-error
+      fi
+      if [ -f $NAME.idx ]; then
+         makeindex -q -s gind.ist -o $NAME.ind $NAME.idx || exit 1
+      fi
+      pdflatex --recorder --interaction=nonstopmode $NAME.dtx > /dev/null || exit 1
+      
+      # set environment variable NOINSTALL to skip installation in your textree
+      if [ "$NOINSTALL" = "" ]; then
+         echo Installing $NAME.{dtx,sty,pdf}
+         rm -rf $LOCAL
+         mkdir -p $LOCAL
+         cp $NAME.{dtx,sty,pdf} $LOCAL || exit 1
+      fi
+      sudo -i mktexlsr $LOCAL
+      exit 0
+   )
+   if [ $? != 0 ]; then 
+      echo errors detected, see $NAME.log
+   else
+      echo $NAME successfully installed
+   fi
+   texlog_extract $NAME
+}
 
-echo y |tex $NAME.ins >/dev/null
-(
-  # recompile example graphics if any is missing:
-  cd doc
-  ln -sf ../$NAME.sty || exit 1 # use the $NAME.sty version to be installed
-  for i in [0-9][0-9]?; do 
-    if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then
-      echo Creating example graphics
-      ./doit || exit 1
-      ./doit -c
-      break
-    fi
-  done
-  rm $NAME.sty
-  cd ..
-  
-  echo Creating documentation
-  pdflatex --recorder --interaction=batchmode $NAME.dtx  || die "`texlog_extract $NAME.log`"
-  if [ -f $NAME.glo ]; then
-    makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo || echo makeindex-error
-  fi
-  if [ -f $NAME.idx ]; then
-    makeindex -q -s gind.ist -o $NAME.ind $NAME.idx || exit 1
-  fi
-  pdflatex --recorder --interaction=nonstopmode $NAME.dtx > /dev/null || exit 1
-  
-  # set environment variable NOINSTALL to skip installation in your textree
-  if [ "$NOINSTALL" = "" ]; then
-    echo Installing $NAME.{dtx,sty,pdf}
-    rm -rf $LOCAL
-    mkdir -p $LOCAL
-    cp $NAME.{dtx,sty,pdf} $LOCAL || exit 1
-  fi
-  sudo -i mktexlsr $LOCAL
-  exit 0
-)
-if [ $? != 0 ]; then 
-  echo errors detected, see $NAME.log
-else
-  echo $NAME successfully installed
-fi
-texlog_extract $NAME
+function mkzip {
+   # is cvs up to date?
+   cvs -Q status 2>&1 |grep Status:|grep -v Up-to-date
+   if [ $? -eq 0 ]; then
+      echo -n 'Still go on (y/N) '
+      read yn
+      if [[ ! $yn =~ ^[yY] ]]; then echo Quitting...; exit 1; fi
+   fi
+   
+   # create sty and pdf if need so:
+   NOINSTALL=true ./inst || echo die Problems creating sty and pdf files
+   
+   files=( README $NAME.dtx $NAME.ins $NAME.sty $NAME.pdf doc/{[0-9][0-9][a-z],doit,lion.png,penguin.jpg})
+   for i in ${files[@]}; do
+      test -e $i || die File $i does not exist
+   done
+   
+   # check for equal dates and warn if different:
+   read packdate version cvsdate <<<`sed -n 's/$Id$NAME.dtx`
+   cat <<-EOD
+	packagedate: $packdate
+	    version: $version
+	   cvs-date: $cvsdate
+	EOD
+
+   # is README updated?
+   grep "v$version relative to" README </dev/null || die README not updated - quitting...
+   
+   # normally packdate and cvsdate are equal, because I make the zip right after updating CVS:
+   if [ $packdate != $cvsdate ]; then
+      echo package and cvs dates differ
+      echo -n 'Still go on (y/N) '
+      read yn
+      if [[ ! $yn =~ ^[yY] ]]; then echo Quitting...; exit 1; fi
+   fi
+   
+   # make the zip
+   zip=$NAME-$version.zip
+   zip -Dqr $zip ${files[@]}
+   echo "    created: $zip"
+
+}
+
+if ! options=$(getopt -o hcCz \
+                      -l help,clean,Clean,zip -- "$@"); then exit 1; fi
+eval set -- "$options"
+
+while [ $# -gt 0 ]; do
+   case $1 in
+   -c|--clean) clean; exit;;
+   -C|--Clean) Clean; exit;;
+   -z|--zip)   makeall; mkzip; exit;;
+   -h|--help)  help;;
+   (--)        shift; break;;
+   (*)         break;;
+   esac
+   shift
+done
+
+makeall
 
 # $Id$
 
