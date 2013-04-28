@@ -91,10 +91,12 @@ function mkzip {
    # create sty and pdf if need so:
    NOINSTALL=true ./inst || echo die Problems creating sty and pdf files
    
-   files=( README $NAME.dtx $NAME.ins $NAME.sty $NAME.pdf doc/{[0-9][0-9][a-z],doit,lion.png,penguin.jpg})
+   files=( $NAME/{README,inst} $NAME/$NAME.{dtx,ins,sty,pdf} $NAME/doc/{[0-9][0-9][a-z],doit,lion.png,penguin.jpg})
+   cd ..
    for i in ${files[@]}; do
       test -e $i || die File $i does not exist
    done
+   cd ctable
    
    # check for equal dates and warn if different:
    dateexp='[0-9][0-9][0-9][0-9]\/[0-9][0-9]\/[0-9][0-9]'
@@ -110,7 +112,7 @@ function mkzip {
 	EOD
 
    # is README updated?
-   grep "v$version relative to" README </dev/null || die README not updated - quitting...
+   grep "v$version relative to" README >/dev/null || die README not updated - quitting...
    
    # normally packdate and cvsdate are equal, because I make the zip right after updating CVS:
    if [ $packdate != $cvsdate ]; then
@@ -121,8 +123,9 @@ function mkzip {
    fi
    
    # make the zip
+   cd ..
    zip=$NAME-$version.zip
-   zip -Dqr $zip ${files[@]}
+   zip -Dqr $NAME/$zip ${files[@]}
    echo "    created: $zip"
 
 }
