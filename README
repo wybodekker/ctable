@@ -1,4 +1,4 @@
-This is version 1.23 of the ctable package
+This is version 1.24 of the ctable package
 License: LPPL
 
 ctable.sty provides commands to easily typeset centered or left or
@@ -8,11 +8,9 @@ first is optional and is used for key,value pairs generating
 variations on the defaults and offering a route for future
 extensions.
 
-changes of v1.23 relative to v1.22:
-- added the footerwidth option
-
-changes of v1.22 relative to v1.21:
-- allow empty lines in last (tabular) argument
-- corrected error from hyperref's nameref calls (thanks Marco Daniel!)
+changes of v1.24 relative to v1.23:
+- require xcolor instead of color
+- added option bgopacity
+- added option sidecap (for memoir only)
 
 $Id$
