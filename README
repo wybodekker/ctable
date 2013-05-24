@@ -1,4 +1,4 @@
-This is version 1.24 of the ctable package
+This is version 1.25 of the ctable package
 License: LPPL
 
 ctable.sty provides commands to easily typeset centered or left or
@@ -7,6 +7,9 @@ Instead of an environment, a command with 4 arguments is used; the
 first is optional and is used for key,value pairs generating
 variations on the defaults and offering a route for future
 extensions.
+
+changes of v1.25 relative to v1.24:
+- url's to CTAN corrected
 
 changes of v1.24 relative to v1.23:
 - require xcolor instead of color

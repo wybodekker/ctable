@@ -19,7 +19,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2013/04/28 v1.24 Easy, key=value directed, option-rich, typesetting of floats]
+    [2013/05/24 v1.25 Easy, key=value directed, option-rich, typesetting of floats]
 %</package>
 %
 %<*driver>
@@ -40,8 +40,7 @@
 \definecolor{vbgreen}{rgb}{0,.6,0}
 \definecolor{B}{rgb}{0.77, 0.90, 0.96}
 \definecolor{Y}{rgb}{1,1,.878}
-\def\URL#1{http://www.ctan.org/tex-archive/help/Catalogue/entries/#1.html}
-\def\REF#1{\href{\URL{#1}}{\texttt{#1}}}
+\def\REF#1{\href{http://www.ctan.org/pkg/#1}{\texttt{#1}}}
 \parindent0pt\parskip1ex
 \newcommand{\ROW}[3]{\parskip0pt%
   \colorbox{#1}{%
@@ -178,9 +177,11 @@
 %                            }
 % \changes{v1.23}{2012/05/28}{footerwidth option added
 %                            }
-% \changes{v1.23}{2013/04/28}{require xcolor instead of color
+% \changes{v1.24}{2013/04/28}{require xcolor instead of color
 %                             added option bgopacity
 %                             added option sidecap (for memoir only)
+%                            }
+% \changes{v1.25}{2013/05/24}{url's to CTAN corrected
 %                            }
 %
 % \GetFileInfo{ctable.dtx}
