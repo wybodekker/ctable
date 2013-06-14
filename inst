@@ -118,9 +118,6 @@ function mkzip {
 	   cvs-date: $cvsdate
 	EOD
 
-   # is README updated?
-   grep "v$version relative to" README >/dev/null || die README not updated - quitting...
-   
    # normally packdate and cvsdate are equal, because I make the zip right after updating CVS:
    if [ $packdate != $cvsdate ]; then
       echo package and cvs dates differ
