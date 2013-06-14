@@ -1,25 +1,38 @@
 % \iffalse meta-comment
-%
-% Copyright (C) 2005 by Wybo Dekker <wybo@dekkerdocumenten.nl>
-% -------------------------------------------------------
-%
-% This file may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.2
-% of this license or (at your option) any later version.
-% The latest version of this license is in:
-%
-%    http://www.latex-project.org/lppl.txt
-%
-% \fi
-%
-% \iffalse
+%<*internal>
+\iffalse
+%</internal>
+%<*readme>
+-------------------------------------------------------------------------------------
+ctable --- Flexible typesetting of table and figure floats using key/value directives
+Author:  Wybo Dekker
+E-mail:  wybo@dekkerdocumenten.nl
+License: Released under the LaTeX Project Public License v1.3c or later
+See:     http://www.latex-project.org/lppl.txt
+-------------------------------------------------------------------------------------
+
+Short description:
+ctable.sty provides commands to easily typeset centered or left or right
+aligned tables and (multiple-)figure floats, with footnotes. Instead of an
+environment, a command with 4 arguments is used; the first is optional and
+is used for key,value pairs generating variations on the defaults and
+offering a route for future extensions.
+
+Installation:
+Execute the inst script with the --help option for more information.
+
+%</readme>
+%<*internal>
+\fi
+%</internal>
 %<*driver>
 \ProvidesFile{ctable.dtx}
 %</driver>
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2013/05/24 v1.25 Easy, key=value directed, option-rich, typesetting of floats]
+    [2013/06/15 v1.26 ctable package for \
+     flexible typesetting of table and figure floats using key/value directives]
 %</package>
 %
 %<*driver>
@@ -97,92 +110,126 @@
 %   Right brace   \}     Tilde         \~}
 %
 %
-% \changes{v1.00}{2000/06/01}{First release.}
-% \changes{v1.01}{2001/03/17}{Making use of booktabs package}
-% \changes{v1.02}{2002/06/24}{Using keyval to reduce args to 4}
-% \changes{v1.03}{2002/07/16}{Many syntactic corrections,
-%                            thanks to Johannes Braams}
-% \changes{v1.04}{2003/08/11}{Caption, if empty, will not be typeset
-%                            rotate option added
-%                            star option added to use table* and figure*
-%                            environments}
-% \changes{v1.06}{2004/03/20}{left, right and center options added
-%                            frame{sep,rule,fg,bg} options added
-%                            error in width-setting corrected}
-% \changes{v1.05}{2003/10/03}{maxwidth option added}
-% \changes{v1.06a}{2004/04/01}{two errors corrected:
-%                            made setting fboxsep and fboxrule only temporary
-%                            removed superfluous space after tabulars}
-% \changes{v1.06b}{2004/06/19}{Added several % at eol to remove superfluous
-%                             whitespace occurring sometimes}
-% \changes{v1.07}{2005/08/09}{Added option sideways, option rotate now obsolete;
-%                            added option captionskip}
-% \changes{v1.08}{2006/04/10}{Standardized file setup following
-%                            http://www.ctan.org/tex-archive/info/dtxtut/dtxtut.pdf
-%                            mincapwidth option added
-%                            Moved newdimen definition outside ctable macro
-%                           }
-% \changes{v1.09}{2007/03/04}{Added option nosuper;
-%                            corrected incorrect positioning when table is wider than
-%                            mincapwidth}
-% \changes{v1.10}{2007/08/17}{Footnote markers now stay superscript with nosuper.
-%                             Documentation: added many examples for the options.
-%                             Corrected some unwanted white space in captions.
-%                             Caption package included to correct booktabs
-%                             errors in caption position. And for later use of
-%                             its facilities. *Captionskip option redefined*: 0pt
-%                             value now corresponds to LaTeX defaults
-%                            }
-% \changes{v1.11}{2007/09/07}{Added some percent signs at EOL to prevent
-%                             whitespace, 
-%                             Removed xspace usage - caused overfull badness
-%                            }
-% \changes{v1.12}{2008/04/12}{Option notespar added}
-% \changes{v1.13}{2008/05/01}{cap option with empty argument will not be inserted
-%                             in lot/lof
-%                             Added option continued, for continuation tables:
-%                             same number as previous table, ` (continued' added
-%                             to caption.
-%                            }
-% \changes{v1.14}{2009/09/15}{nosuper propagation to later tables prohibited
-%                             added option doinside
-%                             use of (obsolete) carom.sty for docs discontinued
-%                             empty labels not created
-%                             newcolumntype warnings removed
-%                             caption package not needed anymore
-%                            }
-% \changes{v1.15}{2009/09/17}{removed whitespace before tables,
-%                             corrected marginpars in the documentation
-%                            }
-% \changes{v1.16}{2010/06/26}{option cap={} did not suppress lot/lof entry
-%                             notespar option now generates fully justified notes
-%                            }
-% \changes{v1.17}{2010/10/30}{option cap={} did not suppress lot/lof entry
-%                             notespar option now generates fully justified notes
-%                            }
-% \changes{v1.18}{2011/04/15}{added setupctable for option defaults
-%                             added complement for several options (topcap, nosideways, et cetera
-%                            }
-% \changes{v1.19}{2011/05/01}{sideways option did not work anymore; corrected
-%                            }
-% \changes{v1.20}{2011/08/24}{added options captionsleft, captionsright, captionsinside;
-%                             (for setupctable only)
-%                            }
-% \changes{v1.21}{2011/09/05}{better documentation for sideways, captionsleft/right/inside
-%                             options
-%                            }
-% \changes{v1.22}{2012/05/25}{allow empty lines in last (tabular) argument
-%                             corrected error from hyperref's nameref calls
-%                             (thanks Marco Daniel!)
-%                            }
-% \changes{v1.23}{2012/05/28}{footerwidth option added
-%                            }
-% \changes{v1.24}{2013/04/28}{require xcolor instead of color
-%                             added option bgopacity
-%                             added option sidecap (for memoir only)
-%                            }
-% \changes{v1.25}{2013/05/24}{url's to CTAN corrected
-%                            }
+% \changes{v1.00}{2000/06/01}{
+%  first release.
+% }
+% \changes{v1.01}{2001/03/17}{
+%  making use of booktabs package
+% }
+% \changes{v1.02}{2002/06/24}{
+%  using keyval to reduce args to 4
+% }
+% \changes{v1.03}{2002/07/16}{
+%  many syntactic corrections, thanks to Johannes Braams
+% }
+% \changes{v1.04}{2003/08/11}{
+% - caption, if empty, will not be typeset\\
+% - rotate option added\\
+% - star option added to use table* and figure*\\
+% - environments
+% }
+% \changes{v1.06}{2004/03/20}{
+% - left, right and center options added\\
+% - frame{sep,rule,fg,bg} options added\\
+% - error in width-setting corrected
+% }
+% \changes{v1.05}{2003/10/03}{
+%  maxwidth option added
+% }
+% \changes{v1.06a}{2004/04/01}{
+% - made setting fboxsep and fboxrule only temporary\\
+% - removed superfluous space after tabulars
+% }
+% \changes{v1.06b}{2004/06/19}{
+%  added several % at eol to remove superfluous whitespace occurring
+%  sometimes
+% }
+% \changes{v1.07}{2005/08/09}{
+% - added option sideways, option rotate now obsolete\\
+% - added option captionskip
+% }
+% \changes{v1.08}{2006/04/10}{
+% - standardized file setup following
+%   http://www.ctan.org/tex-archive/info/dtxtut/dtxtut.pdf\\
+% - mincapwidth option added\\
+% - moved newdimen definition outside ctable macro
+% }
+% \changes{v1.09}{2007/03/04}{
+% - added option nosuper\\
+% - corrected incorrect positioning when table is wider than mincapwidth
+% }
+% \changes{v1.10}{2007/08/17}{
+% - footnote markers now stay superscript with nosuper\\
+% - documentation: added many examples for the options\\
+% - corrected some unwanted white space in captions\\
+% - caption package included to correct booktabs errors in caption
+%   position. And for later use of its facilities\\
+% - *captionskip option redefined*: 0pt value now corresponds to LaTeX
+%   default
+% }
+% \changes{v1.11}{2007/09/07}{
+% - added some percent signs at EOL to prevent whitespace\\
+% - removed xspace usage - caused overfull badness
+% }
+% \changes{v1.12}{2008/04/12}{
+%  option notespar added
+% }
+% \changes{v1.13}{2008/05/01}{
+% - cap option with empty argument will not be inserted in lot/lof\\
+% - added option continued, for continuation tables: same number as
+%   previous table, `(continued)' added to caption
+% }
+% \changes{v1.14}{2009/09/15}{
+% - nosuper propagation to later tables prohibited\\
+% - added option doinside\\
+% - use of (obsolete) carom.sty for docs discontinued\\
+% - empty labels not created\\
+% - newcolumntype warnings removed\\
+% - caption package not needed anymore
+% }
+% \changes{v1.15}{2009/09/17}{
+% - removed whitespace before tables\\
+% - corrected marginpars in the documentation
+% }
+% \changes{v1.16}{2010/06/26}{
+% - option cap={} did not suppress lot/lof entry\\
+% - notespar option now generates fully justified notes
+% }
+% \changes{v1.17}{2010/10/30}{
+%  doinside option propagated in subsequent ctable calls
+% }
+% \changes{v1.18}{2011/04/15}{
+% - added setupctable for option defaults\\
+% - added complement for several options (topcap, nosideways, et cetera)
+% }
+% \changes{v1.19}{2011/05/01}{
+%  sideways option did not work anymore; corrected
+% }
+% \changes{v1.20}{2011/08/24}{
+%  added options captionsleft, captionsright, captionsinside; (for
+%  setupctable only)
+% }
+% \changes{v1.21}{2011/09/05}{
+%  better documentation for sideways, captionsleft/right/inside options
+% }
+% \changes{v1.22}{2012/05/25}{
+% - allow empty lines in last (tabular) argument\\
+% - corrected error from hyperref's nameref calls (thanks Marco Daniel!)
+% }
+% \changes{v1.23}{2012/05/28}{
+%  footerwidth option added
+% }
+% \changes{v1.24}{2013/04/28}{
+% - require xcolor instead of color\\
+% - added option bgopacity\\
+% - added option sidecap (for memoir only)
+% }
+% \changes{v1.25}{2013/05/24}{
+%  url's to CTAN corrected
+% }
+% \changes{v1.26}{2013/06/15}{
+%  footerwidth option was inactive when notespar option was active
+% }
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -336,7 +383,7 @@
 % |mincapwidth| option, presumably because the table is very narrow, footnotes
 % are given the same width as the caption. With small footnotes this may not
 % be what you want; this option can be used to give the footnotes their own width. 
-% Without an argument, they will be type set within the width of of the table. 
+% Without an argument, they will be typeset within the width of of the table. 
 % 
 % \DescribeMacro{framebg={\slshape r g b}\hfill}
 % set the background color of the frame (the color inside the frame) to the
@@ -995,6 +1042,7 @@
 }
 \newcommand{\tmark}[1][a]{%
    \hbox{\textsuperscript{\normalfont\textit{#1}}}}
+\newdimen\@ctblcurftwidth
 \newcommand{\ctable}[4][]{%
    \let\@ctbltaborfig  \@defaultctbltaborfig
    \let\@ctblalign     \@defaultctblalign
@@ -1146,14 +1194,6 @@
          \centering{\usebox\ctbl@t} % insert the tabular
          \def\@ctblfootnotes{#3}%
          \ifx#3\empty\else{% append footnotes, if any
-            \footnotesize
-            \ifx\@ctblnotespar\@ctbltrue%
-               \\[.2ex]
-               \begin{minipage}{\hsize}%
-                  #3%
-               \end{minipage}%
-            \else%
-               \\
 %    \end{macrocode}
 % Footnotes: if the |footerwidth| is 0pt (the default), typeset the footer as
 % wide as the caption (which may be wider than the table because of the
@@ -1161,10 +1201,18 @@
 % make it as wide as the table; otherwise, give it the width set by the
 % |footerwidth| option.
 %    \begin{macrocode}
-               \begin{tabularx}{\ifdim\@ctblfooterwidth=-1pt\@ctblw\else
+            \@ctblcurftwidth=\ifdim\@ctblfooterwidth=-1pt\@ctblw\else
                                 \ifdim\@ctblfooterwidth=0pt\hsize\else
                                 \@ctblfooterwidth\fi\fi
-                  }{r@{\,}>{\raggedright}X}
+            \footnotesize
+            \ifx\@ctblnotespar\@ctbltrue%
+               \\[.2ex]
+               \begin{minipage}{\@ctblcurftwidth}%
+                  #3%
+               \end{minipage}%
+            \else%
+               \\
+               \begin{tabularx}{\@ctblcurftwidth}{r@{\,}>{\raggedright}X}
                   #3%
                \end{tabularx}%
             \fi
