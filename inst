@@ -19,7 +19,7 @@ function help {
 	Usage: inst [option] 
 	Options:
 	-h, --help	Print this help
-	-c, --clean	Clean up, but keep $NAME.{sty,pdf}
+	-c, --clean	Clean up, but keep $NAME.{sty,pdf} and README
 	-C, --Clean	Clean up all files that can be regenerated
 	-z, --zip	Create zip for CTAN (developer only)
 	EOD
@@ -32,7 +32,7 @@ function clean {
 }
 function Clean {
    clean
-   rm -f {$NAME,doc/*}.{sty,cls,pdf}
+   rm -f {$NAME,doc/*}.{sty,cls,pdf} README
 }
 
 function makeall {
@@ -77,7 +77,14 @@ function makeall {
       echo $NAME successfully installed
    fi
    texlog_extract $NAME
+   readme
 }
+
+function readme { # generate the README file
+  sed -n "/^%<\*readme>/,/^%<\/readme>/p;/\\\\changes{v$version}/,/^% }/p" $NAME.dtx  |
+  sed  "s/^%//;s/\\\\\\\\$//;/<.readme>/d;/^ }/d;s/ \\\\changes.*/Changes in version $version:/" >README
+}
+
 
 function mkzip {
    # is cvs up to date?
@@ -129,6 +136,7 @@ function mkzip {
    echo "    created: $zip"
 
 }
+version=`grep " v[0-9.]\+ $NAME package" $NAME.dtx |sed 's/.* v\([0-9.]\+\) .*/\1/' `
 
 if ! options=$(getopt -o hcCz \
                       -l help,clean,Clean,zip -- "$@"); then exit 1; fi
