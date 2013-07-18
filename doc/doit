@@ -61,7 +61,6 @@ set.each do |j|
     sys("pdfcrop #{f}.pdf #{f}.pdf")
   end
 end
-# $Id$
 __END__
 \documentclass{article}
 \usepackage[a4paper,margin=20mm,noheadfoot]{geometry}

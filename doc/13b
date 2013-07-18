@@ -4,4 +4,3 @@
   mincapwidth = 50mm,
   continued
 ]{c}{}{\FL Table's first row\LL}
-$Id$

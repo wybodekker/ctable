@@ -2,4 +2,3 @@
   caption = Caption,
   mincapwidth = 50mm,
 ]{c}{}{\FL Table's first row\LL}
-$Id$
