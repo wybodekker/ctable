@@ -1,13 +1,10 @@
 #!/bin/bash
 
-NAME=ctable
-LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`/tex/latex/$NAME
-
-# this script generates NAME's documentation into NAME.pdf
-# and then installs (unless the environment variable NOINSTALL is not empty)
-# NAME in TEXMFLOCAL
-# This is not a make-like process. If you changed any files, then first run
-# inst with the --Clean option, then run inst without options.
+       NAME=ctable
+    DOCTYPE=package
+        EXT=sty
+    VERSION=`grep " v[0-9.]\+ $NAME $DOCTYPE" $NAME.dtx |sed 's/.* v\([0-9.]\+\) .*/\1/' `
+EXECUTABLES=(zip getopt)
 
 function die {
    echo -e "$*"
@@ -16,133 +13,109 @@ function die {
 
 function help {
    cat <<-EOD
-	Usage: inst [option] 
+	This is inst - install the $NAME LaTeX $DOCTYPE
 	Options:
-	-h, --help	Print this help
-	-c, --clean	Clean up, but keep $NAME.{sty,pdf} and README
-	-C, --Clean	Clean up all files that can be regenerated
+	-h, --help	print this help
+	-c, --clean     remove all files created by the installation, except the zip file
+	-C, --Clean	remove all files that can be regenerated
 	-z, --zip	Create zip for CTAN (developer only)
+
+	Without any options, inst creates $NAME.{$EXT,ins,pdf} and installs these, 
+	in the local TeX tree (\$TEXMFLOCAL) or, if that is not writable,
+	in the user´s TeX tree (\$TEXMFHOME). Also, a zip file is created for upload to CTAN.
 	EOD
    exit
 }
 
-function clean {
-   rm -f {$NAME,doc/*}.{aux,idx,ilg,chk,fls,ind,log,glo,gls,out,tex}
-   rm -f doc/*.pdf
+function setdir { # create installation directory
+   TREE=$(kpsewhich --expand-var '$TEXMFLOCAL')
+   test -w $TREE || TREE=$(kpsewhich --expand-var '$TEXMFHOME')
+   test "$TREE" = "" && die Could not find value for $TREE
+   INSTDIR=${TREE}/tex/latex/$NAME
+   SOURCE=$TREE/source/latex/$NAME
+   mkdir -p $INSTDIR || die could not create $INSTDIR
+   mkdir -p $SOURCE || die could not create $SOURCE
 }
+
+function testexecs { # test presence of executables
+   for i in ${EXECUTABLES[*]}; do
+      type $i &> /dev/null || die executable $i not found
+   done
+}
+
+function readme { # generate the README file
+  sed -n "/^%<\*readme>/,/^%<\/readme>/p;/\\\\changes{v$VERSION}/,/^% }/p" $NAME.dtx  |
+  sed  "s/^%//;s/\\\\\\\\$//;/<.readme>/d;/^ }/d;s/ \\\\changes.*/Changes in version $VERSION:/" >README
+}
+
+function clean { # clean but keep what goes in the zip
+   rm -f $NAME.{aux,fls,glo,gls,idx,ilg,ind,log,out,toc}
+   rm -f examples/{$NAME.$EXT,*.pdf}
+}
+
 function Clean {
    clean
-   rm -f {$NAME,doc/*}.{sty,cls,pdf} README
+   rm -f $NAME.{$EXT,pdf} README
 }
 
 function makeall {
    echo y |tex $NAME.ins >/dev/null
-   ( # recompile example graphics if any is missing:
-      cd doc
-      ln -sf ../$NAME.sty || exit 1 # use the $NAME.sty version to be installed
-      for i in [0-9][0-9]?; do 
-         if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then
-            echo Creating example graphics
-            ./doit || exit 1
-            ./doit -c
-            break
-         fi
-      done
-      rm $NAME.sty
-      cd ..
-      
-      echo Creating documentation
-      pdflatex --recorder --interaction=batchmode $NAME.dtx  || die "`texlog_extract $NAME.log`"
-      if [ -f $NAME.glo ]; then
-         makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo || echo makeindex-error
+   # install any .ttf files
+   mkdir -p ~/.fonts
+   find examples -name '*.ttf' -exec cp {} ~/.fonts \;
+   fc-cache ~/.fonts
+
+   # compile all examples
+
+   cd examples
+   ln -sf ../$NAME.sty || exit 1 # use the version to be installed
+   for i in [0-9][0-9]?; do 
+      if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then
+         ./doit -q || exit 1
+         ./doit -c
+         break
       fi
-      if [ -f $NAME.idx ]; then
-         makeindex -q -s gind.ist -o $NAME.ind $NAME.idx || exit 1
-      fi
-      pdflatex --recorder --interaction=nonstopmode $NAME.dtx > /dev/null || exit 1
-      
-      # set environment variable NOINSTALL to skip installation in your textree
-      if [ "$NOINSTALL" = "" ]; then
-         echo Installing $NAME.{dtx,sty,pdf}
-         rm -rf $LOCAL
-         mkdir -p $LOCAL
-         cp $NAME.{dtx,sty,pdf} $LOCAL || exit 1
-      fi
-      sudo -i mktexlsr $LOCAL
-      exit 0
-   )
-   if [ $? != 0 ]; then 
-      echo errors detected, see $NAME.log
-   else
-      echo $NAME successfully installed
-   fi
-   texlog_extract $NAME
-   readme
+   done
+   cd ..
+   # make $NAME.pdf
+   pdflatex --recorder --interaction=batchmode $NAME.dtx >/dev/null ||
+      die "`texlog_extract $NAME.log`"
+   test -f $NAME.glo && makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo
+   test -f $NAME.idx && makeindex -q -s gind.ist -o $NAME.ind $NAME.idx
+   pdflatex --interaction=batchmode $NAME.dtx > /dev/null
+   pdflatex --interaction=batchmode $NAME.dtx > /dev/null
 }
 
-function readme { # generate the README file
-  sed -n "/^%<\*readme>/,/^%<\/readme>/p;/\\\\changes{v$version}/,/^% }/p" $NAME.dtx  |
-  sed  "s/^%//;s/\\\\\\\\$//;/<.readme>/d;/^ }/d;s/ \\\\changes.*/Changes in version $version:/" >README
+function installall {
+   # install and cleanup
+   echo installing in $INSTDIR
+   mv -f $NAME.{$EXT,pdf} $INSTDIR
+   cp -a $NAME.{ins,dtx} $SOURCE
+   mktexlsr $TREE 2>/dev/null
+   clean
 }
-
 
 function mkzip {
-   # is cvs up to date?
-   cvs -Q status 2>&1 |grep Status:|grep -v Up-to-date
-   if [ $? -eq 0 ]; then
-      echo -n 'Still go on (y/N) '
-      read yn
-      if [[ ! $yn =~ ^[yY] ]]; then echo Quitting...; exit 1; fi
-   fi
-   
-   # create sty and pdf if need so:
-   NOINSTALL=true ./inst || echo die Problems creating sty and pdf files
-   
-   files=( $NAME/{README,inst} $NAME/$NAME.{dtx,ins,sty,pdf} $NAME/doc/{[0-9][0-9][a-z],doit,lion.png,penguin.jpg})
+   clean
+   readme
    cd ..
-   for i in ${files[@]}; do
-      test -e $i || die File $i does not exist
-   done
-   cd ctable
-   
-   # check for equal dates and warn if different:
-   dateexp='[0-9][0-9][0-9][0-9]\/[0-9][0-9]\/[0-9][0-9]'
-   versexp='[0-9]\+\.[0-9]\+[a-z]*'
-   read packdate version cvsdate <<<`sed -n "
-     s/.Id: .*\($dateexp\).*/\1/p
-     s/.*\($dateexp\) v\($versexp\).*/\1 \2/p
-   " $NAME.dtx`
-   cat <<-EOD
-	packagedate: $packdate
-	    version: $version
-	   cvs-date: $cvsdate
-	EOD
-
-   # normally packdate and cvsdate are equal, because I make the zip right after updating CVS:
-   if [ $packdate != $cvsdate ]; then
-      echo package and cvs dates differ
-      echo -n 'Still go on (y/N) '
-      read yn
-      if [[ ! $yn =~ ^[yY] ]]; then echo Quitting...; exit 1; fi
-   fi
-   
-   # make the zip
-   cd ..
-   zip=$NAME-$version.zip
-   zip -Dqr $NAME/$zip ${files[@]}
-   echo "    created: $zip"
-
+   zipfile=$NAME/$NAME-$VERSION.zip
+   rm -f $zipfile
+   zip -Drq $zipfile $NAME/* -x $NAME/test/*
+   cd $NAME
+   Clean
 }
-version=`grep " v[0-9.]\+ $NAME package" $NAME.dtx |sed 's/.* v\([0-9.]\+\) .*/\1/' `
 
-if ! options=$(getopt -o hcCz \
-                      -l help,clean,Clean,zip -- "$@"); then exit 1; fi
+testexecs
+setdir
+
+if ! options=$(getopt -o hcz \
+                      -l help,clean,zip -- "$@"); then exit 1; fi
 eval set -- "$options"
 
 while [ $# -gt 0 ]; do
    case $1 in
-   -c|--clean) clean; exit;;
-   -C|--Clean) Clean; exit;;
+   -c|--clean) Clean; exit;;
    -z|--zip)   makeall; mkzip; exit;;
    -h|--help)  help;;
    (--)        shift; break;;
@@ -150,7 +123,7 @@ while [ $# -gt 0 ]; do
    esac
    shift
 done
+test "$1" = "" || die No arguments expected
 
 makeall
-
-
+installall

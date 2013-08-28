@@ -39,17 +39,9 @@ Execute the inst script with the --help option for more information.
 \documentclass{ltxdoc}
 \usepackage{ctable,txfonts,paralist,desclist}
 \usepackage[l2tabu,orthodox]{nag}
-\usepackage[
-   verbose,
-   pdftex,
-   paper=a4paper,
-   margin=20mm,
-   bottom=30mm,
-   left=50mm,
-   nohead
-]{geometry}
+\usepackage[a4paper,margin=20mm,left=50mm,nohead]{geometry}
 \usepackage{hyperref}
-\graphicspath{{./doc/}}
+\graphicspath{{./examples/}}
 \definecolor{vbgreen}{rgb}{0,.6,0}
 \definecolor{B}{rgb}{0.77, 0.90, 0.96}
 \definecolor{Y}{rgb}{1,1,.878}
@@ -67,9 +59,8 @@ Execute the inst script with the --help option for more information.
 }
 \AtBeginDocument{\RecordChanges}
 \AtEndDocument{\PrintChanges}
-\EnableCrossrefs
+\CodelineIndex\EnableCrossrefs
 \hypersetup{
-   colorlinks = true,
      pdftitle = The ctable package,
     pdfauthor = Wybo Dekker,
    pdfsubject = {Typesetting centered, right, and left aligned table and figure
@@ -83,10 +74,13 @@ Execute the inst script with the --help option for more information.
                  tabularx,
                  threeparttable
                 },
-  bookmarksopen
+  bookmarksopen,
+  hidelinks
 }
 \begin{document}
-\DocInput{ctable.dtx}
+  \DocInput{ctable.dtx}
+  \PrintChanges
+  \PrintIndex
 \end{document}
 %</driver>
 % \fi
@@ -261,6 +255,8 @@ Execute the inst script with the --help option for more information.
 % better vertical spacing around horizontal rules and it provides
 % facilities for making table footnotes.
 % \end{abstract}
+% \tableofcontents
+% \section{Introduction}
 %
 % \section{Purpose} The |ctable| package lets you easily typeset
 % captioned table and figure floats with optional
