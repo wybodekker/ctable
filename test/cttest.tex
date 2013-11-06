@@ -1,24 +1,20 @@
-\documentclass[12pt,twoside]{article}
+\documentclass[12pt,twoside]{memoir}
 \usepackage[a4paper,margin=25mm,top=30mm]{geometry}
-\usepackage{ctable,fancyhdr,osf-txfonts,colortbl}
+\usepackage{ctable,osf-txfonts,colortbl,caption,kantlipsum}
 \parindent0pt
-\pagestyle{fancy}
-\headheight=15pt
-\fancyhead{}%\fancyfoot{}
 \bibliographystyle{plain}
 \author{Wybo Dekker}
 \title{Some tests for ctable}
 \begin{document}
 \maketitle
 \listoftables
-\clearpage
 This text shows some tests. The heading is used to tell what is being tested, so
 use one page per test and use fancyhead to set the heading. 
-\clearpage
 
-\fancyhead[C]{notespar sets notes in a block}
+\chapter{notespar sets notes in a block}{}
 \ctable[
-  caption=Notes in tabular form,
+  pos=h!
+  caption=Notes in tabular form
 ]{l}{
   \tnote[a]{note.}
   \tnote[b]{other note.}
@@ -28,8 +24,8 @@ use one page per test and use fancyhead to set the heading.
 Some\tmark[a] text\tmark[b] for the first line\NN
 and some\tmark[c] for the second line\tmark[d]\LL
 }
-
 \ctable[
+  pos=h!
   caption=Notes in a block,
   notespar
 ]{l}{
@@ -42,14 +38,12 @@ Some\tmark[a] text\tmark[b] for the first line\NN
 and some\tmark[c] for the second line\tmark[d]\LL
 }
 
-\clearpage
-\fancyhead[C]{A figure}
+\chapter{A figure}
 \ctable[figure,botcap,caption=Terminology]{c}{}{\includegraphics{metrics}}
 
-\clearpage
 
-\fancyhead[C]{captionskip; first: without ctable}
-\begin{table}[h]\begin{center}
+\chapter{captionskip; first: without ctable}
+\begin{table}[h!]\begin{center}
   \caption{x top caption}
   \begin{tabular}{c}\hline a single line tabular\tabularnewline\hline\end{tabular}
   \setcounter{table}{0}
@@ -57,7 +51,7 @@ and some\tmark[c] for the second line\tmark[d]\LL
 \end{center}\end{table}
 
 Without ascenders and descenders:
-\begin{table}[h]\begin{center}
+\begin{table}[h!]\begin{center}
   \setcounter{table}{0}
   \caption{xxx}
   \begin{tabular}{c}\hline a single line tabular\tabularnewline\hline\end{tabular}
@@ -65,7 +59,7 @@ Without ascenders and descenders:
   \caption{xxx}
 \end{center}\end{table}
 
-\begin{table}[h]\begin{center}
+\begin{table}[h!]\begin{center}
   \setcounter{table}{0}
   \caption{xpx}
   \begin{tabular}{c}\hline a single line tabular\tabularnewline\hline\end{tabular}
@@ -73,8 +67,7 @@ Without ascenders and descenders:
   \caption{xTx}
 \end{center}\end{table}
 
-\clearpage
-\fancyhead[C]{captionskip; now ctable: default 2ex, test 4ex}
+\chapter{captionskip; now ctable: default 2ex, test 4ex}
 \setcounter{table}{0}
 \ctable[pos=h!,caption=xxx,doinside=\scriptsize]{c}{}{\FL a single line ctable\LL}
 \setcounter{table}{0}
@@ -84,19 +77,7 @@ Without ascenders and descenders:
 \setcounter{table}{0}
 \ctable[pos=h!,botcap,captionskip=4ex,caption=xxx]{c}{}{\FL a single line ctable\LL}
 
-\clearpage
-\fancyhead[C]{captionskip; now ctable: default 2ex, test 4ex}
-\setcounter{table}{0}
-\ctable[pos=h!,caption=xpx]{c}{}{\FL a single line ctable\LL}
-\setcounter{table}{0}
-\ctable[pos=h!,botcap,caption=xTx]{c}{}{\FL a single line ctable\LL}
-\setcounter{table}{0}
-\ctable[pos=h!,captionskip=4ex,caption=xpx]{c}{}{\FL a single line ctable\LL}
-\setcounter{table}{0}
-\ctable[pos=h!,botcap,captionskip=4ex,caption=xTx]{c}{}{\FL a single line ctable\LL}
-
-\clearpage
-\fancyhead[C]{CENTERED}
+\chapter{CENTERED}
 
 \def\CAP{Zetmeel (enzymatisch), gebruikte enzymen}
 \newlength{\capwidth}\settowidth{\capwidth}{Table 3: \CAP}
@@ -128,9 +109,8 @@ lab& tijd & temperatuur \NN
 23 & 16 & 60 \NN
 26 & 12 & 60 \LL
 }
-\clearpage
 
-\fancyhead[C]{RIGHT ALIGNED}
+\chapter{RIGHT ALIGNED}
 
 
 \ctable[
@@ -180,8 +160,7 @@ lab& tijd & temperatuur \NN
 26 & 12 & 60 \LL
 }
 
-\clearpage
-\fancyhead[C]{LEFT ALIGNED}
+\chapter{LEFT ALIGNED}
 
 
 \ctable[
@@ -231,52 +210,48 @@ lab& tijd & temperatuur \NN
 26 & 12 & 60 \LL
 }
 
-\clearpage
 
-\fancyhead[C]{BIG CAPTION AND FOOTNOTE, SMALL TABLE, MINCAPWIDTH=111mm}
-
-
+\chapter{BIG CAPTION AND FOOTNOTE, SMALL TABLE, MINCAPWIDTH=111mm}
  
-\def\CAP{%
-We thrive in information||thick worlds because of our
-marvelous and everyday capacity to select, edit,
-single out, structure, highlight, group, pair, merge,
-harmonize, synthesize, focus, organize, condense,
-reduce, boil down, choose, categorize, catalog, classify,
-list, abstract, scan, look into, idealize, isolate,
-discriminate, distinguish, screen, pigeonhole, pick over,
-sort, integrate, blend, inspect, filter, lump, skip,
-smooth, chunk, average, approximate, cluster, aggregate,
-outline, summarize, itemize, review, dip into,
-flip through, browse, glance into, leaf through, skim,
-refine, enumerate, glean, synopsize, winnow the wheat
-from the chaff and separate the sheep from the goats.}
-{\LARGE
+\def\CAP{A somewhat larger caption, just to show the effects it produces}
+Below, table~\ref{topcap} show a normal top caption, then same
+table~\ref{sidecap}, in the next chapter, got a side caption, but this
+works only with the memoir class.
+
 \ctable[
   caption={\CAP},
+  label=topcap,
+  cap=lipsum,
   mincapwidth=111mm
-]{l} {\tnote{\input{tufte}}}
+]{l} {\tnote{\kant[1]}}
 {\FL Anzahl \LL }
-}
 
-\clearpage
-\fancyhead[C]{FULL WIDTH FIGURE MUST FIT IN TEXTWIDTH}
+\chapter{sideways caption}
+\ctable[
+  caption={\CAP},
+  cap=lipsum,
+  label=sidecap,
+  sidecap,
+  mincapwidth=111mm
+]{l} {\tnote{\kant[2]}}
+{\FL Anzahl \LL }
+
+\chapter{FULL WIDTH FIGURE MUST FIT IN TEXTWIDTH}
 \CAP
 \ctable{@{}c@{}}{}{\FL\includegraphics[width=\textwidth]{metrics}\LL}
 
-\clearpage
-\fancyhead[C]{NO ENTRY IN LOT}
+\chapter{NO ENTRY IN LOT}
 \ctable[
   caption={This table should be seen in the LOT},
   mincapwidth=111mm
-]{l} {\tnote{\input{tufte}}}
+]{l} {\tnote{\kant[3]}}
 {\FL Anzahl \LL }
 
 \ctable[
   caption={This table should not be seen in the LOT},
   cap=,
   mincapwidth=111mm
-]{l} {\tnote{\input{tufte}}}
+]{l} {\tnote{\kant[4]}}
 {\FL Anzahl\LL }
 
 \ctable[
