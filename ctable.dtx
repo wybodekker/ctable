@@ -31,7 +31,7 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2013/06/15 v1.26 ctable package for \
+    [2013/10/11 v1.27 ctable package for \
      flexible typesetting of table and figure floats using key/value directives]
 %</package>
 %
@@ -821,6 +821,12 @@ Execute the inst script with the --help option for more information.
 % \medskip\\
 % \ROW{Y}{s14a}{14a}
 %
+% \subsection{\ttfamily\bfseries bgopacity}
+% For a little transparency demonstration, here is the last example of
+% the framerule section, but instead of a yellow background, make it transparent:
+% \medskip\\
+% \ROW{B}{s15a}{15a} 
+%
 % \StopEventually{}
 %
 % \section{Implementation}
@@ -1186,7 +1192,7 @@ Execute the inst script with the --help option for more information.
       \@ctblalign
       \begin{minipage}{\@ctblfloatwidth}\parindent0pt
          \ifx\@ctblbotcap\@ctblfalse\@ctblCaption\vskip\@ctblcaptionskip\fi
-         \ifx\@ctblbotcap\undefined\begin{sidecaption}[\@ctblcap]{\@ctblcaption}[ label ]\fi
+         \ifx\@ctblbotcap\undefined\begin{sidecaption}[\@ctblcap]{\@ctblcaption}[\@ctbllabel]\fi
          \centering{\usebox\ctbl@t} % insert the tabular
          \def\@ctblfootnotes{#3}%
          \ifx#3\empty\else{% append footnotes, if any
