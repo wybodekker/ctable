@@ -3,7 +3,7 @@
        NAME=ctable
     DOCTYPE=package
         EXT=sty
-    VERSION=`grep " v[0-9.]\+ $NAME $DOCTYPE" $NAME.dtx |sed 's/.* v\([0-9.]\+\) .*/\1/' `
+    VERSION=`grep " v[0-9.]\+[a-z]\{,1\} $NAME $DOCTYPE" $NAME.dtx |sed 's/.* v\([0-9.]\+[a-z]\{,1\}\) .*/\1/' `
 EXECUTABLES=(zip getopt)
 
 function die {
@@ -17,24 +17,27 @@ function help {
 	Options:
 	-h, --help	print this help
 	-c, --clean     remove all files created by the installation, except the zip file
-	-C, --Clean	remove all files that can be regenerated
-	-z, --zip	Create zip for CTAN (developer only)
+	-z, --zip	Create zip for CTAN (no install, developer only)
 
-	Without any options, inst creates $NAME.{$EXT,ins,pdf} and installs these, 
-	in the local TeX tree (\$TEXMFLOCAL) or, if that is not writable,
-	in the user´s TeX tree (\$TEXMFHOME). Also, a zip file is created for upload to CTAN.
+        Without any options, inst installs $NAME in the first writable
+        TEXMFMAIN, TEXMFLOCAL or TEXMFHOME tree.
 	EOD
    exit
 }
 
 function setdir { # create installation directory
-   TREE=$(kpsewhich --expand-var '$TEXMFLOCAL')
-   test -w $TREE || TREE=$(kpsewhich --expand-var '$TEXMFHOME')
-   test "$TREE" = "" && die Could not find value for $TREE
-   INSTDIR=${TREE}/tex/latex/$NAME
-   SOURCE=$TREE/source/latex/$NAME
-   mkdir -p $INSTDIR || die could not create $INSTDIR
-   mkdir -p $SOURCE || die could not create $SOURCE
+   for i in MAIN LOCAL HOME; do
+      TREE=$(kpsewhich --expand-var \$TEXMF$i)
+      test -w $TREE && break
+      TREE=
+   done
+   test "$TREE" = "" && die "Could not find a writable TeX tree"
+   INSTTEX=${TREE}/tex/latex/$NAME
+   INSTSRC=$TREE/source/latex/$NAME
+   INSTDOC=$TREE/doc/latex/$NAME
+   mkdir -p $INSTTEX || die could not create $INSTTEX
+   mkdir -p $INSTSRC || die could not create $INSTSRC
+   mkdir -p $INSTDOC || die could not create $INSTDOC
 }
 
 function testexecs { # test presence of executables
@@ -44,18 +47,27 @@ function testexecs { # test presence of executables
 }
 
 function readme { # generate the README file
-  sed -n "/^%<\*readme>/,/^%<\/readme>/p;/\\\\changes{v$VERSION}/,/^% }/p" $NAME.dtx  |
-  sed  "s/^%//;s/\\\\\\\\$//;/<.readme>/d;/^ }/d;s/ \\\\changes.*/Changes in version $VERSION:/" >README
+sed -n '/^%<\*readme>/,/^%<\/readme>/p
+	/\\changes{v'$VERSION'}/,/^% }/p' $NAME.dtx  |
+sed    's/^%//;s/\\\\$//
+	/<.readme>/d
+	/^ }/d
+	s/ \\changes.*/Changes in version '$VERSION':/
+	s/$\\Rightarrow\$/=>/g
+	s/\\textbackslash/\\/g
+	s/\\text\(sl\|it\){\([^}]\+\)}/\/\2\//g		# \textsl{...} -> /.../
+	s/{\([^}]*\)}/\1/g 				# keep last, removes all {...}
+       ' >README
 }
 
 function clean { # clean but keep what goes in the zip
-   rm -f $NAME.{aux,fls,glo,gls,idx,ilg,ind,log,out,toc}
-   rm -f examples/{$NAME.$EXT,*.pdf}
+   rm -f $NAME.{aux,fls,glo,gls,idx,ilg,ind,log,out,toc,$EXT}
+   rm -f examples/{$NAME.$EXT,*.{pdf,aux,log,out}}
 }
 
 function Clean {
    clean
-   rm -f $NAME.{$EXT,pdf} README
+   rm -f $NAME.pdf README
 }
 
 function makeall {
@@ -65,8 +77,10 @@ function makeall {
    find examples -name '*.ttf' -exec cp {} ~/.fonts \;
    fc-cache ~/.fonts
 
-   # compile all examples
+   # create the README file
+   readme
 
+   # compile all examples
    cd examples
    ln -sf ../$NAME.sty || exit 1 # use the version to be installed
    for i in [0-9][0-9]?; do 
@@ -88,16 +102,18 @@ function makeall {
 
 function installall {
    # install and cleanup
-   echo installing in $INSTDIR
-   mv -f $NAME.{$EXT,pdf} $INSTDIR
-   cp -a $NAME.{ins,dtx} $SOURCE
+   echo installing in $TREE
+
+   rm -rf $INSTTEX/* $INSTSRC/* $INSTDOC/*
+   cp -f $NAME.$EXT $INSTTEX
+   cp -a $NAME.{ins,dtx} $INSTSRC
+   cp -a README inst $NAME.pdf $INSTDOC
    mktexlsr $TREE 2>/dev/null
    clean
 }
 
 function mkzip {
    clean
-   readme
    cd ..
    zipfile=$NAME/$NAME-$VERSION.zip
    rm -f $zipfile
