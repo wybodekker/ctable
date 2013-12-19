@@ -31,7 +31,7 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2013/10/11 v1.27 ctable package for \
+    [2013/12/17 v1.27 ctable package for \
      flexible typesetting of table and figure floats using key/value directives]
 %</package>
 %
@@ -50,12 +50,12 @@ Execute the inst script with the --help option for more information.
 \newcommand{\ROW}[3]{\parskip0pt%
   \colorbox{#1}{%
     \parbox{.98\hsize}{%
-      \rule{0pt}{1.5ex}\\%%
-      \parbox{.5\hsize}{\includegraphics{#2}}%%
-      \parbox{.5\hsize}{\centering{\includegraphics{#3}}}%%
-      \\\rule{0pt}{1.5ex}%%
-    }%%
-  }\par%%
+      \rule{0pt}{1.5ex}\\%
+      \parbox{.5\hsize}{\includegraphics{#2}}%
+      \parbox{.5\hsize}{\centering{\includegraphics{#3}}}%
+      \\\rule{0pt}{1.5ex}%
+    }%
+  }\par%
 }
 \AtBeginDocument{\RecordChanges}
 \AtEndDocument{\PrintChanges}
@@ -820,13 +820,6 @@ Execute the inst script with the --help option for more information.
 % example, for the adjustment of the font size with |\small|:
 % \medskip\\
 % \ROW{Y}{s14a}{14a}
-%
-% \subsection{\ttfamily\bfseries bgopacity}
-% For a little transparency demonstration, here is the last example of
-% the framerule section, but instead of a yellow background, make it transparent:
-% \medskip\\
-% \ROW{B}{s15a}{15a} 
-%
 % \StopEventually{}
 %
 % \section{Implementation}
@@ -1186,6 +1179,9 @@ Execute the inst script with the --help option for more information.
    \fi
 %    \end{macrocode}
 % |\@ctblbegin| is now defined as something like |\begin{table}[tbp]|.
+% \changes{v1.27}{2013/12/17}{
+%  label option did not work with side caption
+% }
 %    \begin{macrocode}
    \@ctblbegin
       \ifx\@ctblcontinued\empty\else\addtocounter{\@ctbltaborfig}{-1}\fi
@@ -1193,7 +1189,7 @@ Execute the inst script with the --help option for more information.
       \begin{minipage}{\@ctblfloatwidth}\parindent0pt
          \ifx\@ctblbotcap\@ctblfalse\@ctblCaption\vskip\@ctblcaptionskip\fi
          \ifx\@ctblbotcap\undefined\begin{sidecaption}[\@ctblcap]{\@ctblcaption}[\@ctbllabel]\fi
-         \centering{\usebox\ctbl@t} % insert the tabular
+         \centering{\usebox\ctbl@t}% insert the tabular
          \def\@ctblfootnotes{#3}%
          \ifx#3\empty\else{% append footnotes, if any
 %    \end{macrocode}
