@@ -62,7 +62,7 @@ sed    's/^%//;s/\\\\$//
 
 function clean { # clean but keep what goes in the zip
    rm -f $NAME.{aux,fls,glo,gls,idx,ilg,ind,log,out,toc,$EXT}
-   rm -f examples/{$NAME.$EXT,*.{pdf,aux,log,out}}
+   rm -f doc/{$NAME.$EXT,*.{pdf,aux,log,out}}
 }
 
 function Clean {
@@ -74,14 +74,14 @@ function makeall {
    echo y |tex $NAME.ins >/dev/null
    # install any .ttf files
    mkdir -p ~/.fonts
-   find examples -name '*.ttf' -exec cp {} ~/.fonts \;
+   find doc -name '*.ttf' -exec cp {} ~/.fonts \;
    fc-cache ~/.fonts
 
    # create the README file
    readme
 
    # compile all examples
-   cd examples
+   cd doc
    ln -sf ../$NAME.sty || exit 1 # use the version to be installed
    for i in [0-9][0-9]?; do 
       if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then

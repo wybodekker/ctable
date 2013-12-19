@@ -31,7 +31,7 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2013/12/17 v1.27 ctable package for \
+    [2013/12/19 v1.27 ctable package for \
      flexible typesetting of table and figure floats using key/value directives]
 %</package>
 %
@@ -41,7 +41,7 @@ Execute the inst script with the --help option for more information.
 \usepackage[l2tabu,orthodox]{nag}
 \usepackage[a4paper,margin=20mm,left=50mm,nohead]{geometry}
 \usepackage{hyperref}
-\graphicspath{{./examples/}}
+\graphicspath{{./doc/}}
 \definecolor{vbgreen}{rgb}{0,.6,0}
 \definecolor{B}{rgb}{0.77, 0.90, 0.96}
 \definecolor{Y}{rgb}{1,1,.878}
@@ -74,8 +74,7 @@ Execute the inst script with the --help option for more information.
                  tabularx,
                  threeparttable
                 },
-  bookmarksopen,
-  hidelinks
+  bookmarksopen
 }
 \begin{document}
   \DocInput{ctable.dtx}
@@ -826,11 +825,22 @@ Execute the inst script with the --help option for more information.
 % \begin{macrocode}
 \RequirePackage{ifpdf,xcolor,xkeyval,array,tabularx,booktabs,rotating}
 %    \end{macrocode}
-% The transparency package works only in pdf mode, otherwise define 
-% a dummy |\transparent| and issue a warning.
+% The transparency package works only in pdf mode, and if the tikz package is not loaded;
+% otherwise define a dummy |\transparent| and issue a warning.
+% \changes{v1.27}{2013/12/19}{
+%  disable transparency with warning if tikz package loaded
+% }
 %    \begin{macrocode}
 \ifpdf
   \RequirePackage{transparent}
+  \AtBeginDocument{
+    \@ifpackageloaded{tikz}{
+      \PackageWarning{ctable}{
+        Transparency disabled: incompatible with tikz package
+      }
+      \def\transparent#1{}
+    }{}
+  }
 \else
   \PackageWarningNoLine{ctable}{\MessageBreak
     Transparency disabled: pdfTeX is not running in PDF mode
@@ -1179,7 +1189,7 @@ Execute the inst script with the --help option for more information.
    \fi
 %    \end{macrocode}
 % |\@ctblbegin| is now defined as something like |\begin{table}[tbp]|.
-% \changes{v1.27}{2013/12/17}{
+% \changes{v1.27}{2013/12/19}{
 %  label option did not work with side caption
 % }
 %    \begin{macrocode}
