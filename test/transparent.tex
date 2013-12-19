@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage{ctable}
+\usepackage{draftwatermark,kantlipsum}
+\def\Tab#1#2{
+\ctable[
+  bgopacity = #1,
+    caption = {#2},
+      width = 100mm,
+        pos = ht,
+  ]{c>{\raggedright}Xc>{\raggedright}X}{
+    \tnote{footnotes are placed under the table and some more text to see, that footnotes are without background}
+  }{ \FL
+    \multicolumn{4}{c}{Example using tabularx} \ML
+    \multicolumn{2}{c}{Multicolumn entry!} & THREE & FOUR \NN
+    \cmidrule(r){1-2}\cmidrule(rl){3-3}\cmidrule(l){4-4}
+    one&
+    The width of this column depends on the width of the table.\tmark &
+    three&
+    Column four will act in the same way as column two, with the same width. \LL
+  }
+}
+
+\begin{document}
+\SetWatermarkScale{7}
+\SetWatermarkColor{red}
+\kant[1]
+\Tab{.0}{Transparent: bgopacity=0}
+\Tab{.5}{Semi transparent: bgopacity=.5}
+\kant[2-3]
+\Tab{1}{Opaque: bgopacity=1, or no bgopacity option}
+\end{document}
