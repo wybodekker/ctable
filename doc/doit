@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
-require 'erb'
-require 'scriptingutils'
+#!/bin/bash
 
 # doit - make all or some example picture sets.
 
@@ -12,72 +10,41 @@ require 'scriptingutils'
 # for each nn[a-z] two pdfs are generated:
 #      nn[a-z].pdf for the ctable picture
 # and snn[a-z].pdf for the source code verbatim.
-# The number of digits (nn) is set with DIGS
 # The prefix (s) for source verbatims and (empty) for result files is set by PRE
 # Windows users should replace NULL with perhaps "c:/temp/null"
+set=${1:-[0-9][0-9][a-z]}
+for j in $set; do
+   # source verbatim
+   { cat <<-'EOD'
+	\documentclass{article}
+	\usepackage[a4paper,margin=20mm,noheadfoot]{geometry}
+	\pagestyle{empty}
+	\begin{document}\ttfamily
+	\fontsize{10}{12 pt}\selectfont
+	\begin{verbatim}
+	EOD
+	grep -v "remove from source" $j
+	cat <<-'EOD'
+	\end{verbatim}
+	\end{document}
+	EOD
+   } >s$j.tex
 
-  DIGS = 2
-   ALL = Dir["[0-9]"*DIGS+"[a-z]"].sort
-   PRE = ['s','']
-
-# clean up directory
-# all = false: keep pdf's
-# all = true: remove pdf's, too
-def clean(all=false)
-  ALL.map{|x| PRE.map{|y| y+x }}.flatten.each do |f|
-    exts = %w{aux tex log chk fls out}
-    exts << 'pdf' if all
-    exts.each do |e|
-      fe = "#{f}.#{e}"
-      File.delete(fe) if File.exist?(fe)
-    end
-  end
-  exit(0)
-end
-
-@quiet = false
-def handle_options
-  ARGV.options do |opt|
-    opt.banner = "Create example images\n"
-    opt.banner << "No arguments: create them all\n"
-    opt.banner << "Example: ./#{MYNAME} 03? # creates 03a.pdf, 03b.pdf, s03a.pdf, and s03b.pdf"
-    opt.separator ""
-    opt.on('-h','--help','print this help and exit')       do puts opt.help; exit end
-    opt.on("-c","--clean","Clean up, but keep pdf files")  do clean end
-    opt.on("-C","--Clean","Clean up, including pdf files") do clean(true) end
-    opt.on("-q","--quiet","Be silent")                     do @quiet = true end
-    opt.parse!
-  end
-end
-init(nil,:handle_options)
-set = ARGV.empty? ? ALL : ARGV
-tex = DATA.readlines("\n\n") # tex[0] -> source verbatim, tex[1] -> result
-set.each do |j|
-  puts j unless @quiet
-  0.upto(1) do |i|
-    f = "#{PRE[i]}#{j}"
-    open(f+'.tex','w') do |o| o.print ERB.new(tex[i]).result(binding) end
-    sys("pdflatex --interaction=nonstopmode #{f}")
-    sys("pdfcrop #{f}.pdf #{f}.pdf")
-  end
-end
-__END__
-\documentclass{article}
-\usepackage[a4paper,margin=20mm,noheadfoot]{geometry}
-\pagestyle{empty}
-\begin{document}\ttfamily
-\fontsize{10}{12 pt}\selectfont
-\begin{verbatim}<%= open(j).readlines.delete_if {|x| x =~ /remove for source/ }.join %>\end{verbatim}
-\end{document}
-
-\documentclass[twoside]{article}
-<% if j =~ /[k-z]$/ %>
-\usepackage[papersize={65mm,40mm},showframe,margin=1mm,noheadfoot]{geometry}
-<% end %>
-\usepackage{ctable}
-\usepackage{txfonts}
-\pagestyle{empty}
-\parindent0pt
-\begin{document}
-<%= open(j).readlines.join %>
-\end{document}
+   pdflatex --interaction=nonstopmode s$j.tex >& /dev/null || die "error compiling s$j.tex"
+   pdfcrop s$j.pdf s$j.pdf >& /dev/null
+   # result
+   { echo '\documentclass[twoside]{article}'
+     [[ $j =~ [k-z] ]] && echo '\usepackage[papersize={65mm,40mm},showframe,margin=1mm,noheadfoot]{geometry}'
+     cat <<-'EOD'
+	\usepackage{ctable}
+	\usepackage{txfonts}
+	\pagestyle{empty}
+	\parindent0pt
+	\begin{document}
+	EOD
+     cat $j
+     echo '\end{document}'
+   } > $j.tex
+   pdflatex --interaction=nonstopmode $j.tex >& /dev/null || die "error compiling $j.tex"
+   pdfcrop $j.pdf $j.pdf >& /dev/null
+done

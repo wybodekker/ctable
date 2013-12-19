@@ -6,12 +6,12 @@
     VERSION=`grep " v[0-9.]\+[a-z]\{,1\} $NAME $DOCTYPE" $NAME.dtx |sed 's/.* v\([0-9.]\+[a-z]\{,1\}\) .*/\1/' `
 EXECUTABLES=(zip getopt)
 
-function die {
+die() {
    echo -e "$*"
    exit 1
 }
 
-function help {
+help() {
    cat <<-EOD
 	This is inst - install the $NAME LaTeX $DOCTYPE
 	Options:
@@ -25,7 +25,7 @@ function help {
    exit
 }
 
-function setdir { # create installation directory
+setdir() { # create installation directory
    for i in MAIN LOCAL HOME; do
       TREE=$(kpsewhich --expand-var \$TEXMF$i)
       test -w $TREE && break
@@ -40,13 +40,13 @@ function setdir { # create installation directory
    mkdir -p $INSTDOC || die could not create $INSTDOC
 }
 
-function testexecs { # test presence of executables
+testexecs() { # test presence of executables
    for i in ${EXECUTABLES[*]}; do
       type $i &> /dev/null || die executable $i not found
    done
 }
 
-function readme { # generate the README file
+readme() { # generate the README file
 sed -n '/^%<\*readme>/,/^%<\/readme>/p
 	/\\changes{v'$VERSION'}/,/^% }/p' $NAME.dtx  |
 sed    's/^%//;s/\\\\$//
@@ -60,17 +60,18 @@ sed    's/^%//;s/\\\\$//
        ' >README
 }
 
-function clean { # clean but keep what goes in the zip
+clean() { # clean but keep what goes in the zip
    rm -f $NAME.{aux,fls,glo,gls,idx,ilg,ind,log,out,toc,$EXT}
    rm -f doc/{$NAME.$EXT,*.{pdf,aux,log,out}}
+   rm -f doc/{s,}[0-9][0-9][a-z].*
 }
 
-function Clean {
+Clean() {
    clean
    rm -f $NAME.pdf README
 }
 
-function makeall {
+makeall() {
    echo y |tex $NAME.ins >/dev/null
    # install any .ttf files
    mkdir -p ~/.fonts
@@ -85,8 +86,7 @@ function makeall {
    ln -sf ../$NAME.sty || exit 1 # use the version to be installed
    for i in [0-9][0-9]?; do 
       if [ ! -f $i.pdf -o ! -f s$i.pdf ]; then
-         ./doit -q || exit 1
-         ./doit -c
+         ./doit || exit 1
          break
       fi
    done
@@ -100,7 +100,7 @@ function makeall {
    pdflatex --interaction=batchmode $NAME.dtx > /dev/null
 }
 
-function installall {
+installall() {
    # install and cleanup
    echo installing in $TREE
 
@@ -112,7 +112,7 @@ function installall {
    clean
 }
 
-function mkzip {
+mkzip() {
    clean
    cd ..
    zipfile=$NAME/$NAME-$VERSION.zip
