@@ -31,7 +31,7 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2013/12/19 v1.27 ctable package for \
+    [2014/02/20 v1.28 ctable package for \
      flexible typesetting of table and figure floats using key/value directives]
 %</package>
 %
@@ -230,6 +230,9 @@ Execute the inst script with the --help option for more information.
 % \changes{v1.27}{2013/12/19}{
 %  label option did not work with side caption\\
 %  disable transparency with warning if tikz package loaded
+% }
+% \changes{v1.28}{2014/02/20}{
+%  added percent characters at EOLs causing whitespace
 % }
 %
 % \GetFileInfo{ctable.dtx}
@@ -1075,12 +1078,12 @@ Execute the inst script with the --help option for more information.
    \@ctblmaxwidth      \@defaultctblmaxwidth
    \@ctblmincapwidth   \@defaultctblmincapwidth
    \@ctblfooterwidth   \@defaultctblfooterwidth
-   \def\@ctblfgactual {@defaultctblframefg}
-   \def\@ctblbgactual {@defaultctblframebg}
-   \def\@ctblbeg      {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
-   \def\@ctblbegin    {\@ctblbeg}
-   \def\@ctblend      {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}
-   \setkeys{ctbl}{#1}
+   \def\@ctblfgactual {@defaultctblframefg}%
+   \def\@ctblbgactual {@defaultctblframebg}%
+   \def\@ctblbeg      {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
+   \def\@ctblbegin    {\@ctblbeg}%
+   \def\@ctblend      {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
+   \setkeys{ctbl}{#1}%
 %    \end{macrocode}
 % Make the short caption equal to the caption if it has not been defined
 %    \begin{macrocode}
