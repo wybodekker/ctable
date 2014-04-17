@@ -11,7 +11,6 @@
 #      nn[a-z].pdf for the ctable picture
 # and snn[a-z].pdf for the source code verbatim.
 # The prefix (s) for source verbatims and (empty) for result files is set by PRE
-# Windows users should replace NULL with perhaps "c:/temp/null"
 set=${1:-[0-9][0-9][a-z]}
 for j in $set; do
    # source verbatim
@@ -30,7 +29,7 @@ for j in $set; do
 	EOD
    } >s$j.tex
 
-   pdflatex --interaction=nonstopmode s$j.tex >& /dev/null || die "error compiling s$j.tex"
+   mk --noprint --noview s$j.tex >/dev/null && mk -c s$j
    pdfcrop s$j.pdf s$j.pdf >& /dev/null
    # result
    { echo '\documentclass[twoside]{article}'
@@ -45,6 +44,6 @@ for j in $set; do
      cat $j
      echo '\end{document}'
    } > $j.tex
-   pdflatex --interaction=nonstopmode $j.tex >& /dev/null || die "error compiling $j.tex"
+   mk --noprint --noview $j.tex >/dev/null && mk -c $j
    pdfcrop $j.pdf $j.pdf >& /dev/null
 done
