@@ -2,7 +2,7 @@
     dtxname=ctable
     dtxtype=package
         ext=sty
-     delete=($dtxname.$ext $dtxname\*.pdf README.tex doc/\*.tex)
+     delete=($dtxname.$ext README.tex doc/\*.tex)
  dtxversion=$(grep " v[0-9.]\+[a-z]\{0,1\} $dtxname $dtxtype" $dtxname.dtx |sed 's/.* v\([0-9.]\+[a-z]\{,1\}\) .*/\1/')
 executables=(mk texlog_extract zip getopt pdfseparate pdfcrop pdflatex)
 

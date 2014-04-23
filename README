@@ -18,5 +18,5 @@ https://bitbucket.org/wybodekker/ctable/downloads/ctable.pdf
 Installation:
 Execute the inst script with the --help option for more information.
 
-Changes in version 1.28:
-  added percent characters at EOLs causing whitespace
+Changes in version 1.29:
+  reorganized inst script
