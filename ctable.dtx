@@ -34,7 +34,7 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2014/04/25 v1.29 ctable package for \
+    [2015/04/09 v1.30 ctable package for \
      flexible typesetting of table and figure floats using key/value directives]
 %</package>
 %
@@ -240,6 +240,9 @@ Execute the inst script with the --help option for more information.
 % \changes{v1.29}{2014/04/20}{
 %  reorganized inst script
 % }
+% \changes{v1.30}{2015/04/08}{
+%  tikz' transparency got broken when tikz loaded after ctable
+% }
 %
 % \GetFileInfo{ctable.dtx}
 %
@@ -326,7 +329,16 @@ Execute the inst script with the --help option for more information.
 % background. |ctable|'s background color, which is opaque by default, may
 % make the watermark (partially) invisible. You can avoid this by setting
 % the |bgopacity| option to a value lower than 1. Note that this works only
-% in PDF mode, a warning is issued otherwise.
+% in PDF mode, a warning is issued otherwise.\\
+% Note: there are two limitations to transparency setting:
+% \begin{compactenum}
+% \item it works only in PDF mode: so it works in pdflatex and lualatex,
+% but is disabled in xelatex.
+% \item it disables transparency features in the tikz package; therefore,
+% ctable checks if the tikz package is loaded and if so, disables its own 
+% transparency with a warning. That helps only if you load tikz
+% \textit{before} ctable.
+% \end{compactenum}
 % 
 % \DescribeMacro{botcap\hfill}
 % put the caption at the bottom of the float instead of on top of it.
@@ -846,14 +858,13 @@ Execute the inst script with the --help option for more information.
 % otherwise define a dummy |\transparent| and issue a warning.
 %    \begin{macrocode}
 \ifpdf
-  \RequirePackage{transparent}
-  \AtBeginDocument{
-    \@ifpackageloaded{tikz}{
-      \PackageWarning{ctable}{
-        Transparency disabled: incompatible with tikz package
-      }
-      \def\transparent#1{}
-    }{}
+  \@ifpackageloaded{tikz}{
+    \PackageWarning{ctable}{
+      Transparency disabled: incompatible with tikz package
+    }
+    \def\transparent#1{}
+  }{
+    \RequirePackage{transparent}
   }
 \else
   \PackageWarningNoLine{ctable}{\MessageBreak

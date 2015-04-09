@@ -19,5 +19,5 @@ https://bitbucket.org/wybodekker/ctable/downloads/ctable.pdf
 Installation:
 Execute the inst script with the --help option for more information.
 
-Changes in version 1.29:
-  reorganized inst script
+Changes in version 1.30:
+  tikz' transparency got broken when tikz loaded after ctable
