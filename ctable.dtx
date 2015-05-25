@@ -58,8 +58,8 @@ Execute the inst script with the --help option for more information.
   \colorbox{#1}{%
     \parbox{.98\hsize}{%
       \rule{0pt}{1.5ex}\\%
-      \parbox{.5\hsize}{\includegraphics{#2}}%
-      \parbox{.5\hsize}{\centering{\includegraphics{#3}}}%
+      \parbox{.6\hsize}{\includegraphics{#2}}%
+      \parbox{.4\hsize}{\centering{\includegraphics{#3}}}%
       \\\rule{0pt}{1.5ex}%
     }%
   }\par%
@@ -690,7 +690,7 @@ Execute the inst script with the --help option for more information.
 %    one&
 %    The width of this column depends on the width of the table.\tmark &
 %    three&
-%    Column four will act in the same way as column two, with the same width.                        \LL
+%    Column four will act in the same way as column two, with the same width.\LL
 % }
 % \end{verbatim}
 % \color{black}
@@ -876,99 +876,99 @@ Execute the inst script with the --help option for more information.
 \def\FL{\toprule}
 \def\ML{\NN\midrule}
 \def\LL{\NN\bottomrule}
-\def\@defaultctblfgcolor#1 #2 #3={\definecolor{@defaultctblframefg}{rgb}{#1,#2,#3}}
-\def\@defaultctblbgcolor#1 #2 #3={\definecolor{@defaultctblframebg}{rgb}{#1,#2,#3}}
-\def\@ctblfgcolor#1 #2 #3={%
-  \definecolor{@ctblframefg}{rgb}{#1,#2,#3}
-  \def\@ctblfgactual{@ctblframefg}}
-\def\@ctblbgcolor#1 #2 #3={%
-  \definecolor{@ctblframebg}{rgb}{#1,#2,#3}
-  \def\@ctblbgactual{@ctblframebg}}
-\def\@ctbltextsuperscript#1{%
-  \ifx\@ctblsuper\@ctbltrue\@textsuperscript{#1}\else{\footnotesize#1}\fi
+\def\@dfltCTfgcolor#1 #2 #3={\definecolor{@dfltCTframefg}{rgb}{#1,#2,#3}}
+\def\@dfltCTbgcolor#1 #2 #3={\definecolor{@dfltCTframebg}{rgb}{#1,#2,#3}}
+\def\@CTfgcolor#1 #2 #3={%
+  \definecolor{@CTframefg}{rgb}{#1,#2,#3}
+  \def\@CTfgactual{@CTframefg}}
+\def\@CTbgcolor#1 #2 #3={%
+  \definecolor{@CTframebg}{rgb}{#1,#2,#3}
+  \def\@CTbgactual{@CTframebg}}
+\def\@CTtextsuperscript#1{%
+  \ifx\@CTsuper\@CTtrue\@textsuperscript{#1}\else{\footnotesize#1}\fi
 }
 %    \end{macrocode}
 % define a true and a false value
 %    \begin{macrocode}
-\def\@ctbltrue{1}
-\def\@ctblfalse{0}
+\def\@CTtrue{1}
+\def\@CTfalse{0}
 %    \end{macrocode}
 % normally we do nothing special inside the float, but that can be changed with the doinside option
 %    \begin{macrocode}
-\def\@ctbldoinside{\relax}
+\def\@CTdoinside{\relax}
 %    \end{macrocode}
 % Need three booleans to remember:
 %  if we use tabularx,
 %  if we are running in the memoir class,
 %  if the caption package is loaded
 %    \begin{macrocode}
-\newif\if@ctblusex
-\newif\if@ctblinmemoir
-\newif\if@ctblhascaption
-\@ifclassloaded{memoir}{\@ctblinmemoirtrue}{\@ctblinmemoirfalse}
-\@ifpackageloaded{caption}{\@ctblhascaptiontrue}{\@ctblhascaptionfalse}
+\newif\if@CTusex
+\newif\if@CTinmemoir
+\newif\if@CThascaption
+\@ifclassloaded{memoir}{\@CTinmemoirtrue}{\@CTinmemoirfalse}
+\@ifpackageloaded{caption}{\@CThascaptiontrue}{\@CThascaptionfalse}
 %    \end{macrocode}
 % Need lots of dimens and their defaults
 %    \begin{macrocode}
-\newdimen\@ctblframesep         \newdimen\@defaultctblframesep
-\newdimen\@ctblframerule        \newdimen\@defaultctblframerule
-\newdimen\@ctblwidth            \newdimen\@defaultctblwidth
-\newdimen\@ctblcaptionskip      \newdimen\@defaultctblcaptionskip
-\newdimen\@ctblmaxwidth         \newdimen\@defaultctblmaxwidth
-\newdimen\@ctblmincapwidth      \newdimen\@defaultctblmincapwidth
-\newdimen\@ctblfooterwidth      \newdimen\@defaultctblfooterwidth
-\newdimen\@ctblw % the final width
-\newdimen\@ctblfloatwidth
-\newdimen\@ctbloldsep
-\newdimen\@ctbloldrule
+\newdimen\@CTframesep         \newdimen\@dfltCTframesep
+\newdimen\@CTframerule        \newdimen\@dfltCTframerule
+\newdimen\@CTwidth            \newdimen\@dfltCTwidth
+\newdimen\@CTcaptionskip      \newdimen\@dfltCTcaptionskip
+\newdimen\@CTmaxwidth         \newdimen\@dfltCTmaxwidth
+\newdimen\@CTmincapwidth      \newdimen\@dfltCTmincapwidth
+\newdimen\@CTfooterwidth      \newdimen\@dfltCTfooterwidth
+\newdimen\@CTw % the final width
+\newdimen\@CTfloatwidth
+\newdimen\@CToldsep
+\newdimen\@CToldrule
 %    \end{macrocode}
 %    Allocate box registers so that we can determine the widths of the
 %    tables
 %    \begin{macrocode}
-\newbox\ctbl@t          % tabular saved and measured here
+\newbox\CT@t          % tabular saved and measured here
 %    \end{macrocode}
 % Option setting commands from keyval. The table position (here, top,
 % bottom, page) gets a special treatment, since \LaTeX\ does not expand
 % commands there. So instead of putting things like \texttt{tbp} in a
-% command like |\@ctblbegin| we put
+% command like |\@CTbegin| we put
 % |\begin{table}[tbp]| in it.
 %    \begin{macrocode}
 
-\define@key{suctbl}{bgopacity}{\def\@defaultctblbgopacity{#1}}
-\define@key{suctbl}{botcap}[]{\let\@defaultctblbotcap\@ctbltrue}
-\define@key{suctbl}{captionsinside}[]{\def\rot@LR{-1}
+\define@key{suCT}{bgopacity}{\def\@dfltCTbgopacity{#1}}
+\define@key{suCT}{botcap}[]{\let\@dfltCTbotcap\@CTtrue}
+\define@key{suCT}{captionsinside}[]{\def\rot@LR{-1}
                                       \if@twoside\@rot@twosidetrue
                                       \else\@rot@twosidefalse\fi}
-\define@key{suctbl}{captionsleft}[]{\@rot@twosidefalse\def\rot@LR{-1}}
-\define@key{suctbl}{captionsright}[]{\@rot@twosidefalse\def\rot@LR{0}}
-\define@key{suctbl}{captionskip}{\@defaultctblcaptionskip=#1}
-\define@key{suctbl}{center}[]{\let\@defaultctblalign\centering}
-\define@key{suctbl}{continued}{\def\@defaulttextcontinued{#1}}
-\define@key{suctbl}{doinside}{\def\@defaultctbldoinside{#1}}
-\define@key{suctbl}{figure}[]{\def\@defaultctbltaborfig{figure}}
-\define@key{suctbl}{framebg}{\@defaultctblbgcolor#1=}
-\define@key{suctbl}{framefg}{\@defaultctblfgcolor#1=}
-\define@key{suctbl}{framerule}{\@defaultctblframerule=#1}
-\define@key{suctbl}{framesep}{\@defaultctblframesep=#1}
-\define@key{suctbl}{left}[]{\let\@defaultctblalign\raggedright}
-\define@key{suctbl}{maxwidth}{\@defaultctblmaxwidth=#1}
-\define@key{suctbl}{mincapwidth}{\@defaultctblmincapwidth=#1}
-\define@key{suctbl}{footerwidth}[-1pt]{\@defaultctblfooterwidth=#1}
-\define@key{suctbl}{nonotespar}[]{\let\@defaultctblnotespar\@ctblfalse}
-\define@key{suctbl}{nosideways}[]{\let\@defaultctblsideways\empty}
-\define@key{suctbl}{nostar}[]{\def\@defaultctblstarred{}}
-\define@key{suctbl}{nosuper}[]{\let\@defaultctblsuper\@ctblfalse}
-\define@key{suctbl}{notespar}[]{\let\@defaultctblnotespar\@ctbltrue}
-\define@key{suctbl}{pos}{\def\@defaultctblpos{#1}}
-\define@key{suctbl}{right}[]{\let\@defaultctblalign\raggedleft}
-\define@key{suctbl}{sideways}[]{\def\@defaultctblsideways{sideways}}
-\define@key{suctbl}{star}[]{\def\@defaultctblstarred{*}}
-\define@key{suctbl}{super}[]{\let\@defaultctblsuper\@ctbltrue}
-\define@key{suctbl}{table}[]{\def\@defaultctbltaborfig{table}}
-\define@key{suctbl}{topcap}[]{\let\@defaultctblbotcap\@ctblfalse}
-\define@key{suctbl}{width}{\@defaultctblwidth=#1}
+\define@key{suCT}{captionsleft}[]{\@rot@twosidefalse\def\rot@LR{-1}}
+\define@key{suCT}{captionsright}[]{\@rot@twosidefalse\def\rot@LR{0}}
+\define@key{suCT}{captionskip}{\@dfltCTcaptionskip=#1}
+\define@key{suCT}{center}[]{\let\@dfltCTalign\centering}
+\define@key{suCT}{continued}{\def\@dflttextcontinued{#1}}
+\define@key{suCT}{doinside}{\def\@dfltCTdoinside{#1}}
+\define@key{suCT}{figure}[]{\def\@dfltCTtaborfig{figure}}
+\define@key{suCT}{framebg}{\@dfltCTbgcolor#1=}
+\define@key{suCT}{framefg}{\@dfltCTfgcolor#1=}
+\define@key{suCT}{framerule}{\@dfltCTframerule=#1}
+\define@key{suCT}{framesep}{\@dfltCTframesep=#1}
+\define@key{suCT}{left}[]{\let\@dfltCTalign\raggedright}
+\define@key{suCT}{maxwidth}{\@dfltCTmaxwidth=#1}
+\define@key{suCT}{mincapwidth}{\@dfltCTmincapwidth=#1}
+\define@key{suCT}{footerwidth}[-1pt]{\@dfltCTfooterwidth=#1}
+\define@key{suCT}{nonotespar}[]{\let\@dfltCTnotespar\@CTfalse}
+\define@key{suCT}{nosideways}[]{\let\@dfltCTsideways\empty}
+\define@key{suCT}{nostar}[]{\def\@dfltCTstarred{}}
+\define@key{suCT}{nosuper}[]{\let\@dfltCTsuper\@CTfalse}
+\define@key{suCT}{notespar}[]{\let\@dfltCTnotespar\@CTtrue}
+\define@key{suCT}{pos}{\def\@dfltCTpos{#1}}
+\define@key{suCT}{right}[]{\let\@dfltCTalign\raggedleft}
+\define@key{suCT}{sideways}[]{\def\@dfltCTsideways{sideways}}
+\define@key{suCT}{star}[]{\def\@dfltCTstarred{*}}
+\define@key{suCT}{super}[]{\let\@dfltCTsuper\@CTtrue}
+\define@key{suCT}{table}[]{\def\@dfltCTtaborfig{table}}
+\define@key{suCT}{topcap}[]{\let\@dfltCTbotcap\@CTfalse}
+\define@key{suCT}{width}{\@dfltCTwidth=#1}
 
-\newcommand{\setupctable}[1]{\setkeys{suctbl}{#1}}
+\newcommand{\setupctable}[1]{\setkeys{suCT}{#1}}
 \setupctable{
   bgopacity=1,
   captionskip=0pt,
@@ -991,58 +991,58 @@ Execute the inst script with the --help option for more information.
   width=0pt,
 }
 
-\define@key{ctbl}{bgopacity}{\def\@ctblbgopacity{#1}}
-\define@key{ctbl}{botcap}[]{\let\@ctblbotcap\@ctbltrue}
-\define@key{ctbl}{captionskip}{\@ctblcaptionskip=#1}
-\define@key{ctbl}{caption}{\def\@ctblcaption{#1}}
-\define@key{ctbl}{cap}{\def\@ctblcap{#1}}
-\define@key{ctbl}{center}[]{\let\@ctblalign\centering}
-\define@key{ctbl}{continued}[\@defaulttextcontinued]{\def\@ctblcontinued{#1}}
-\define@key{ctbl}{doinside}{\def\@ctbldoinside{#1}}
-\define@key{ctbl}{figure}[]{\def\@ctbltaborfig{figure}}
-\define@key{ctbl}{framebg}{\@ctblbgcolor#1=}
-\define@key{ctbl}{framefg}{\@ctblfgcolor#1=}
-\define@key{ctbl}{framerule}{\@ctblframerule=#1}
-\define@key{ctbl}{framesep}{\@ctblframesep=#1}
-\define@key{ctbl}{label}{\def\@ctbllabel{#1}}
-\define@key{ctbl}{left}[]{\let\@ctblalign\raggedright}
-\define@key{ctbl}{maxwidth}{\@ctblmaxwidth=#1}
-\define@key{ctbl}{mincapwidth}{\@ctblmincapwidth=#1}
-\define@key{ctbl}{footerwidth}[-1pt]{\@ctblfooterwidth=#1}
-\define@key{ctbl}{nonotespar}[]{\let\@ctblnotespar\@ctblfalse}
-\define@key{ctbl}{nosideways}[]{\let\@ctblsideways\empty}
-\define@key{ctbl}{nostar}[]{\def\@ctblstarred{}}
-\define@key{ctbl}{nosuper}[]{\let\@ctblsuper\@ctblfalse}
-\define@key{ctbl}{notespar}[]{\let\@ctblnotespar\@ctbltrue}
-\define@key{ctbl}{pos}{\def\@ctblpos{#1}\def\@ctblbegin{\@ctblbeg[#1]}}
-\define@key{ctbl}{right}[]{\let\@ctblalign\raggedleft}
-\define@key{ctbl}{sidecap}[]{\let\@ctblbotcap\undefined}
-\define@key{ctbl}{sideways}[]{\def\@ctblsideways{sideways}}
-\define@key{ctbl}{star}[]{\def\@ctblstarred{*}}
-\define@key{ctbl}{super}[]{\let\@ctblsuper\@ctbltrue}
-\define@key{ctbl}{table}[]{\def\@ctbltaborfig{table}}
-\define@key{ctbl}{topcap}[]{\let\@ctblbotcap\@ctblfalse}
-\define@key{ctbl}{width}{\@ctblwidth=#1}
+\define@key{CT}{bgopacity}{\def\@CTbgopacity{#1}}
+\define@key{CT}{botcap}[]{\let\@CTbotcap\@CTtrue}
+\define@key{CT}{captionskip}{\@CTcaptionskip=#1}
+\define@key{CT}{caption}{\def\@CTcaption{#1}}
+\define@key{CT}{cap}{\def\@CTcap{#1}}
+\define@key{CT}{center}[]{\let\@CTalign\centering}
+\define@key{CT}{continued}[\@dflttextcontinued]{\def\@CTcontinued{#1}}
+\define@key{CT}{doinside}{\def\@CTdoinside{#1}}
+\define@key{CT}{figure}[]{\def\@CTtaborfig{figure}}
+\define@key{CT}{framebg}{\@CTbgcolor#1=}
+\define@key{CT}{framefg}{\@CTfgcolor#1=}
+\define@key{CT}{framerule}{\@CTframerule=#1}
+\define@key{CT}{framesep}{\@CTframesep=#1}
+\define@key{CT}{label}{\def\@CTlabel{#1}}
+\define@key{CT}{left}[]{\let\@CTalign\raggedright}
+\define@key{CT}{maxwidth}{\@CTmaxwidth=#1}
+\define@key{CT}{mincapwidth}{\@CTmincapwidth=#1}
+\define@key{CT}{footerwidth}[-1pt]{\@CTfooterwidth=#1}
+\define@key{CT}{nonotespar}[]{\let\@CTnotespar\@CTfalse}
+\define@key{CT}{nosideways}[]{\let\@CTsideways\empty}
+\define@key{CT}{nostar}[]{\def\@CTstarred{}}
+\define@key{CT}{nosuper}[]{\let\@CTsuper\@CTfalse}
+\define@key{CT}{notespar}[]{\let\@CTnotespar\@CTtrue}
+\define@key{CT}{pos}{\def\@CTpos{#1}\def\@CTbegin{\@CTbeg[#1]}}
+\define@key{CT}{right}[]{\let\@CTalign\raggedleft}
+\define@key{CT}{sidecap}[]{\let\@CTbotcap\undefined}
+\define@key{CT}{sideways}[]{\def\@CTsideways{sideways}}
+\define@key{CT}{star}[]{\def\@CTstarred{*}}
+\define@key{CT}{super}[]{\let\@CTsuper\@CTtrue}
+\define@key{CT}{table}[]{\def\@CTtaborfig{table}}
+\define@key{CT}{topcap}[]{\let\@CTbotcap\@CTfalse}
+\define@key{CT}{width}{\@CTwidth=#1}
 %    \end{macrocode}
 % A caption will only be generated if the \textsl{caption} option was used, with a
 % non-empty value. If so, it goes in the lot/lof, unless the \textsl{cap} option 
 % specified a different (probably shorter) value for it. A \textsl{cap} option with
 % an empty value inhibits a tof/lof entry.
-% The |\ctbl@expandonce| trick below is from Marco Daniel.
+% The |\CT@expandonce| trick below is from Marco Daniel.
 % It expands the arguments of |\caption|
 % so that the hyperref command |\nameref| works OK.
 %    \begin{macrocode}
-\newcommand{\ctbl@expandonce}[1]{\unexpanded\expandafter{#1}}
-\def\@ctblCaption{
-   \ifx\@ctblcaption\empty\else
-      \def\@ctblcaptionarg{\ifx\@ctbllabel\empty\else\label{\@ctbllabel}\fi
-         \@ctblcaption\ \@ctblcontinued\strut}
+\newcommand{\CT@expandonce}[1]{\unexpanded\expandafter{#1}}
+\def\@CTCaption{
+   \ifx\@CTcaption\empty\else
+      \def\@CTcaptionarg{\ifx\@CTlabel\empty\else\label{\@CTlabel}\fi
+         \@CTcaption\ \@CTcontinued\strut}
       \begingroup
-        \ifx\@ctblcap\empty
-          \edef\x{\endgroup\noexpand\caption[]{\ctbl@expandonce\@ctblcaptionarg}}
+        \ifx\@CTcap\empty
+          \edef\x{\endgroup\noexpand\caption[]{\CT@expandonce\@CTcaptionarg}}
         \else
-        \edef\x{\endgroup\noexpand\caption[\ctbl@expandonce\@ctblcap]%
-                                          {\ctbl@expandonce\@ctblcaptionarg}}
+        \edef\x{\endgroup\noexpand\caption[\CT@expandonce\@CTcap]%
+                                          {\CT@expandonce\@CTcaptionarg}}
         \fi
       \x
    \fi
@@ -1053,63 +1053,63 @@ Execute the inst script with the --help option for more information.
 % Save the standard X type once in the new type Y
 %    \begin{macrocode}
 \newcolumntype{Y}{X}
-\def\@ctblXcolumntype#1{%
+\def\@CTXcolumntype#1{%
   \let\NC@find@X\undefined
   \newcolumntype{X}{#1}%
 }
-\long\def\@ctblframe#1#2#3{%
-   \@ctbloldsep\fboxsep\fboxsep\@ctblframesep%
-   \@ctbloldrule\fboxrule\fboxrule\@ctblframerule%
-   \transparent{\@ctblbgopacity}%
-   \fcolorbox{#1}{#2}{\fboxsep\@ctbloldsep\fboxrule\@ctbloldrule\transparent{1}#3}%
+\long\def\@CTframe#1#2#3{%
+   \@CToldsep\fboxsep\fboxsep\@CTframesep%
+   \@CToldrule\fboxrule\fboxrule\@CTframerule%
+   \transparent{\@CTbgopacity}%
+   \fcolorbox{#1}{#2}{\fboxsep\@CToldsep\fboxrule\@CToldrule\transparent{1}#3}%
 }
 \newcommand{\tnote}[2][a]{%
-   \ifx\@ctblnotespar\@ctbltrue%
-     \@ctbltextsuperscript{\normalfont\textit{#1}}\,#2
+   \ifx\@CTnotespar\@CTtrue%
+     \@CTtextsuperscript{\normalfont\textit{#1}}\,#2
    \else%
-     \hbox{\@ctbltextsuperscript{\normalfont\textit{#1}}}&#2\NN
+     \hbox{\@CTtextsuperscript{\normalfont\textit{#1}}}&#2\NN
    \fi
 }
 \newcommand{\tmark}[1][a]{%
    \hbox{\textsuperscript{\normalfont\textit{#1}}}}
-\newdimen\@ctblcurftwidth
+\newdimen\@CTcurftwidth
 \newcommand{\ctable}[4][]{%
-   \let\@ctbltaborfig  \@defaultctbltaborfig
-   \let\@ctblalign     \@defaultctblalign
-   \let\@ctblsideways  \@defaultctblsideways
-   \let\@ctblcontinued \empty
-   \let\@ctblpos       \@defaultctblpos
-   \let\@ctblcaption   \empty
-   \let\@ctblcap       \undefined
-   \let\@ctbllabel     \empty
-   \let\@ctblbotcap    \@defaultctblbotcap
-   \let\@ctblstarred   \@defaultctblstarred
-   \let\@ctblsuper     \@defaultctblsuper
-   \let\@ctblnotespar  \@defaultctblnotespar
-   \let\@ctbldoinside  \@defaultctbldoinside
-   \let\@ctblbgopacity \@defaultctblbgopacity
-   \@ctblframerule     \@defaultctblframerule
-   \@ctblcaptionskip   \@defaultctblcaptionskip
-   \@ctblframesep      \@defaultctblframesep
-   \@ctblwidth         \@defaultctblwidth
-   \@ctblmaxwidth      \@defaultctblmaxwidth
-   \@ctblmincapwidth   \@defaultctblmincapwidth
-   \@ctblfooterwidth   \@defaultctblfooterwidth
-   \def\@ctblfgactual {@defaultctblframefg}%
-   \def\@ctblbgactual {@defaultctblframebg}%
-   \def\@ctblbeg      {\begin{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
-   \def\@ctblbegin    {\@ctblbeg}%
-   \def\@ctblend      {\end{\@ctblsideways\@ctbltaborfig\@ctblstarred}}%
-   \setkeys{ctbl}{#1}%
+   \let\@CTtaborfig  \@dfltCTtaborfig
+   \let\@CTalign     \@dfltCTalign
+   \let\@CTsideways  \@dfltCTsideways
+   \let\@CTcontinued \empty
+   \let\@CTpos       \@dfltCTpos
+   \let\@CTcaption   \empty
+   \let\@CTcap       \undefined
+   \let\@CTlabel     \empty
+   \let\@CTbotcap    \@dfltCTbotcap
+   \let\@CTstarred   \@dfltCTstarred
+   \let\@CTsuper     \@dfltCTsuper
+   \let\@CTnotespar  \@dfltCTnotespar
+   \let\@CTdoinside  \@dfltCTdoinside
+   \let\@CTbgopacity \@dfltCTbgopacity
+   \@CTframerule     \@dfltCTframerule
+   \@CTcaptionskip   \@dfltCTcaptionskip
+   \@CTframesep      \@dfltCTframesep
+   \@CTwidth         \@dfltCTwidth
+   \@CTmaxwidth      \@dfltCTmaxwidth
+   \@CTmincapwidth   \@dfltCTmincapwidth
+   \@CTfooterwidth   \@dfltCTfooterwidth
+   \def\@CTfgactual {@dfltCTframefg}%
+   \def\@CTbgactual {@dfltCTframebg}%
+   \def\@CTbeg      {\begin{\@CTsideways\@CTtaborfig\@CTstarred}}%
+   \def\@CTbegin    {\@CTbeg}%
+   \def\@CTend      {\end{\@CTsideways\@CTtaborfig\@CTstarred}}%
+   \setkeys{CT}{#1}%
 %    \end{macrocode}
 % Make the short caption equal to the caption if it has not been defined
 %    \begin{macrocode}
-   \ifx\@ctblcap\undefined\let\@ctblcap\@ctblcaption\fi
+   \ifx\@CTcap\undefined\let\@CTcap\@CTcaption\fi
 %    \end{macrocode}
 % Issue a warning if the short caption is empty and the caption package is not loaded
 %    \begin{macrocode}
-   \ifx\@ctblcap\empty
-     \if@ctblhascaption\else
+   \ifx\@CTcap\empty
+     \if@CThascaption\else
        \PackageWarningNoLine{ctable}{\MessageBreak
           An empty cap= option prevents lot/loc entry only\MessageBreak
           if the caption package is loaded!}
@@ -1119,26 +1119,26 @@ Execute the inst script with the --help option for more information.
 % Currently, the sidecap option can only be used from within the memoir class; 
 % here we test if memoir is loaded:
 %    \begin{macrocode}
-   \if@ctblinmemoir\else
-      \ifx\@ctblbotcap\undefined
+   \if@CTinmemoir\else
+      \ifx\@CTbotcap\undefined
          \PackageError{ctable}{\MessageBreak
-            You can, currently, use the sidecap option only with memoir documents\MessageBreak
-            Use topcap or botcap only}
+            You can, currently, use the sidecap option only with\MessageBreak
+            memoir documents. Use topcap or botcap only}
       \fi
    \fi  
 %    \end{macrocode}
 % It makes no sense to use \textsl{width} together with \textsl{maxwidth} or
 % \textsl{pos} together with \textsl{sideways}
 %    \begin{macrocode}
-   \ifdim\@ctblwidth=0pt\else
-      \ifdim\@ctblmaxwidth=0pt\else
+   \ifdim\@CTwidth=0pt\else
+      \ifdim\@CTmaxwidth=0pt\else
          \PackageError{ctable}{\MessageBreak
             You may not use the width and maxwidth options together\MessageBreak
             Use either width or maxwidth}
       \fi
    \fi
-   \ifx\@ctblpos\empty
-      \ifx\@ctblsideways\empty\else
+   \ifx\@CTpos\empty
+      \ifx\@CTsideways\empty\else
       \PackageError{ctable}{\MessageBreak
          You may not use the pos and sideways options together\MessageBreak
          Rotated tables and figures are always typeset on a separate page}
@@ -1148,8 +1148,8 @@ Execute the inst script with the --help option for more information.
 % It makes no sense to label a captionless table, because the label can't
 % be placed, leaving the user wondering why references to the table get a ??
 %    \begin{macrocode}
-   \ifx\@ctblcaption\empty
-      \ifx\@ctbllabel\empty\else
+   \ifx\@CTcaption\empty
+      \ifx\@CTlabel\empty\else
          \PackageError{ctable}{\MessageBreak
             You may not label a captionless table\MessageBreak
             Such a label can't be referenced}
@@ -1159,10 +1159,10 @@ Execute the inst script with the --help option for more information.
 % save the table contents in a box, so we can determine its width,
 % initially, save the table typeset with the tabular environment:
 %    \begin{macrocode}
-   \sbox\ctbl@t{%
-      \@ctblXcolumntype{l}% temporarily make  type X = l
-      \@ctblframe{\@ctblfgactual}{\@ctblbgactual}{%
-         \@ctbldoinside
+   \sbox\CT@t{%
+      \@CTXcolumntype{l}% temporarily make  type X = l
+      \@CTframe{\@CTfgactual}{\@CTbgactual}{%
+         \@CTdoinside
          \begin{tabular}{#2}
             #4%
          \end{tabular}%
@@ -1171,58 +1171,60 @@ Execute the inst script with the --help option for more information.
 %    \end{macrocode}
 % then look if we'll need the tabularx environment:
 %    \begin{macrocode}
-   \@ctblusexfalse
-   \ifdim\@ctblmaxwidth=0pt
-      \ifdim\@ctblwidth=0pt
+   \@CTusexfalse
+   \ifdim\@CTmaxwidth=0pt
+      \ifdim\@CTwidth=0pt
       \else
-         \@ctblusextrue
+         \@CTusextrue
       \fi
    \else
-      \ifdim\wd\ctbl@t>\@ctblmaxwidth
-         \@ctblusextrue
+      \ifdim\wd\CT@t>\@CTmaxwidth
+         \@CTusextrue
       \fi
    \fi
 %
 % if so, replace tabular with tabularx:
 %
-   \if@ctblusex
-      \sbox\ctbl@t{%
-         \@ctblXcolumntype{Y}% restore X
-         \@ctblframe{\@ctblfgactual}{\@ctblbgactual}{%
-            \@ctbldoinside
-            \begin{tabularx}{\ifdim\@ctblwidth>0pt\@ctblwidth\else\@ctblmaxwidth\fi}{#2}
+   \if@CTusex
+      \sbox\CT@t{%
+         \@CTXcolumntype{Y}% restore X
+         \@CTframe{\@CTfgactual}{\@CTbgactual}{%
+            \@CTdoinside
+            \begin{tabularx}{\ifdim\@CTwidth>0pt\@CTwidth\else\@CTmaxwidth\fi}{#2}
                #4%
             \end{tabularx}%
          }%
       }%
    \fi
 %    \end{macrocode}
-% the |ctbl@t| box now contains the table as we want to typeset it;
+% the |CT@t| box now contains the table as we want to typeset it;
 % determine its width:
 %    \begin{macrocode}
-   \@ctblw=\wd\ctbl@t
+   \@CTw=\wd\CT@t
 %    \end{macrocode}
-% Now find the width of the float, |\@ctblfloatwidth|; everything in it will
+% Now find the width of the float, |\@CTfloatwidth|; everything in it will
 % be centered within that width.
-% Normally we'll use the width of the table, |\@ctblw|, but if the
-% mincapwidth, |\@ctblmincapwidth| was set wider than the table, that will be used:
+% Normally we'll use the width of the table, |\@CTw|, but if the
+% mincapwidth, |\@CTmincapwidth| was set wider than the table, that will be used:
 %    \begin{macrocode}
-   \@ctblfloatwidth=\ifdim\@ctblmincapwidth>\@ctblw
-      \@ctblmincapwidth
+   \@CTfloatwidth=\ifdim\@CTmincapwidth>\@CTw
+      \@CTmincapwidth
    \else
-      \@ctblw
+      \@CTw
    \fi
 %    \end{macrocode}
-% |\@ctblbegin| is now defined as something like |\begin{table}[tbp]|.
+% |\@CTbegin| is now defined as something like |\begin{table}[tbp]|.
 %    \begin{macrocode}
-   \@ctblbegin
-      \ifx\@ctblcontinued\empty\else\addtocounter{\@ctbltaborfig}{-1}\fi
-      \@ctblalign
-      \begin{minipage}{\@ctblfloatwidth}\parindent0pt
-         \ifx\@ctblbotcap\@ctblfalse\@ctblCaption\vskip\@ctblcaptionskip\fi
-         \ifx\@ctblbotcap\undefined\begin{sidecaption}[\@ctblcap]{\@ctblcaption}[\@ctbllabel]\fi
-         \centering{\usebox\ctbl@t}% insert the tabular
-         \def\@ctblfootnotes{#3}%
+   \@CTbegin
+      \ifx\@CTcontinued\empty\else\addtocounter{\@CTtaborfig}{-1}\fi
+      \@CTalign
+      \begin{minipage}{\@CTfloatwidth}\parindent0pt
+         \ifx\@CTbotcap\@CTfalse\@CTCaption\vskip\@CTcaptionskip\fi
+         \ifx\@CTbotcap\undefined%
+             \begin{sidecaption}[\@CTcap]{\@CTcaption}[\@CTlabel]
+         \fi
+         \centering{\usebox\CT@t}% insert the tabular
+         \def\@CTfootnotes{#3}%
          \ifx#3\empty\else{% append footnotes, if any
 %    \end{macrocode}
 % Footnotes: if the |footerwidth| is 0pt (the default), typeset the footer as
@@ -1231,27 +1233,27 @@ Execute the inst script with the --help option for more information.
 % make it as wide as the table; otherwise, give it the width set by the
 % |footerwidth| option.
 %    \begin{macrocode}
-            \@ctblcurftwidth=\ifdim\@ctblfooterwidth=-1pt\@ctblw\else
-                                \ifdim\@ctblfooterwidth=0pt\hsize\else
-                                \@ctblfooterwidth\fi\fi
+            \@CTcurftwidth=\ifdim\@CTfooterwidth=-1pt\@CTw\else
+                                \ifdim\@CTfooterwidth=0pt\hsize\else
+                                \@CTfooterwidth\fi\fi
             \footnotesize
-            \ifx\@ctblnotespar\@ctbltrue%
+            \ifx\@CTnotespar\@CTtrue%
                \\[.2ex]
-               \begin{minipage}{\@ctblcurftwidth}%
+               \begin{minipage}{\@CTcurftwidth}%
                   #3%
                \end{minipage}%
             \else%
                \\
-               \begin{tabularx}{\@ctblcurftwidth}{r@{\,}>{\raggedright}X}
+               \begin{tabularx}{\@CTcurftwidth}{r@{\,}>{\raggedright}X}
                   #3%
                \end{tabularx}%
             \fi
          }
          \fi
-         \ifx\@ctblbotcap\undefined\end{sidecaption}\fi
-         \ifx\@ctblbotcap\@ctbltrue\vskip\@ctblcaptionskip\@ctblCaption\fi
+         \ifx\@CTbotcap\undefined\end{sidecaption}\fi
+         \ifx\@CTbotcap\@CTtrue\vskip\@CTcaptionskip\@CTCaption\fi
       \end{minipage}
-   \@ctblend
+   \@CTend
 }
 %    \end{macrocode}
 % \Finale

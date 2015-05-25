@@ -33,7 +33,7 @@ for j in $set; do
    pdfcrop s$j.pdf s$j.pdf >& /dev/null
    # result
    { echo '\documentclass[twoside]{article}'
-     [[ $j =~ [k-z] ]] && echo '\usepackage[papersize={65mm,40mm},showframe,margin=1mm,noheadfoot]{geometry}'
+     [[ $j =~ [k-z] ]] && echo '\usepackage[papersize={56mm,40mm},showframe,margin=1mm,noheadfoot]{geometry}'
      cat <<-'EOD'
 	\usepackage{ctable}
 	\usepackage{txfonts}
