@@ -34,7 +34,7 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2015/04/09 v1.30 ctable package for \
+    [2015/08/29 v1.30 ctable package for \
      flexible typesetting of table and figure floats using key/value directives]
 %</package>
 %
@@ -240,8 +240,9 @@ Execute the inst script with the --help option for more information.
 % \changes{v1.29}{2014/04/20}{
 %  reorganized inst script
 % }
-% \changes{v1.30}{2015/04/08}{
+% \changes{v1.30}{2015/08/29}{
 %  tikz' transparency got broken when tikz loaded after ctable
+%  removed overfull hboxes from documentation
 % }
 %
 % \GetFileInfo{ctable.dtx}
@@ -852,7 +853,7 @@ Execute the inst script with the --help option for more information.
 %
 % \section{Implementation}
 % \begin{macrocode}
-\RequirePackage{ifpdf,xcolor,xkeyval,array,tabularx,booktabs,rotating}
+\RequirePackage{ifpdf,etoolbox,xcolor,xkeyval,array,tabularx,booktabs,rotating}
 %    \end{macrocode}
 % The transparency package works only in pdf mode, and if the tikz package is not loaded;
 % otherwise define a dummy |\transparent| and issue a warning.
@@ -872,6 +873,13 @@ Execute the inst script with the --help option for more information.
   }
   \def\transparent#1{}
 \fi
+\AtEndPreamble{
+  \@ifpackageloaded{tikz}{
+    \@ifpackageloaded{transparent}{
+      \PackageError{ctable}{You must load ctable after tikz}{}
+    }
+  }
+}
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
 \def\ML{\NN\midrule}

@@ -4,7 +4,7 @@
         ext=sty
      delete=($dtxname.$ext README.tex doc/\*.tex)
  dtxversion=$(grep " v[0-9.]\+[a-z]\{0,1\} $dtxname $dtxtype" $dtxname.dtx |sed 's/.* v\([0-9.]\+[a-z]\{,1\}\) .*/\1/')
-executables=(mk texlog_extract zip getopt pdfseparate pdfcrop pdflatex)
+executables=(mk texlog_extract zip getopt pdfseparate pdflatex)
 
     version=1.00
      myname=$(basename $0)
@@ -71,6 +71,8 @@ readme() { # generate the README file
 sed -n '/^%<\*readme>/,/^%<\/readme>/p
 	/\\changes{v'$dtxversion'}/,/^% }/p' $dtxname.dtx  |
 sed    's/^%//;s/\\\\$//
+	/ Author:/i\
+Version:| '$dtxversion'
 	/<.readme>/d
 	/^ }/d
 	s/ \\changes.*/Changes in version '$dtxversion':/
