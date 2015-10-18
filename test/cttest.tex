@@ -1,19 +1,47 @@
+%!lualatex
 \documentclass[12pt,twoside]{memoir}
 \usepackage[a4paper,margin=25mm,top=30mm]{geometry}
-\usepackage{ctable,osf-txfonts,colortbl,caption,kantlipsum}
+\usepackage{tikz} % if this line occurs behind the next, an error message should appear. 
+\usepackage{fontspec,ctable,colortbl,kantlipsum}
+\usepackage{caption}
+\usepackage{hyperref}
+\setmainfont{FreeSerif}
 \parindent0pt
 \bibliographystyle{plain}
 \author{Wybo Dekker}
 \title{Some tests for ctable}
+\setupctable{captionskip=-1.68ex}
 \begin{document}
 \maketitle
 \listoftables
 This text shows some tests. The heading is used to tell what is being tested, so
 use one page per test and use fancyhead to set the heading. 
 
+\chapter{Caption with footnote}
+\ctable[
+  caption = xCtable without a tmark,
+    label = notmark,
+      pos = ht
+]{ll}{}{\FL
+  Hello World!& How are you today? \LL
+}
+
+\ctable[
+  caption = {Ctable with a tmark\tmark},
+    label = tmark,
+      pos = ht
+]{ll}{\tnote{note}}{\FL
+  Hello World!& How are you today? \LL
+}
+
+\noindent
+Note: tmark may not have an argument in the caption!\\
+The table titled \nameref{notmark}\\
+The table titled \nameref{tmark}\\
+
 \chapter{notespar sets notes in a block}{}
 \ctable[
-  pos=h!
+  pos=h!,
   caption=Notes in tabular form
 ]{l}{
   \tnote[a]{note.}
@@ -25,7 +53,7 @@ Some\tmark[a] text\tmark[b] for the first line\NN
 and some\tmark[c] for the second line\tmark[d]\LL
 }
 \ctable[
-  pos=h!
+  pos=h!,
   caption=Notes in a block,
   notespar
 ]{l}{
@@ -82,7 +110,7 @@ Without ascenders and descenders:
 \def\CAP{Zetmeel (enzymatisch), gebruikte enzymen}
 \newlength{\capwidth}\settowidth{\capwidth}{Table 3: \CAP}
 \ctable[
-  pos=h,
+  pos=ht,
   framerule=1pt,
   framebg=1 .9 .9,
   caption={\CAP}
@@ -96,7 +124,7 @@ lab& tijd & temperatuur \NN
 }
 
 \ctable[
-  pos=h,
+  pos=ht,
   framerule=1pt,
   framebg=.9 1 .9,
   mincapwidth=\capwidth,
@@ -114,7 +142,7 @@ lab& tijd & temperatuur \NN
 
 
 \ctable[
-  pos=h,
+  pos=ht,
   right,
   framerule=1pt,
   framebg=.9 .9 1,
@@ -130,7 +158,7 @@ lab& tijd & temperatuur \NN
 }
 
 \ctable[
-  pos=h,
+  pos=ht,
   right,
   framerule=1pt,
   framebg=1 .9 .9,
@@ -145,7 +173,7 @@ lab& tijd & temperatuur \NN
 }
 
 \ctable[
-  pos=h,
+  pos=ht,
   right,
   framerule=1pt,
   framebg=.9 1 .9,
@@ -164,7 +192,7 @@ lab& tijd & temperatuur \NN
 
 
 \ctable[
-  pos=h,
+  pos=ht,
   left,
   framerule=1pt,
   framebg=.9 .9 1,
@@ -180,7 +208,7 @@ lab& tijd & temperatuur \NN
 }
 
 \ctable[
-  pos=h,
+  pos=ht,
   left,
   framerule=1pt,
   framebg=1 .9 .9,
@@ -195,7 +223,7 @@ lab& tijd & temperatuur \NN
 }
 
 \ctable[
-  pos=h,
+  pos=ht,
   left,
   framerule=1pt,
   framebg=.9 1 .9,
@@ -231,7 +259,7 @@ works only with the memoir class.
   caption={\CAP},
   cap=lipsum,
   label=sidecap,
-  sidecap,
+  %sidecap,
   mincapwidth=111mm
 ]{l} {\tnote{\kant[2]}}
 {\FL Anzahl \LL }

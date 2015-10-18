@@ -34,8 +34,8 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2015/08/29 v1.30 ctable package for \
-     flexible typesetting of table and figure floats using key/value directives]
+    [2015/10/17 v1.31 ctable package for flexible typesetting of table and
+     figure floats using key/value directives]
 %</package>
 %
 %<*driver>
@@ -196,28 +196,28 @@ Execute the inst script with the --help option for more information.
 % - notespar option now generates fully justified notes
 % }
 % \changes{v1.17}{2010/10/30}{
-%  doinside option propagated in subsequent ctable calls
+% - doinside option propagated in subsequent ctable calls
 % }
 % \changes{v1.18}{2011/04/15}{
 % - added setupctable for option defaults\\
 % - added complement for several options (topcap, nosideways, et cetera)
 % }
 % \changes{v1.19}{2011/05/01}{
-%  sideways option did not work anymore; corrected
+% - sideways option did not work anymore; corrected
 % }
 % \changes{v1.20}{2011/08/24}{
-%  added options captionsleft, captionsright, captionsinside; (for
+% - added options captionsleft, captionsright, captionsinside; (for
 %  setupctable only)
 % }
 % \changes{v1.21}{2011/09/05}{
-%  better documentation for sideways, captionsleft/right/inside options
+% - better documentation for sideways, captionsleft/right/inside options
 % }
 % \changes{v1.22}{2012/05/25}{
 % - allow empty lines in last (tabular) argument\\
 % - corrected error from hyperref's nameref calls (thanks Marco Daniel!)
 % }
 % \changes{v1.23}{2012/05/28}{
-%  footerwidth option added
+% - footerwidth option added
 % }
 % \changes{v1.24}{2013/04/28}{
 % - require xcolor instead of color\\
@@ -225,24 +225,31 @@ Execute the inst script with the --help option for more information.
 % - added option sidecap (for memoir only)
 % }
 % \changes{v1.25}{2013/05/24}{
-%  url's to CTAN corrected
+% - url's to CTAN corrected
 % }
 % \changes{v1.26}{2013/06/15}{
-%  footerwidth option was inactive when notespar option was active
+% - footerwidth option was inactive when notespar option was active
 % }
 % \changes{v1.27}{2013/12/19}{
-%  label option did not work with side caption\\
-%  disable transparency with warning if tikz package loaded
+% - label option did not work with side caption\\
+% - disable transparency with warning if tikz package loaded
 % }
 % \changes{v1.28}{2014/02/20}{
-%  added percent characters at EOLs causing whitespace
+% - added percent characters at EOLs causing whitespace
 % }
 % \changes{v1.29}{2014/04/20}{
-%  reorganized inst script
+% - reorganized inst script
 % }
 % \changes{v1.30}{2015/08/29}{
-%  tikz' transparency got broken when tikz loaded after ctable
-%  removed overfull hboxes from documentation
+% - tikz' transparency got broken when tikz loaded after ctable\\
+% - removed overfull hboxes from documentation
+% }
+% \changes{v1.31}{2015/10/03}{
+% - documentation: comments about tmark in captions\\
+% - documentation: more info about caption skips\\
+% - use expandonce from etoolbox\\
+% - use \AtBeginDocument, not \AtEndPreamble from etoolbox
+%   (problems with tikz)
 % }
 %
 % \GetFileInfo{ctable.dtx}
@@ -363,10 +370,16 @@ Execute the inst script with the --help option for more information.
 % |1ex| above the top rule position of the table and a bottom caption's
 % baseline at |4ex| below the bottom rule position. These dimensions may be
 % different for other classes or when other packages are included. The
-% |memoir| class and the |caption| package, for example, typeset both
-% captions differently. Keep in mind that when you use the |caption| package 
-% in the |memoir| class, |memoir|'s caption commands are suspended and |caption|'s
-% commands must be used.  
+% |memoir| class and the |caption| package, for example, both typeset
+% captions differently, and the combination of both even differs from each
+% alone.\footnote{I did some measurements on the whitespace between the
+% caption and the top of the table with and without using the caption
+% package and/or the memoir class: standard LaTeX: 1ex; memoir:
+% 2.32ex; caption: 2.69ex; both memoir and caption: 2.68ex. For the
+% distances between bottom caption baselines and the table bottom I found,
+% respectively: 3.90ex, 3.41ex, 3.72ex and 3.74ex } Keep in mind that when
+% you use the |caption| package in the |memoir| class, |memoir|'s caption
+% commands are suspended and |caption|'s commands must be used.
 %
 % \DescribeMacro{captionsleft\hfill} This option is defined for
 % |\setupctable| only, and it is effective only where the |sideways| option
@@ -571,6 +584,7 @@ Execute the inst script with the --help option for more information.
 % |\tmark[label]| this command places the superscripted label in the
 % table. It is equivalent with |$^{label}$|.
 % The label is optional, the default label is a single $a$.
+% |\tmark| may be used in captions, but only \textit{without} an argument.
 % \par
 % The newline generating commands are a combination of
 % |\tabularnewline| and zero or one of \REF{booktabs} |\toprule|,
@@ -873,12 +887,23 @@ Execute the inst script with the --help option for more information.
   }
   \def\transparent#1{}
 \fi
-\AtEndPreamble{
+%    \end{macrocode}
+% We need to know if the user has loaded tikz after ctable. If so, we have 
+% loaded the transparent package already, which then will disturb the tikz
+% definitions, so we must quit with an error message.
+% Some warnings depend on whether the caption package is loaded or not.
+% Here a flag is set to remember that.
+%    \begin{macrocode}
+\newif\if@CTcaptionloaded
+\AtBeginDocument{
+  \makeatletter
   \@ifpackageloaded{tikz}{
     \@ifpackageloaded{transparent}{
       \PackageError{ctable}{You must load ctable after tikz}{}
     }
-  }
+  }{}
+  \@ifpackageloaded{caption}{\@CTcaptionloadedtrue}{\@CTcaptionloadedfalse}
+  \makeatother
 }
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
@@ -908,13 +933,10 @@ Execute the inst script with the --help option for more information.
 % Need three booleans to remember:
 %  if we use tabularx,
 %  if we are running in the memoir class,
-%  if the caption package is loaded
 %    \begin{macrocode}
 \newif\if@CTusex
 \newif\if@CTinmemoir
-\newif\if@CThascaption
 \@ifclassloaded{memoir}{\@CTinmemoirtrue}{\@CTinmemoirfalse}
-\@ifpackageloaded{caption}{\@CThascaptiontrue}{\@CThascaptionfalse}
 %    \end{macrocode}
 % Need lots of dimens and their defaults
 %    \begin{macrocode}
@@ -1036,21 +1058,22 @@ Execute the inst script with the --help option for more information.
 % non-empty value. If so, it goes in the lot/lof, unless the \textsl{cap} option 
 % specified a different (probably shorter) value for it. A \textsl{cap} option with
 % an empty value inhibits a tof/lof entry.
-% The |\CT@expandonce| trick below is from Marco Daniel.
+% The |\expandonce| trick below is from Marco Daniel.
 % It expands the arguments of |\caption|
 % so that the hyperref command |\nameref| works OK.
+% See http://tex.stackexchange.com/questions/57396/
+% Note that, in captions, |tmark| may only be used without its optional argument.
 %    \begin{macrocode}
-\newcommand{\CT@expandonce}[1]{\unexpanded\expandafter{#1}}
 \def\@CTCaption{
    \ifx\@CTcaption\empty\else
       \def\@CTcaptionarg{\ifx\@CTlabel\empty\else\label{\@CTlabel}\fi
          \@CTcaption\ \@CTcontinued\strut}
       \begingroup
         \ifx\@CTcap\empty
-          \edef\x{\endgroup\noexpand\caption[]{\CT@expandonce\@CTcaptionarg}}
+          \edef\x{\endgroup\noexpand\caption[]{\expandonce\@CTcaptionarg}}
         \else
-        \edef\x{\endgroup\noexpand\caption[\CT@expandonce\@CTcap]%
-                                          {\CT@expandonce\@CTcaptionarg}}
+        \edef\x{\endgroup\noexpand\caption[\expandonce\@CTcap]%
+                                          {\expandonce\@CTcaptionarg}}
         \fi
       \x
    \fi
@@ -1117,7 +1140,7 @@ Execute the inst script with the --help option for more information.
 % Issue a warning if the short caption is empty and the caption package is not loaded
 %    \begin{macrocode}
    \ifx\@CTcap\empty
-     \if@CThascaption\else
+     \if@CTcaptionloaded\else
        \PackageWarningNoLine{ctable}{\MessageBreak
           An empty cap= option prevents lot/loc entry only\MessageBreak
           if the caption package is loaded!}
