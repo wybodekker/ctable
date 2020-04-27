@@ -1,9 +1,13 @@
 \documentclass{article}
 \usepackage{ctable}
 \usepackage{draftwatermark,kantlipsum}
+\setupctable{bgopacity=1}
 \def\Tab#1#2{
 \ctable[
   bgopacity = #1,
+    framebg = .5 .5 0,
+    framefg = 0 0 1,
+  framerule = 3pt,
     caption = {#2},
       width = 100mm,
         pos = ht,

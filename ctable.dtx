@@ -34,13 +34,14 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2015/10/17 v1.31 ctable package for flexible typesetting of table and
+    [2020/04/30 v1.32 ctable package for flexible typesetting of table and
      figure floats using key/value directives]
 %</package>
 %
 %<*driver>
 \documentclass{ltxdoc}
-\usepackage{ctable,txfonts,paralist,desclist}
+\usepackage{ctable}
+\usepackage{txfonts,paralist,desclist}
 \usepackage[l2tabu,orthodox]{nag}
 \usepackage[a4paper,margin=20mm,left=50mm,nohead]{geometry}
 \usepackage[colorlinks]{hyperref}
@@ -150,7 +151,7 @@ Execute the inst script with the --help option for more information.
 % }
 % \changes{v1.08}{2006/04/10}{
 % - standardized file setup following
-%   http://www.ctan.org/tex-archive/info/dtxtut/dtxtut.pdf\\
+%   http://mirror.ctan.org/info/dtxtut/dtxtut.pdf\\
 % - mincapwidth option added\\
 % - moved newdimen definition outside ctable macro
 % }
@@ -251,19 +252,28 @@ Execute the inst script with the --help option for more information.
 % - use \AtBeginDocument, not \AtEndPreamble from etoolbox
 %   (problems with tikz)
 % }
-%
+% \changes{v1.32}{2020/04/30}{
+% - help argument missing in PackageError calls
+% - simutaneous use of pos and sideways options incorrectly tested
+% }
 % \GetFileInfo{ctable.dtx}
 %
-% \DoNotIndex{     \newcommand,   \\,             \,,
-% \def,            \definecolor,  \hbox,          \raggedright,
-% \else,           \ifdim,        \sbox,          \empty,
-% \ifx,            \setkeys,      \end,           \label,
-% \specialrule,    \fboxrule,     \let,           \tabularnewline,
-% \PackageError,   \fboxsep,      \newbox,        \textit,
-% \PackageWarningNoLine, \fcolorbox,    \newcolumntype, \usebox,
-% \RequirePackage, \fi,           \newdimen,      \vspace,
-% \begin,          \footnotesize, \normalfont,    \wd,
-% \define@key,
+% \DoNotIndex{
+% \,,              \endgroup,    \makeatletter,        \relax,         
+% \\,              \expandonce,  \makeatother,         \RequirePackage,
+% \ ,              \fboxrule,    \MessageBreak,        \sbox,          
+% \addtocounter,   \fboxsep,     \newbox,              \setkeys,       
+% \AtBeginDocument,\fcolorbox,   \newcolumntype,       \specialrule,   
+% \begin,          \fi,          \newcommand,          \strut,         
+% \begingroup,     \footnotesize,\newdimen,            \tabularnewline,
+% \centering,      \hbox,        \newif,               \textit,        
+% \def,            \hsize,       \noexpand,            \textsuperscript,
+% \definecolor,    \ifdim,       \normalfont,          \undefined,     
+% \define@key,     \ifpdf,       \PackageError,        \usebox,        
+% \edef,           \ifx,         \PackageWarningNoLine,\vskip,         
+% \else,           \label,       \parindent,           \vspace,        
+% \empty,          \let,         \raggedleft,          \wd,            
+% \end,            \long,        \raggedright
 % }
 %
 % \title{The \textsf{ctable} package\thanks{This document
@@ -285,10 +295,10 @@ Execute the inst script with the --help option for more information.
 % \tableofcontents
 % \section{Introduction}
 %
-% \section{Purpose} The |ctable| package lets you easily typeset
-% captioned table and figure floats with optional
-% footnotes. Both caption and footnotes will normally be forced within the
-% width of the table.
+% \section{Purpose} The |ctable| package lets you easily typeset captioned
+% table and figure floats with optional footnotes. Both caption and
+% footnotes will normally be forced within the width of the table.
+
 % If the width of the table is specified, then \REF{tabularx} will be used
 % to typeset it, and one or more |X| column specifiers should be specified.
 % Otherwise tabular will be used.
@@ -571,9 +581,9 @@ Execute the inst script with the --help option for more information.
 % |\tnote[label]{footnote text}| places {\footnotesize
 % \textsuperscript{\normalfont\textit{label}}\,footnote text}
 % under the table.
-% This command can only be used in |\ctable|'s third argument, i.e.\ the foottable
-% argument described above. The
-% label is optional, the default label is a single $a$. For more
+% This command can only be used in |\ctable|'s third argument, that
+% is: the foottable argument described above.
+% The label is optional, the default label is a single $a$. For more
 % detailed control, you can also replace this command with something
 % like |labeltext&footnotetext\NN|.
 % The footnotes are placed under the table, without a rule.
@@ -611,7 +621,8 @@ Execute the inst script with the --help option for more information.
 % An optional dimen parameter sets the line width; the default is 0.08em.
 % Is an alias for |\tabularnewline\bottomrule|
 % \par
-% These macros can be used outside |\ctable| constructs.
+% These macros can be used outside |\ctable| constructs, that is:
+% in tabulars, longtables, et cetera.
 % \par
 % Finally, for completeness, here are some of \REF{booktabs}' commands
 % that may be useful:
@@ -866,6 +877,7 @@ Execute the inst script with the --help option for more information.
 % \StopEventually{}
 %
 % \section{Implementation}
+% \subsection{Initialization}
 % \begin{macrocode}
 \RequirePackage{ifpdf,etoolbox,xcolor,xkeyval,array,tabularx,booktabs,rotating}
 %    \end{macrocode}
@@ -874,7 +886,7 @@ Execute the inst script with the --help option for more information.
 %    \begin{macrocode}
 \ifpdf
   \@ifpackageloaded{tikz}{
-    \PackageWarning{ctable}{
+    \PackageWarningNoLine{ctable}{
       Transparency disabled: incompatible with tikz package
     }
     \def\transparent#1{}
@@ -963,7 +975,6 @@ Execute the inst script with the --help option for more information.
 % command like |\@CTbegin| we put
 % |\begin{table}[tbp]| in it.
 %    \begin{macrocode}
-
 \define@key{suCT}{bgopacity}{\def\@dfltCTbgopacity{#1}}
 \define@key{suCT}{botcap}[]{\let\@dfltCTbotcap\@CTtrue}
 \define@key{suCT}{captionsinside}[]{\def\rot@LR{-1}
@@ -1141,9 +1152,10 @@ Execute the inst script with the --help option for more information.
 %    \begin{macrocode}
    \ifx\@CTcap\empty
      \if@CTcaptionloaded\else
-       \PackageWarningNoLine{ctable}{\MessageBreak
-          An empty cap= option prevents lot/loc entry only\MessageBreak
-          if the caption package is loaded!}
+       \PackageWarningNoLine{ctable}
+          {\MessageBreak An empty cap= option prevents lot/loc entry only
+           \MessageBreak if the caption package is loaded!
+          }
      \fi
    \fi
 %    \end{macrocode}
@@ -1152,9 +1164,11 @@ Execute the inst script with the --help option for more information.
 %    \begin{macrocode}
    \if@CTinmemoir\else
       \ifx\@CTbotcap\undefined
-         \PackageError{ctable}{\MessageBreak
-            You can, currently, use the sidecap option only with\MessageBreak
-            memoir documents. Use topcap or botcap only}
+         \PackageError{ctable}%
+            {sidecap option not available here}%
+            {\MessageBreak You can, currently, use the sidecap option only with
+`            \MessageBreak memoir documents. Use topcap or botcap only.
+            }
       \fi
    \fi  
 %    \end{macrocode}
@@ -1163,16 +1177,20 @@ Execute the inst script with the --help option for more information.
 %    \begin{macrocode}
    \ifdim\@CTwidth=0pt\else
       \ifdim\@CTmaxwidth=0pt\else
-         \PackageError{ctable}{\MessageBreak
-            You may not use the width and maxwidth options together\MessageBreak
-            Use either width or maxwidth}
+         \PackageError{ctable}
+           {width and maxwidth options are mutually exclusive}
+           {\MessageBreak You may not use the width and maxwidth options together.
+            \MessageBreak Use either width or maxwidth.
+           }
       \fi
    \fi
-   \ifx\@CTpos\empty
+   \ifx\@CTpos\undefined\else
       \ifx\@CTsideways\empty\else
-      \PackageError{ctable}{\MessageBreak
-         You may not use the pos and sideways options together\MessageBreak
-         Rotated tables and figures are always typeset on a separate page}
+      \PackageError{ctable}
+         {pos and sideways options are mutually exclusive}
+         {\MessageBreak You may not use the pos and sideways options together.
+          \MessageBreak Rotated tables and figures are always typeset on a separate page.
+         }
       \fi
    \fi
 %    \end{macrocode}
@@ -1181,9 +1199,11 @@ Execute the inst script with the --help option for more information.
 %    \begin{macrocode}
    \ifx\@CTcaption\empty
       \ifx\@CTlabel\empty\else
-         \PackageError{ctable}{\MessageBreak
-            You may not label a captionless table\MessageBreak
-            Such a label can't be referenced}
+         \PackageError{ctable}
+           {label option used in captionless table}
+           {\MessageBreak You may not label a captionless table.
+            \MessageBreak Such a label can't be referenced.
+           }
       \fi
    \fi
 %    \end{macrocode}
