@@ -22,15 +22,16 @@ for j in $set; do
 	\fontsize{10}{12 pt}\selectfont
 	\begin{verbatim}
 	EOD
-	grep -v "remove from source" $j
+	grep -v "remove from source" "$j"
 	cat <<-'EOD'
 	\end{verbatim}
 	\end{document}
 	EOD
-   } >s$j.tex
+   } >s"$j".tex
 
-   mk --noprint --noview s$j.tex >/dev/null && mk -c s$j
-   pdfcrop s$j.pdf s$j.pdf >& /dev/null
+   echo x | pdflatex s"$j".tex &>/dev/null || die "pdflatex failed on s$j"
+   rm s"$j".{aux,tex,log}
+   pdfcrop s"$j".pdf s"$j".pdf >& /dev/null
    # result
    { echo '\documentclass[twoside]{article}'
      [[ $j =~ [k-z] ]] && echo '\usepackage[papersize={56mm,40mm},showframe,margin=1mm,noheadfoot]{geometry}'
@@ -41,9 +42,12 @@ for j in $set; do
 	\parindent0pt
 	\begin{document}
 	EOD
-     cat $j
+     cat "$j"
      echo '\end{document}'
-   } > $j.tex
-   mk --noprint --noview $j.tex >/dev/null && mk -c $j
-   pdfcrop $j.pdf $j.pdf >& /dev/null
+   } > "$j".tex
+   echo x | pdflatex "$j".tex &>/dev/null || die "pdflatex failed on $j"
+   rm "$j".{aux,tex,log}
+   pdfcrop "$j".pdf "$j".pdf >& /dev/null
+   printf "\r%d%%" $((n+=4))
 done
+echo -ne "\r    \r"

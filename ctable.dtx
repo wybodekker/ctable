@@ -3,23 +3,26 @@
 \iffalse
 %</internal>
 %<*readme>
-|
--------:|:--------------------------------------
- ctable:| Flexible typesetting of table and figure floats using key/value directives
- Author:| Wybo Dekker
- E-mail:| wybo@dekkerdocumenten.nl
-License:| Released under the LaTeX Project Public License v1.3c or later
-    See:| http://www.latex-project.org/lppl.txt
+# ctable
+|    key | description
+|    ---:|:---
+| ctable | package for flexible key/value driven floats
+|version | 1.32
+|   date | 2021/02/21
+| author | Wybo Dekker
+|  email | wybo@dekkerdocumenten.nl
+|license | Released under the LaTeX Project Public License v1.3c or later
+|    see | http://www.latex-project.org/lppl.txt
 
 Short description:
 ctable.sty provides commands to easily typeset centered or left or right
-aligned tables and (multiple-)figure floats, with footnotes. Instead of an
+aligned table and (multiple-)figure floats, with footnotes. Instead of an
 environment, a command with 4 arguments is used; the first is optional and
 is used for key,value pairs generating variations on the defaults and
 offering a route for future extensions.
 
 Full documentation:
-https://bitbucket.org/wybodekker/ctable/downloads/ctable.pdf
+http://mirrors.ctan.org/macros/latex/contrib/ctable/ctable.pdf
 
 Installation:
 Execute the inst script with the --help option for more information.
@@ -34,8 +37,7 @@ Execute the inst script with the --help option for more information.
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2020/04/30 v1.32 ctable package for flexible typesetting of table and
-     figure floats using key/value directives]
+    [2021/02/21 v1.32 ctable package for flexible key/value driven floats]
 %</package>
 %
 %<*driver>
@@ -69,7 +71,7 @@ Execute the inst script with the --help option for more information.
 \AtEndDocument{\PrintChanges}
 \CodelineIndex\EnableCrossrefs
 \hypersetup{
-     pdftitle = The ctable package,
+     pdftitle = ctable package for flexible key/value driven floats
     pdfauthor = Wybo Dekker,
    pdfsubject = {Typesetting centered, right, and left aligned table and figure
                  floats, with many configuration options},
@@ -252,7 +254,7 @@ Execute the inst script with the --help option for more information.
 % - use \AtBeginDocument, not \AtEndPreamble from etoolbox
 %   (problems with tikz)
 % }
-% \changes{v1.32}{2020/04/30}{
+% \changes{v1.32}{2021/02/21}{
 % - help argument missing in PackageError calls
 % - simutaneous use of pos and sideways options incorrectly tested
 % }
@@ -276,10 +278,11 @@ Execute the inst script with the --help option for more information.
 % \end,            \long,        \raggedright
 % }
 %
-% \title{The \textsf{ctable} package\thanks{This document
-%   corresponds to \textsf{ctable}~\fileversion, dated \filedate.}}
-% \author{Wybo Dekker \\ \texttt{wybo@dekkerdocumenten.nl}}
-%
+% \title{The ctable package\thanks{This document describes
+%   version \fileversion, last revised \filedate.}\\
+% for flexible key/value driven floats}
+% \author{Wybo Dekker\thanks{Email: wybo@dekkerdocumenten.nl}}
+% \date{\filedate}%
 % \maketitle
 % \begin{abstract}\noindent
 % The \texttt{ctable} package provides a \texttt{ctable}
@@ -731,7 +734,7 @@ Execute the inst script with the --help option for more information.
 % }{                                                         \FL
 %    \multicolumn{4}{c}{Example using tabularx}              \ML
 %    \multicolumn{2}{c}{Multicolumn entry!} & THREE & FOUR   \NN
-%        \cmidrule(r){1-2}\cmidrule(rl){3-3}\cmidrule(l){4-4}
+%       \cmidrule(r){1-2}\cmidrule(rl){3-3}\cmidrule(l){4-4}
 %    one&
 %    The width of this column depends on the width of the
 %        table.\tmark &
@@ -879,6 +882,7 @@ Execute the inst script with the --help option for more information.
 % \section{Implementation}
 % \subsection{Initialization}
 % \begin{macrocode}
+%<*package>
 \RequirePackage{ifpdf,etoolbox,xcolor,xkeyval,array,tabularx,booktabs,rotating}
 %    \end{macrocode}
 % The transparency package works only in pdf mode, and if the tikz package is not loaded;
@@ -1189,7 +1193,7 @@ Execute the inst script with the --help option for more information.
       \PackageError{ctable}
          {pos and sideways options are mutually exclusive}
          {\MessageBreak You may not use the pos and sideways options together.
-          \MessageBreak Rotated tables and figures are always typeset on a separate page.
+          \MessageBreak Rotated tables and figures appear on a separate page.
          }
       \fi
    \fi
@@ -1306,6 +1310,7 @@ Execute the inst script with the --help option for more information.
       \end{minipage}
    \@CTend
 }
+%</package>
 %    \end{macrocode}
 % \Finale
 \endinput
