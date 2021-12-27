@@ -43,10 +43,20 @@ Execute the inst script with the --help option for more information.
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{ctable}
-\usepackage{txfonts,paralist,desclist}
+\usepackage{paralist,desclist}
 \usepackage[l2tabu,orthodox]{nag}
 \usepackage[a4paper,margin=20mm,left=50mm,nohead]{geometry}
-\usepackage[colorlinks]{hyperref}
+\usepackage{fontspec}
+\usepackage{microtype}
+% suppress microtype warnings - may become unnecessary with microtype > v2.8:
+\makeatletter\def\MT@warn@unknown{}\makeatother
+\setmainfont[Ligatures=TeX]{Fontin-Regular}[%
+	     ItalicFont=Fontin-Italic,
+             BoldFont=Fontin-Bold,
+             SmallCapsFont=Fontin-SmallCaps
+            ]
+\setmonofont{DejaVuSansMono}[Scale=MatchLowercase]
+\usepackage{hyperref}
 \usepackage{tocloft}
 \setlength\cftparskip{.5ex}
 \setlength\cftbeforesecskip{.5ex}
@@ -61,8 +71,8 @@ Execute the inst script with the --help option for more information.
   \colorbox{#1}{%
     \parbox{.98\hsize}{%
       \rule{0pt}{1.5ex}\\%
-      \parbox{.6\hsize}{\includegraphics{#2}}%
-      \parbox{.4\hsize}{\centering{\includegraphics{#3}}}%
+      \parbox{.57\hsize}{\includegraphics{#2}}%
+      \parbox{.43\hsize}{\centering{\includegraphics{#3}}}%
       \\\rule{0pt}{1.5ex}%
     }%
   }\par%
@@ -84,7 +94,8 @@ Execute the inst script with the --help option for more information.
                  tabularx,
                  threeparttable
                 },
-  bookmarksopen
+  bookmarksopen,
+  colorlinks
 }
 \begin{document}
   \DocInput{ctable.dtx}

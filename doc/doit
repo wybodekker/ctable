@@ -19,7 +19,7 @@ for j in $set; do
 	\usepackage[a4paper,margin=20mm,noheadfoot]{geometry}
 	\pagestyle{empty}
 	\begin{document}\ttfamily
-	\fontsize{10}{12 pt}\selectfont
+	\fontsize{10}{12pt}\selectfont
 	\begin{verbatim}
 	EOD
 	grep -v "remove from source" "$j"
@@ -29,7 +29,7 @@ for j in $set; do
 	EOD
    } >s"$j".tex
 
-   echo x | pdflatex s"$j".tex &>/dev/null || die "pdflatex failed on s$j"
+   echo x | lualatex s"$j".tex &>/dev/null || die "lualatex failed on s$j"
    rm s"$j".{aux,tex,log}
    pdfcrop s"$j".pdf s"$j".pdf >& /dev/null
    # result
@@ -37,7 +37,16 @@ for j in $set; do
      [[ $j =~ [k-z] ]] && echo '\usepackage[papersize={56mm,40mm},showframe,margin=1mm,noheadfoot]{geometry}'
      cat <<-'EOD'
 	\usepackage{ctable}
-	\usepackage{txfonts}
+	\usepackage{fontspec}
+	\usepackage{microtype}
+	\makeatletter\def\MT@warn@unknown{}\makeatother
+	\setmainfont[Ligatures=TeX]{Fontin-Regular}[%
+	     ItalicFont=Fontin-Italic,
+             BoldFont=Fontin-Bold,
+             SmallCapsFont=Fontin-SmallCaps
+            ]
+	\setmonofont{DejaVuSansMono}[Scale=MatchLowercase]
+
 	\pagestyle{empty}
 	\parindent0pt
 	\begin{document}
@@ -45,7 +54,7 @@ for j in $set; do
      cat "$j"
      echo '\end{document}'
    } > "$j".tex
-   echo x | pdflatex "$j".tex &>/dev/null || die "pdflatex failed on $j"
+   echo x | lualatex "$j".tex &>/dev/null || die "lualatex failed on $j"
    rm "$j".{aux,tex,log}
    pdfcrop "$j".pdf "$j".pdf >& /dev/null
    printf "\r%d%%" $((n+=4))

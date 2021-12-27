@@ -20,7 +20,7 @@ Options:
 
 = Description
 inst must be run in its own directory (|./inst|) and then does the following:
-- generates the documentation for isodoc,
+- generates the documentation,
 - installs ctable in one of your TeX trees: TEXMFMAIN, TEXMFLOCAL or TEXMFHOME. 
   The first one writable by you will chosen.
 - creates a zip file named |ctable-x.yy.zip| for upload to CTAN
@@ -109,11 +109,11 @@ makeall() {
    done
    cd .. || die
   
-   pdflatex "$job".dtx &>/dev/null || die "pdflatex failed on  $job.dtx"
+   lualatex "$job".dtx &>/dev/null || die "lualatex failed on  $job.dtx"
    if [ -f "$job".glo ]; then makeindex -q -s gglo.ist -o "$job".gls "$job".glo; fi
    if [ -f "$job".idx ]; then makeindex -q -s gind.ist -o "$job".ind "$job".idx; fi
-   pdflatex "$job".dtx &> /dev/null
-   pdflatex "$job".dtx &> /dev/null
+   lualatex "$job".dtx &> /dev/null
+   lualatex "$job".dtx &> /dev/null
 
 }
 
@@ -177,7 +177,7 @@ handle_options() {
    args=( "$@" )
 }
 
-excheck zip getopt pdflatex
+excheck zip getopt lualatex
 handle_options "$@"
 set -- "${args[@]}"
 [[ -z $1 ]] || die No arguments expected
