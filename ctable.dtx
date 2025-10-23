@@ -20,8 +20,8 @@
      key | description
      ---:|:---
   ctable | package for flexible key/value driven typesetting of floats
- version | 1.32
-    date | 2025/07/10 
+ version | 1.33
+    date | 2025/10/22 
   author | Wybo Dekker
    email | wybodekker@me.com
  license | Released under the LaTeX Project Public License v1.3c or later
@@ -967,7 +967,7 @@ GDBgwJhg/AsrDGKFABgBAA==
 %<package>\NeedsTeXFormat{LaTeX2e}[2021/11/15]
 %<package>\ProvidesPackage{ctable}
 %<*package>
-    [2025/07/10 v1.32 package for flexible key/value driven typesetting of floats]
+    [2025/10/22 v1.33 package for flexible key/value driven typesetting of floats]
 %</package>
 %<*driver>
 \documentclass{ltxdoc}
@@ -1735,8 +1735,9 @@ GDBgwJhg/AsrDGKFABgBAA==
 %       & - use AtBeginDocument, not AtEndPreamble from etoolbox (problems with tikz)\\
 % v1.32 & 2025-07-10\\
 %       & - help argument missing in PackageError calls\\
-%       & - simutaneous use of pos and sideways options incorrectly tested\\
+%       & - simultaneous use of pos and sideways options incorrectly tested\\
 %       & - now contained in 1 self-extracting file\\
+% v1.33 & - missing args inside AtBeginDocument corrected\\
 % \end{longtable}
 % \newpage
 % \PrintIndex
@@ -1773,15 +1774,13 @@ GDBgwJhg/AsrDGKFABgBAA==
 % Here a flag is set to remember that.
 %    \begin{macrocode}
 \newif\if@CTcaptionloaded
-\AtBeginDocument{
-  \makeatletter
-  \@ifpackageloaded{tikz}{
-    \@ifpackageloaded{transparent}{
-      \PackageError{ctable}{You must load ctable after tikz}{}
-    }
-  }{}
-  \@ifpackageloaded{caption}{\@CTcaptionloadedtrue}{\@CTcaptionloadedfalse}
-  \makeatother
+\AtBeginDocument{%
+  \@ifpackageloaded{tikz}{%
+    \@ifpackageloaded{transparent}{%
+      \PackageError{ctable}{You must load ctable after tikz}{}%
+    }{}%
+  }{}%
+  \@ifpackageloaded{caption}{\@CTcaptionloadedtrue}{\@CTcaptionloadedfalse}%
 }
 \def\NN{\tabularnewline}
 \def\FL{\toprule}
